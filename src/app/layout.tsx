@@ -14,7 +14,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@ui";
-import { ThemeProvider } from "@/providers/theme-provider";
+// import { ThemeProvider } from "@/providers/theme-provider";
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -43,7 +43,7 @@ export default function RootLayout({
         > */}
         <SidebarProvider>
           <AppSidebar />
-          <SidebarInset>
+          <SidebarInset className="inset w-full overflow-hidden">
             <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
               <div className="flex items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
@@ -61,7 +61,9 @@ export default function RootLayout({
                 </Breadcrumb>
               </div>
             </header>
-            <section className="h-full min-h-dvh p-4">{children}</section>
+            <section className="h-full min-h-dvh w-full overflow-hidden p-4">
+              {children}
+            </section>
           </SidebarInset>
         </SidebarProvider>
 

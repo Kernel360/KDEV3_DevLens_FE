@@ -14,6 +14,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const data = {
   user: {
@@ -68,11 +69,11 @@ const data = {
   projects: [
     {
       name: "프로젝트1",
-      id: "/projectid1",
+      id: "/projects/projectid1",
     },
     {
       name: "프로젝트2",
-      id: "/projectid2",
+      id: "/projects/projectid2",
     },
   ],
 };
@@ -88,7 +89,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <h1 className="py-4 font-mono text-2xl font-bold">DevLens</h1>
+        <h1
+          className={cn(
+            "logo py-4 font-mono text-2xl font-bold",
+            "group-data-[collapsible=icon]:hidden",
+            "group-data-[state=expanded]:block",
+          )}
+        >
+          DevLens
+        </h1>
         <NavUser user={data.user} />
       </SidebarHeader>
       <SidebarContent>
