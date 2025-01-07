@@ -1,11 +1,9 @@
-export default function MemberDetailPage({
+export default async function MemberDetailPage({
   params,
 }: {
-  params: {
-    memberId: string;
-  };
+  params: Promise<{ memberId: string }>;
 }) {
-  const { memberId } = params;
+  const { memberId } = await params;
 
   return (
     <>
