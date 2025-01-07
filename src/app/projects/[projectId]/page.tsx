@@ -1,4 +1,3 @@
-import { KanbanBoard } from "@/components/kanban-board";
 import SectionTitle from "@/components/section-title";
 import {
   Card,
@@ -9,16 +8,19 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui";
+import { CheckListData } from "@/lib/mockData";
 import { Info } from "lucide-react";
+import DataTable from "../../../components/data-table";
+import { columns } from "./_components/checklist-columns";
+import { KanbanBoard } from "./_components/kanban-board";
 
-export default function ProjectDetailPage({
+export default async function ProjectDetailPage({
   params,
 }: {
-  params: {
-    projectId: string;
-  };
+  params: Promise<{ projectId: string }>;
 }) {
-  const { projectId } = params;
+  const { projectId } = await params;
+
 
   return (
     <>
@@ -43,10 +45,11 @@ export default function ProjectDetailPage({
             </Card>
           </CollapsibleContent>
         </Collapsible>
-        <div className="flex-1 overflow-hidden">
-          <KanbanBoard />
+        <div className="overflow-hidden">
+          <KanbanBoard projectId={projectId} />
         </div>
-        
+        <SectionTitle>승인 요청 목록</SectionTitle>
+        <DataTable columns={columns} data={CheckListData} />
       </div>
     </>
   );
