@@ -14,3 +14,6 @@ export * from "./label";
 export * from "./form";
 export * from "./badge";
 export * from "./select";
+export * from "./table";
+export * from "./pagination";
+export * from "./tabs";
