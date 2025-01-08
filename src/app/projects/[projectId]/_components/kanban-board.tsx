@@ -9,7 +9,6 @@ import { Button } from "@ui";
 import Link from "next/link";
 import { CheckListData, projectSteps } from "@/lib/mockData";
 
-
 export function KanbanBoard({ projectId }: { projectId: string }) {
   const steps = projectSteps;
   const tasks = CheckListData;
@@ -22,12 +21,13 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
             <Card className="h-full border-none bg-slate-50 px-3 shadow-none *:p-2">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-lg font-semibold">
-                  {step.title}
                   <Link href={`/projects/${projectId}/${step.id}`}>
-                    <Button variant="ghost" size="icon">
-                      <EllipsisVertical />
-                    </Button>
+                    {step.title}
                   </Link>
+                  <Button variant="ghost" size="icon">
+                    {/* TODO: step info/edit 드롭다운 or 팝오버 */}
+                    <EllipsisVertical />
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
