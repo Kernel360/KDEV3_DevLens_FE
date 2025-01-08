@@ -7,17 +7,11 @@ import {
 } from "../../../../components/ui/card";
 import { Button } from "@ui";
 import Link from "next/link";
-import { CheckListData } from "@/lib/mockData";
+import { CheckListData, projectSteps } from "@/lib/mockData";
 
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
-  const steps = [
-    { id: "step1", title: "기획" },
-    { id: "step2", title: "디자인" },
-    { id: "step3", title: "개발" },
-    { id: "step4", title: "QA" },
-  ];
-
+  const steps = projectSteps;
   const tasks = CheckListData;
 
   return (

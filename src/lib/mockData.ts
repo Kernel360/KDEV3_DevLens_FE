@@ -97,3 +97,10 @@ export const CheckListData: Checklist[] = [
     stepId: "step1",
   },
 ];
+
+export const projectSteps = [
+  { id: "step1", title: "기획" },
+  { id: "step2", title: "디자인" },
+  { id: "step3", title: "개발" },
+  { id: "step4", title: "QA" },
+];

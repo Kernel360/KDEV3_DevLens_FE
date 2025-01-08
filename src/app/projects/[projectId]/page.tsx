@@ -11,7 +11,7 @@ import {
 import { CheckListData } from "@/lib/mockData";
 import { Info } from "lucide-react";
 import DataTable from "../../../components/data-table";
-import { columns } from "./_components/checklist-columns";
+import { checkListColumns } from "./_components/checklist-columns";
 import { KanbanBoard } from "./_components/kanban-board";
 
 export default async function ProjectDetailPage({
@@ -49,7 +49,7 @@ export default async function ProjectDetailPage({
           <KanbanBoard projectId={projectId} />
         </div>
         <SectionTitle>승인 요청 목록</SectionTitle>
-        <DataTable columns={columns} data={CheckListData} />
+        <DataTable columns={checkListColumns} data={CheckListData} />
       </div>
     </>
   );

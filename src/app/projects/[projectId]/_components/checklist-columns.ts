@@ -3,7 +3,7 @@
 import { Checklist } from "@/types/checklist";
 import { ColumnDef } from "@tanstack/react-table";
 
-export const columns: ColumnDef<Checklist>[] = [
+export const checkListColumns: ColumnDef<Checklist>[] = [
   {
     accessorKey: "step",
     header: "단계",
