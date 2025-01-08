@@ -85,7 +85,7 @@ export default function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                결과 없음
+                데이터 없음
               </TableCell>
             </TableRow>
           )}
