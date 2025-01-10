@@ -54,7 +54,7 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
         <div className="w-20 shrink-0">
           <Button
             variant="outline"
-            className="flex h-80 items-center justify-center"
+            size="icon"
           >
             <Plus />
           </Button>
