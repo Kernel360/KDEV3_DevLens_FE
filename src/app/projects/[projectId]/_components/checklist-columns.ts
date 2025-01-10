@@ -1,27 +1,27 @@
 "use client";
 
 import { Checklist } from "@/types/checklist";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@/types/table";
 
 export const checkListColumns: ColumnDef<Checklist>[] = [
   {
-    accessorKey: "step",
+    id: "step",
     header: "단계",
   },
   {
-    accessorKey: "checklistType",
+    id: "checklistType",
     header: "체크리스트",
   },
   {
-    accessorKey: "title",
+    id: "title",
     header: "제목",
   },
   {
-    accessorKey: "author",
+    id: "author",
     header: "작성자",
   },
   {
-    accessorKey: "submittedAt",
+    id: "submittedAt",
     header: "신청일",
   },
 ];

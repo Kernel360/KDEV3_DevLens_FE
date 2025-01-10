@@ -1,11 +1,4 @@
 "use client";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-} from "@tanstack/react-table";
 
 import {
   Table,
@@ -15,79 +8,75 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { cn } from "@/lib/utils";
+import { DataTableProps } from "@/types/table";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
-  PaginationLink,
+  // PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from "./ui";
+import { parseAsInteger, useQueryState } from "nuqs";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
-
-export default function DataTable<TData, TValue>({
+export function DataTable<T extends Record<string, unknown>>({
   columns,
   data,
-}: DataTableProps<TData, TValue>) {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 5,
-      },
-    },
-  });
+  className,
+  onRowClick,
+}: DataTableProps<T> & {
+  onRowClick?: (row: T) => void;
+}) {
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+
+  // const [sort, setSort] = useQueryState("sort", {
+  //   defaultValue: "recent",
+  // });
+  // const [search, setSearch] = useQueryState("search");
+  // const [filter, setFilter] = useQueryState("filter");
+
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
 
   return (
     <>
-      <Table>
+      <Table className={className}>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
+          <TableRow>
+            {columns.map((column) => (
+              <TableHead key={column.id} className={cn(column.className)}>
+                {column.header}
+              </TableHead>
+            ))}
+          </TableRow>
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+          {data.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                데이터가 없습니다
+              </TableCell>
+            </TableRow>
+          ) : (
+            data.map((row, rowIndex) => (
               <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
+                key={rowIndex}
+                className={cn(
+                  columns[0].href && "cursor-pointer hover:bg-muted",
+                )}
+                onClick={() => onRowClick?.(row)}
               >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                {columns.map((column) => (
+                  <TableCell
+                    key={`${rowIndex}-${column.id}`}
+                    className={cn(column.className)}
+                  >
+                    {String(row[column.id])}
                   </TableCell>
                 ))}
               </TableRow>
             ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                데이터 없음
-              </TableCell>
-            </TableRow>
           )}
         </TableBody>
       </Table>
@@ -95,58 +84,17 @@ export default function DataTable<TData, TValue>({
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
-              onClick={() => table.getCanPreviousPage() && table.previousPage()}
-              className={
-                !table.getCanPreviousPage()
-                  ? "pointer-events-none opacity-50"
-                  : ""
-              }
+              onClick={() => page > 1 && setPage(page - 1)}
+              className={cn(page <= 1 && "pointer-events-none opacity-50")}
             />
           </PaginationItem>
-          {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map(
-            (pageNumber) => {
-              const currentPage = table.getState().pagination.pageIndex + 1;
-              // 현재 페이지 주변 2페이지만 표시 (1, ..., 3, 4, [5], 6, 7, ..., 10)
-              if (
-                pageNumber === 1 ||
-                pageNumber === table.getPageCount() ||
-                Math.abs(currentPage - pageNumber) <= 2
-              ) {
-                return (
-                  <PaginationItem key={pageNumber}>
-                    <PaginationLink
-                      isActive={currentPage === pageNumber}
-                      onClick={() => table.setPageIndex(pageNumber - 1)}
-                    >
-                      {pageNumber}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }
-
-              // 줄임표 표시 (이전에 줄임표가 없었을 때만)
-              if (
-                (pageNumber === 2 && currentPage > 4) ||
-                (pageNumber === table.getPageCount() - 1 &&
-                  currentPage < table.getPageCount() - 3)
-              ) {
-                return (
-                  <PaginationItem key={`ellipsis-${pageNumber}`}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                );
-              }
-
-              return null;
-            },
-          )}
-
+          {/* TODO: 페이지 번호들 */}
           <PaginationItem>
             <PaginationNext
-              onClick={() => table.getCanNextPage() && table.nextPage()}
-              className={
-                !table.getCanNextPage() ? "pointer-events-none opacity-50" : ""
-              }
+              onClick={() => page < totalPages && setPage(page + 1)}
+              className={cn(
+                page >= totalPages && "pointer-events-none opacity-50",
+              )}
             />
           </PaginationItem>
         </PaginationContent>
