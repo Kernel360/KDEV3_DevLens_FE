@@ -1,4 +1,5 @@
 import { Checklist } from "@/types/checklist";
+import { PostList } from "@/types/post";
 import { Project } from "@/types/project";
 import { Command, GalleryVerticalEnd, Building2, User } from "lucide-react";
 
@@ -103,4 +104,25 @@ export const projectSteps = [
   { id: "step2", title: "디자인" },
   { id: "step3", title: "개발" },
   { id: "step4", title: "QA" },
+];
+
+export const postListData: PostList[] = [
+  {
+    id: "1",
+    index: "1",
+    status: "진행중",
+    title: "2024년 1분기 프로젝트 계획서 검토 요청",
+    author: "김철수",
+    createdAt: "2024-03-15",
+    deadline: "2024-03-20",
+  },
+  {
+    id: "2",
+    index: "2",
+    status: "대기",
+    title: "신규 서비스 UI/UX 디자인 가이드라인 리뷰",
+    author: "이영희",
+    createdAt: "2024-03-14",
+    deadline: "2024-03-25",
+  },
 ];
