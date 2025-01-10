@@ -10,9 +10,9 @@ import {
 } from "@/components/ui";
 import { CheckListData } from "@/lib/mockData";
 import { Info } from "lucide-react";
-import DataTable from "../../../components/data-table";
-import { checkListColumns } from "./_components/checklist-columns";
 import { KanbanBoard } from "./_components/kanban-board";
+import { DataTable } from "@/components/data-table";
+import { checkListColumns } from "./_components/checklist-columns";
 
 export default async function ProjectDetailPage({
   params,
