@@ -3,14 +3,9 @@
 import { useQueryState } from "nuqs";
 import { ColumnDef } from "@/types/table";
 import { DataTable } from "./data-table";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "./ui";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui";
 import { PostList } from "@/types/post";
+import PostDetail from "./post-detail";
 
 interface DataTableProps<T> {
   columns: ColumnDef<PostList>[];
@@ -32,11 +27,16 @@ export default function PostTableWithSheet({
         onRowClick={(row) => setPostId(row.id)}
       />
       <Sheet open={!!postId} onOpenChange={() => setPostId(null)}>
-        <SheetContent className="w-3/4 sm:max-w-3xl" transparentOverlay>
+        <SheetContent
+          className="w-3/4 sm:w-[90vw] sm:max-w-3xl"
+          transparentOverlay
+        >
           <SheetHeader>
-            <SheetTitle>{postId}제목</SheetTitle>
-            <SheetDescription>본문</SheetDescription>
+            <SheetTitle>게시글</SheetTitle>
           </SheetHeader>
+          <div className="h-[calc(100vh-4rem)] overflow-y-auto">
+            <PostDetail />
+          </div>
         </SheetContent>
       </Sheet>
     </>
