@@ -30,12 +30,6 @@ export function DataTable<T extends Record<string, unknown>>({
 }) {
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
-  // const [sort, setSort] = useQueryState("sort", {
-  //   defaultValue: "recent",
-  // });
-  // const [search, setSearch] = useQueryState("search");
-  // const [filter, setFilter] = useQueryState("filter");
-
   const ITEMS_PER_PAGE = 10;
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
 
