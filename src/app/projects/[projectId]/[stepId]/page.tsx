@@ -1,4 +1,3 @@
-import { SearchInput } from "@/components/search-input";
 import { postListData, projectSteps } from "@/lib/mockData";
 import {
   Button,
@@ -15,6 +14,7 @@ import {
 import Link from "next/link";
 import { postListColumns } from "./post-list-columns";
 import PostTableWithSheet from "@/components/post-table-with-sheet";
+import { SearchInput } from "@/components/search-input";
 
 export default async function ProjectStepPage({
   params,
@@ -35,8 +35,8 @@ export default async function ProjectStepPage({
         </TabsList>
       </Tabs>
       {/* Table tools */}
-      <div className="my-3 flex justify-between gap-2">
-        <div className="flex gap-2">
+      <div className="my-3 flex w-full justify-between gap-2">
+        <div className="flex flex-grow gap-2">
           <Select>
             <SelectTrigger className="w-20">
               <SelectValue placeholder="필터" />

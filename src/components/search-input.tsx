@@ -1,20 +1,23 @@
-import { SearchIcon } from "lucide-react";
-import { Input } from "./ui";
+"use client";
 
-export default function SearchInput() {
-  return (
-    <>
-      <div className="relative">
-        <div className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground">
-          <SearchIcon className="h-4 w-4" />
-        </div>
-        <Input
-          id="search"
-          type="search"
-          placeholder="검색"
-          className="w-full rounded-lg bg-background pl-8"
-        />
+import * as React from "react";
+import { Search } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+
+const SearchInput = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement>
+>(({ className, ...props }, ref) => {
+    return (
+      <div className={cn("relative", className)}>
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Input {...props} ref={ref} className={cn("w-full pl-9", className)} />
       </div>
-    </>
-  );
-}
+    );
+  },
+);
+
+SearchInput.displayName = "SearchInput";
+
+export { SearchInput };

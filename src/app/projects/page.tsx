@@ -1,5 +1,5 @@
 import ProjectList from "@/components/projects/project-list";
-import SearchInput from "@/components/search-input";
+import { SearchInput } from "@/components/search-input";
 import SectionTitle from "@/components/section-title";
 
 export default function ProjectsPage() {
