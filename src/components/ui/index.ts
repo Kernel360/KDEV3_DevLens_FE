@@ -17,3 +17,5 @@ export * from "./select";
 export * from "./table";
 export * from "./pagination";
 export * from "./tabs";
+export * from "./alert-dialog"
+export * from "./checkbox"
