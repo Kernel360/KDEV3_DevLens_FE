@@ -1,7 +1,11 @@
+import { MemberForm } from "@/components/member-form";
+import SectionTitle from "@/components/section-title";
+
 export default function CreateMemberPage() {
   return (
     <>
-      <h1>CreateMemberPage</h1>
+      <SectionTitle>계정 생성</SectionTitle>
+      <MemberForm />
     </>
   );
 }
