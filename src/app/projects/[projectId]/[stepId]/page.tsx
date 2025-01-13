@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { CreatePost } from "./_components/create-post";
 import { postListColumns } from "./post-list-columns";
+import Header from "@/components/layout/Header";
 
 export default async function ProjectStepPage(props: {
   params: Promise<{ projectId: string; stepId: string }>;
@@ -24,6 +25,14 @@ export default async function ProjectStepPage(props: {
 
   return (
     <>
+      <Header
+        breadcrumbs={[
+          { label: "내 프로젝트", href: "/projects" },
+          // TODO: 프로젝트 이름 동적으로 받아오기
+          { label: "프로젝트 이름", href: `/projects/${params.projectId}` },
+          { label: `단계별 게시판` },
+        ]}
+      />
       <div className="flex">
         <Tabs defaultValue={stepId} className="w-full">
           <TabsList>

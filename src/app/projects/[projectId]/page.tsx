@@ -24,11 +24,17 @@ export default async function ProjectDetailPage({
 
   return (
     <>
-      <Header breadcrumbs={[{ label: "프로젝트 이슈" }]} />
+      <Header
+        breadcrumbs={[
+          { label: "내 프로젝트", href: "/projects" },
+          // TODO: 프로젝트 이름 동적으로 받아오기
+          { label: "프로젝트 이름" },
+        ]}
+      />
       <div className="flex h-full flex-col overflow-hidden">
         <Collapsible>
           <div className="flex">
-            <SectionTitle>{`${projectId} 프로젝트 이슈`}</SectionTitle>
+            <SectionTitle>{`이슈`}</SectionTitle>
 
             <CollapsibleTrigger className="flex items-center">
               <Info className="mb-4 ml-4" />

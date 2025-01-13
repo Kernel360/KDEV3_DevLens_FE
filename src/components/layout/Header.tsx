@@ -14,7 +14,7 @@ interface BreadcrumbItemType {
   href?: string;
 }
 
-interface HeaderProps {
+type HeaderProps ={
   breadcrumbs?: BreadcrumbItemType[];
 }
 
