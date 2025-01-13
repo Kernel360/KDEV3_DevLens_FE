@@ -1,7 +1,11 @@
+import { CompanyForm } from "@/components/company-form";
+import SectionTitle from "@/components/section-title";
+
 export default function CreateCompanyPage() {
   return (
     <>
-      <h1>CreateCompanyPage</h1>
+      <SectionTitle>회사 생성</SectionTitle>
+      <CompanyForm />
     </>
   );
 }
