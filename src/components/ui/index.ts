@@ -24,3 +24,4 @@ export * from "./popover";
 export * from "./command";
 export * from "./calendar";
 export * from "./radio-group";
+export * from "./textarea";
