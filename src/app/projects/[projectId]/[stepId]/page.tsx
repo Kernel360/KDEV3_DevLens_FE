@@ -1,5 +1,4 @@
 import PostTableWithSheet from "@/components/post-table-with-sheet";
-import TableTools from "@/components/table-tools";
 import { postListData, projectSteps } from "@/lib/mockData";
 import { Button, Tabs, TabsList, TabsTrigger } from "@ui";
 import { Plus } from "lucide-react";
@@ -7,19 +6,17 @@ import Link from "next/link";
 import { CreatePost } from "./_components/create-post";
 import { postListColumns } from "./post-list-columns";
 
-export default async function ProjectStepPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ stepId: string }>;
-  searchParams: { isNewPost?: string };
+export default async function ProjectStepPage(props: {
+  params: Promise<{ projectId: string; stepId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { stepId } = await params;
-  const { isNewPost } = await searchParams; // searchParams도 await 처리
+  const params = await props.params;
+  const searchParams = await props.searchParams;
 
-  const isNewPostFlag = isNewPost === "true";
+  const { stepId } = params;
+  const isNewPost = searchParams.isNewPost === "true";
 
-  if (isNewPostFlag) {
+  if (isNewPost) {
     return <CreatePost />;
   }
 
@@ -43,7 +40,6 @@ export default async function ProjectStepPage({
           </Button>
         </Link>
       </div>
-      <TableTools />
       <PostTableWithSheet columns={postListColumns} data={postListData} />
     </>
   );
