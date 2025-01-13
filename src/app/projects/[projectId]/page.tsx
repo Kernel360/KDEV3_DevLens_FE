@@ -1,3 +1,4 @@
+import PostTableWithSheet from "@/components/post-table-with-sheet";
 import SectionTitle from "@/components/section-title";
 import {
   Card,
@@ -8,11 +9,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui";
-import { CheckListData } from "@/lib/mockData";
+import { postListData } from "@/lib/mockData";
 import { Info } from "lucide-react";
+import { postListColumns } from "./[stepId]/post-list-columns";
 import { KanbanBoard } from "./_components/kanban-board";
-import { DataTable } from "@/components/data-table";
-import { checkListColumns } from "./_components/checklist-columns";
+import Header from "@/components/layout/Header";
 
 export default async function ProjectDetailPage({
   params,
@@ -21,13 +22,14 @@ export default async function ProjectDetailPage({
 }) {
   const { projectId } = await params;
 
-
   return (
     <>
+      <Header breadcrumbs={[{ label: "프로젝트 이슈" }]} />
       <div className="flex h-full flex-col overflow-hidden">
         <Collapsible>
           <div className="flex">
-            <SectionTitle>{`${projectId} 프로젝트`}</SectionTitle>
+            <SectionTitle>{`${projectId} 프로젝트 이슈`}</SectionTitle>
+
             <CollapsibleTrigger className="flex items-center">
               <Info className="mb-4 ml-4" />
             </CollapsibleTrigger>
@@ -48,8 +50,9 @@ export default async function ProjectDetailPage({
         <div className="overflow-hidden">
           <KanbanBoard projectId={projectId} />
         </div>
-        <SectionTitle>승인 요청 목록</SectionTitle>
-        <DataTable columns={checkListColumns} data={CheckListData} />
+        <SectionTitle>전체 게시물</SectionTitle>
+        {/* 스텝 */}
+        <PostTableWithSheet columns={postListColumns} data={postListData} />
       </div>
     </>
   );

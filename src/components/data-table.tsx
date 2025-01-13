@@ -19,6 +19,7 @@ import {
   PaginationPrevious,
 } from "./ui";
 import { parseAsInteger, useQueryState } from "nuqs";
+import TableTools from "./table-tools";
 
 export function DataTable<T extends Record<string, unknown>>({
   columns,
@@ -35,6 +36,7 @@ export function DataTable<T extends Record<string, unknown>>({
 
   return (
     <>
+      <TableTools />
       <Table className={className}>
         <TableHeader>
           <TableRow>

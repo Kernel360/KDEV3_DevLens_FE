@@ -1,12 +1,15 @@
-import { DataTable } from "@/components/data-table";
-import TableTools from "@/components/table-tools";
-import { companyColumns } from "./company-columns";
+// import { DataTable } from "@/components/data-table";
+// import { companyColumns } from "./company-columns";
 
-export default function CompanyPage() {
+import SectionTitle from "@/components/section-title";
+
+export default async function CompanyPage() {
+  // TODO: 데이터 페칭 로직
+  // const data = await fetchCompanyData();
   return (
     <>
-      <TableTools />
-      <DataTable columns={companyColumns} data={[]} />
+      <SectionTitle>회사 목록</SectionTitle>
+      {/* <DataTable columns={companyColumns} data={data} /> */}
     </>
   );
 }
