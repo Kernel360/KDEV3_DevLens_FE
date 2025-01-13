@@ -1,20 +1,28 @@
 "use client";
 
+import { EmailVerification } from "@/components/email-verification";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-  Button,
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+  Button,
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  Input,
+  Label,
 } from "@/components/ui";
 import Heading from "@/components/ui/heading";
 import { Pencil } from "lucide-react";
@@ -42,12 +50,6 @@ export default function AccountInfo() {
     position: "선임 개발자",
   });
   const [editingInfo, setEditingInfo] = useState<UserInfo>(userInfo);
-
-  const companies = [
-    { label: "테크 주식회사", value: "tech-corp" },
-    { label: "테크 주식회사", value: "tech-corp" },
-    { label: "테크 주식회사", value: "tech-corp" },
-  ];
 
   const handleSave = () => {
     // TODO: API 호출하여 사용자 정보 업데이트
@@ -103,18 +105,97 @@ export default function AccountInfo() {
         </Button>
       </div>
 
+      {/* 정보수정 */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>회원 정보 수정</DialogTitle>
+            <DialogDescription>수정할 정보를 입력해주세요.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="id">아이디</Label>
+              <Input
+                id="id"
+                value={editingInfo.id}
+                disabled
+                className="bg-muted"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email">이메일</Label>
+              <Input
+                id="email"
+                type="email"
+                value={editingInfo.email}
+                onChange={(e) =>
+                  setEditingInfo({ ...editingInfo, email: e.target.value })
+                }
+              />
+              <EmailVerification />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">전화번호</Label>
+              <Input
+                id="phone"
+                type="tel"
+                value={editingInfo.phone}
+                onChange={(e) =>
+                  setEditingInfo({ ...editingInfo, phone: e.target.value })
+                }
+              />
+            </div>
+            {/* <div className="space-y-2">
+              <Label htmlFor="company">소속 회사</Label>
+              <CompanySelect
+                value={editingInfo.company}
+                onChange={(value) =>
+                  setEditingInfo({ ...editingInfo, company: value })
+                }
+              />
+            </div> */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="department">부서</Label>
+                <Input
+                  id="department"
+                  value={editingInfo.department}
+                  onChange={(e) =>
+                    setEditingInfo({
+                      ...editingInfo,
+                      department: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="position">직책</Label>
+                <Input
+                  id="position"
+                  value={editingInfo.position}
+                  onChange={(e) =>
+                    setEditingInfo({ ...editingInfo, position: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+            >
+              취소
+            </Button>
+            <Button onClick={handleSave}>저장</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {/* 기본 정보 */}
-
       <InfoRow label="아이디" value={userInfo.id} />
       <InfoRow label="이메일" value={userInfo.email} />
       <InfoRow label="전화번호" value={userInfo.phone} />
-      <InfoRow
-        label="소속 회사"
-        value={
-          companies.find((c) => c.value === userInfo.company)?.label ||
-          userInfo.company
-        }
-      />
+      <InfoRow label="소속 회사" value={userInfo.company} />
 
       {/* 내 프로젝트 */}
       {/* 회원 탈퇴 */}
@@ -129,7 +210,7 @@ export default function AccountInfo() {
             회원 탈퇴
           </Button>
         </AlertDialogTrigger>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>회원 탈퇴</AlertDialogTitle>
             <div className="flex flex-col gap-2 text-sm text-muted-foreground">

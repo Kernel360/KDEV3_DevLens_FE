@@ -19,3 +19,6 @@ export * from "./pagination";
 export * from "./tabs";
 export * from "./alert-dialog"
 export * from "./checkbox"
+export * from "./dialog"
+export * from "./popover"
+export * from "./command"
