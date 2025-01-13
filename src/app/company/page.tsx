@@ -1,7 +1,12 @@
+import { DataTable } from "@/components/data-table";
+import TableTools from "@/components/table-tools";
+import { companyColumns } from "./company-columns";
+
 export default function CompanyPage() {
   return (
     <>
-      <h1>CompanyPage</h1>
+      <TableTools />
+      <DataTable columns={companyColumns} data={[]} />
     </>
   );
 }
