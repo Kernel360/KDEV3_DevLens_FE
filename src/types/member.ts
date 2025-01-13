@@ -1,4 +1,4 @@
-export interface Member {
+export interface Member extends Record<string, unknown> {
   id: number;
   loginId: string;
   name: string;
