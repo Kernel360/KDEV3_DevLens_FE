@@ -10,7 +10,7 @@ export function CreatePost() {
   const router = useRouter();
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-3">
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="icon" onClick={() => router.back()}>
           <ArrowLeft className="h-4 w-4" />

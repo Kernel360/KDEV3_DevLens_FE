@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckListData, projectSteps } from "@/lib/mockData";
+import { IssueListData, projectSteps } from "@/lib/mockData";
 import { Button, Card, CardContent, CardHeader, CardTitle } from "@ui";
 import { ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import IssueCard from "./issue-card";
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
   const steps = projectSteps;
-  const issues = CheckListData;
+  const issues = IssueListData;
 
   const handleStepUpdate = (updatedStep: (typeof steps)[0]) => {
     // TODO: 업데이트 로직 구현

@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Checkbox,
   Form,
   FormControl,
   FormDescription,
@@ -26,7 +25,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
+  Textarea
 } from "@ui";
 import { format } from "date-fns";
 import {
@@ -64,7 +63,7 @@ const formSchema = z.object({
       })
       .optional(),
   ),
-  isPinned: z.boolean().default(false),
+  // isPinned: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -79,7 +78,7 @@ export default function PostForm() {
   const defaultValues: Partial<FormValues> = {
     step: steps[0].id.toString(),
     status: "default",
-    isPinned: false,
+    // isPinned: false,
     // links: [{ title: "", url: "" }],
   };
 
@@ -290,7 +289,7 @@ export default function PostForm() {
             <CardHeader>옵션</CardHeader>
             <CardContent className="flex space-y-6 lg:flex-col">
               {/* 상단고정 */}
-              <FormField
+              {/* <FormField
                 control={form.control}
                 name="isPinned"
                 render={({ field }) => (
@@ -306,7 +305,7 @@ export default function PostForm() {
                     </div>
                   </FormItem>
                 )}
-              />
+              /> */}
               {/* 상태 선택 */}
               <FormField
                 control={form.control}

@@ -1,4 +1,4 @@
-import { Checklist } from "@/types/checklist";
+import { IssueList } from "@/types/issue-list";
 import { PostList } from "@/types/post";
 import { Project } from "@/types/project";
 import { Command, GalleryVerticalEnd, Building2, User } from "lucide-react";
@@ -69,7 +69,7 @@ export const projectsData: Project[] = [
   { id: 3, title: "Project 3", status: "active" },
 ];
 
-export const CheckListData: Checklist[] = [
+export const IssueListData: IssueList[] = [
   {
     id: "1",
     step: "준비",

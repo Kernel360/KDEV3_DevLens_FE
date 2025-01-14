@@ -34,7 +34,7 @@ export default async function ProjectDetailPage({
       <div className="flex h-full flex-col overflow-hidden">
         <Collapsible>
           <div className="flex">
-            <SectionTitle>{`이슈`}</SectionTitle>
+            <SectionTitle>이슈</SectionTitle>
 
             <CollapsibleTrigger className="flex items-center">
               <Info className="mb-4 ml-4" />
@@ -53,11 +53,11 @@ export default async function ProjectDetailPage({
             </Card>
           </CollapsibleContent>
         </Collapsible>
-        <div className="overflow-hidden">
+        <div className="mb-4 overflow-hidden">
           <KanbanBoard projectId={projectId} />
         </div>
         <SectionTitle>전체 게시물</SectionTitle>
-        {/* 스텝 */}
+        {/* 스텝 column 추가 */}
         <PostTableWithSheet columns={postListColumns} data={postListData} />
       </div>
     </>
