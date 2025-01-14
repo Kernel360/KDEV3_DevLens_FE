@@ -1,4 +1,4 @@
-import IssueDetail from "@/components/issue-detail";
+import IssueDetail from "@/app/projects/[projectId]/_components/issue-detail";
 import { IssueList } from "@/types/issue-list";
 import {
   Badge,

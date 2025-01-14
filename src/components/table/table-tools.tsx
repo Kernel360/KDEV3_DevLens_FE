@@ -9,8 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SearchInput } from "./search-input";
 import { useQueryState } from "nuqs";
+import { SearchInput } from "../search-input";
 
 export default function TableTools() {
   const [sort, setSort] = useQueryState("sort", {

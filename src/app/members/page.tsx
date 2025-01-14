@@ -1,4 +1,4 @@
-import { DataTable } from "@/components/data-table";
+import { DataTable } from "@/components/table/data-table";
 import { memberColumns } from "./members-columns";
 import { Member } from "@/types/member";
 import { fetchMemberData } from "@/lib/dummy/fetch-member";

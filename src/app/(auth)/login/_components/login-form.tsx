@@ -100,7 +100,7 @@ export function LoginForm({
           </Form>
 
           <div className="mt-4 text-center text-sm">
-            <a href="#" className="underline underline-offset-4">
+            <a href="/forgot" className="underline underline-offset-4">
               비밀번호 찾기
             </a>
           </div>

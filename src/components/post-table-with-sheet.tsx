@@ -2,13 +2,13 @@
 
 import { useQueryState } from "nuqs";
 import { ColumnDef } from "@/types/table";
-import { DataTable } from "./data-table";
+import { DataTable } from "./table/data-table";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui";
 import { PostList } from "@/types/post";
-import PostDetail from "./post-detail";
+import PostDetail from "../app/projects/[projectId]/[stepId]/_components/post-detail";
 
 interface DataTableProps<T> {
-  columns: ColumnDef<PostList>[];
+  columns: ColumnDef<T>[];
   data: T[];
   onRowClick?: (row: T) => void;
 }

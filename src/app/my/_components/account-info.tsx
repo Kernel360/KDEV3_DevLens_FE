@@ -1,6 +1,6 @@
 "use client";
 
-import { EmailVerification } from "@/components/email-verification";
+import { EmailVerification } from "@/app/my/_components/email-verification";
 import {
   AlertDialog,
   AlertDialogAction,
