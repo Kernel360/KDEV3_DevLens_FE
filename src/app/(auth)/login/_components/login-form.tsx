@@ -21,32 +21,34 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-
-// TODO: 로그인 스키마 확인
-const formSchema = z.object({
-  id: z.string().min(8, {
-    message: "최소 8자 이상의 아이디를 입력해주세요.",
-  }),
-  password: z.string().min(8, {
-    message: "최소 8자 이상의 비밀번호를 입력해주세요.",
-  }),
-});
+import { signInSchema } from "@/schemas/signIn";
+import { authenticate } from "@/lib/actions/action";
+import { useState } from "react";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const [, setError] = useState<string>("");
+  const form = useForm<z.infer<typeof signInSchema>>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
-      id: "",
-      password: "",
+      loginId: "",
+      pwd: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // TODO: 로그인 로직
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
+    setError("");
+
+    const formData = new FormData();
+    formData.append("loginId", values.loginId);
+    formData.append("pwd", values.pwd);
+
+    const result = await authenticate(undefined, formData);
+    if (result) {
+      setError(result);
+    }
   }
 
   return (
@@ -57,6 +59,7 @@ export function LoginForm({
       )}
       {...props}
     >
+      <Card className="p-2">Test Account : adminadmin / admin1234</Card>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">로그인</CardTitle>
@@ -69,12 +72,12 @@ export function LoginForm({
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
-                name="id"
+                name="loginId"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>ID</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -82,7 +85,7 @@ export function LoginForm({
               />
               <FormField
                 control={form.control}
-                name="password"
+                name="pwd"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>비밀번호</FormLabel>

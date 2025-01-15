@@ -6,7 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui";
+} from "@ui";
 import Link from "next/link";
 
 export default function ProjectCard(props: Project) {
@@ -19,9 +19,7 @@ export default function ProjectCard(props: Project) {
             <h3>{title}</h3>
             <Badge variant="outline">{status}</Badge>
           </CardTitle>
-          <CardDescription className="flex flex-col">
-            <div>{description}</div>
-          </CardDescription>
+          <CardDescription className="truncate">{description}</CardDescription>
         </CardHeader>
         <CardContent className="flex justify-between text-sm">
           <div>{client}</div>
