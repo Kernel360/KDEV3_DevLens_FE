@@ -16,8 +16,8 @@ export default function IssueCard({ issue }: { issue: IssueList }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card key={issue.id} className="cursor-pointer p-2">
-          <h3 className="font-medium">{issue.title}</h3>
+        <Card key={issue.id} className="cursor-pointer p-2 flex flex-col gap-2">
+          <h2 className="line-clamp-1 font-medium text-sm">{issue.title}</h2>
           <div className="flex w-full justify-end">
             <Badge className="hover:bg-primary">승인요청</Badge>
           </div>
