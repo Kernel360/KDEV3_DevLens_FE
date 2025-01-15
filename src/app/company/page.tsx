@@ -2,7 +2,7 @@
 // import { companyColumns } from "./company-columns";
 
 import Header from "@/components/layout/Header";
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "@/components/composites/section-title";
 
 export default async function CompanyPage() {
   // TODO: 데이터 페칭 로직

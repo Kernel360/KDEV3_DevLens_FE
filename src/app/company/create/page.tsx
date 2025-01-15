@@ -1,5 +1,5 @@
 import Header from "@/components/layout/Header";
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "@/components/composites/section-title";
 import { CompanyForm } from "./_components/company-form";
 
 export default function CreateCompanyPage() {

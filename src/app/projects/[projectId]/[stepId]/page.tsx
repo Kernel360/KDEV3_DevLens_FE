@@ -1,4 +1,4 @@
-import PostTableWithSheet from "@/components/post-table-with-sheet";
+import PostTableWithSheet from "@/components/composites/post-table-with-sheet";
 import { postListData, projectSteps } from "@/lib/mockData";
 import { Button, Tabs, TabsList, TabsTrigger } from "@ui";
 import { Plus } from "lucide-react";

@@ -1,4 +1,4 @@
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "@/components/composites/section-title";
 import AccountInfo from "./_components/account-info";
 import Header from "@/components/layout/Header";
 

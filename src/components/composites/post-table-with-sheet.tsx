@@ -2,10 +2,12 @@
 
 import { useQueryState } from "nuqs";
 import { ColumnDef } from "@/types/table";
-import { DataTable } from "./table/data-table";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui";
+
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui";
 import { PostList } from "@/types/post";
-import PostDetail from "../app/projects/[projectId]/[stepId]/_components/post-detail";
+import { DataTable } from "./table/data-table";
+import PostDetail from "./post-detail";
+
 
 interface DataTableProps<T> {
   columns: ColumnDef<T>[];

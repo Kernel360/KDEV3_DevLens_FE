@@ -17,7 +17,7 @@ import {
   // PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui";
+} from "@ui";
 import { parseAsInteger, useQueryState } from "nuqs";
 import TableTools from "./table-tools";
 

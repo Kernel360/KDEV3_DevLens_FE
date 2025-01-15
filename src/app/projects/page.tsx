@@ -1,5 +1,5 @@
 import Header from "@/components/layout/Header";
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "@/components/composites/section-title";
 import ProjectList from "./_components/project-list";
 
 export default function ProjectsPage() {

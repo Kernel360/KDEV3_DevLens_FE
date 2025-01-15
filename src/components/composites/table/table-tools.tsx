@@ -12,6 +12,7 @@ import {
 import { useQueryState } from "nuqs";
 import { SearchInput } from "../search-input";
 
+
 export default function TableTools() {
   const [sort, setSort] = useQueryState("sort", {
     defaultValue: "recent",

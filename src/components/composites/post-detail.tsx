@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Separator,
-} from "../../../../../components/ui";
+} from "@ui";
 import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 // TODO: 컴포넌트 쪼개기, 데이터 타입 정의

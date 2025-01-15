@@ -1,5 +1,5 @@
-import PostTableWithSheet from "@/components/post-table-with-sheet";
-import SectionTitle from "@/components/section-title";
+import PostTableWithSheet from "@/components/composites/post-table-with-sheet";
+import SectionTitle from "@/components/composites/section-title";
 import {
   Card,
   CardContent,
