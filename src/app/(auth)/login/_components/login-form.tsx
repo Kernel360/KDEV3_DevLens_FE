@@ -22,14 +22,12 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { signInSchema } from "@/schemas/signIn";
-import { authenticate } from "@/lib/actions/action";
-import { useState } from "react";
+// import { authenticate } from "@/lib/actions/action";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const [, setError] = useState<string>("");
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -39,16 +37,18 @@ export function LoginForm({
   });
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
-    setError("");
+    // TODO: 로그인 기능 구현
+    // setError("");
 
-    const formData = new FormData();
-    formData.append("loginId", values.loginId);
-    formData.append("pwd", values.pwd);
+    // const formData = new FormData();
+    // formData.append("loginId", values.loginId);
+    // formData.append("pwd", values.pwd);
 
-    const result = await authenticate(undefined, formData);
-    if (result) {
-      setError(result);
-    }
+    // const result = await authenticate(undefined, formData);
+    // if (result) {
+    //   setError(result);
+    // }
+    console.log(values);
   }
 
   return (

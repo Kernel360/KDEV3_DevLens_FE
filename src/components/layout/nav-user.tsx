@@ -19,7 +19,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
-import { logout } from "@/lib/actions/action";
+// import { logout } from "@/lib/actions/action";
 
 export function NavUser({
   user,
@@ -84,7 +84,9 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem
+            // onClick={logout}
+            >
               <LogOut />
               로그아웃
             </DropdownMenuItem>
