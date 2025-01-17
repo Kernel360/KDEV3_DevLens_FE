@@ -1,0 +1,51 @@
+name: SonarQube analysis
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main", "dev" ]
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read # allows SonarQube to decorate PRs with analysis results
+
+jobs:
+  Analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Node.js 설치
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 3. 의존성 설치
+      - name: Install dependencies
+        run: npm install
+
+      # 4. 빌드 (필요한 경우)
+      - name: Build the project
+        run: npm run build
+
+      # 5. SonarQube 분석 실행
+      - name: Analyze with SonarQube
+        uses: SonarSource/sonarqube-scan-action@7295e71c9583053f5bf40e9d4068a0c974603ec8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information
+          SONAR_TOKEN: ${{ secrets.GCP_SONAR_USER_TOKEN }} # SonarQube 토큰
+          SONAR_HOST_URL: ${{ secrets.GCP_SONAR_URL }} # SonarQube URL
+        with:
+          args: |
+            -Dsonar.projectKey=your-project-key
+            -Dsonar.sources=src
+            -Dsonar.tests=tests
+            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.projectVersion=1.0
+            -Dsonar.language=ts
+            -Dsonar.verbose=true
