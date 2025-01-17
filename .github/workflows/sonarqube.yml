@@ -42,7 +42,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.GCP_SONAR_URL }} # SonarQube URL
         with:
           args: |
-            -Dsonar.projectKey=your-actual-project-key # 실제 프로젝트 키로 변경
+            -Dsonar.projectKey=bns # 실제 프로젝트 키로 변경
             -Dsonar.sources=src
             -Dsonar.tests=src/tests # 'tests' 디렉터리 위치를 확인하고 수정
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
