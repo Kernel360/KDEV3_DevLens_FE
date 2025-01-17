@@ -19,16 +19,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Node.js 설치
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-
-      # 3. 의존성 설치
-      - name: Install dependencies
-        run: npm install
-
       # # 4. 빌드 (필요한 경우)
       # - name: Build the project
       #   run: npm run build
