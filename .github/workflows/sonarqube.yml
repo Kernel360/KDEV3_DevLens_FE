@@ -29,9 +29,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. 빌드 (필요한 경우)
-      - name: Build the project
-        run: npm run build
+      # # 4. 빌드 (필요한 경우)
+      # - name: Build the project
+      #   run: npm run build
 
       # 5. SonarQube 분석 실행
       - name: Analyze with SonarQube
