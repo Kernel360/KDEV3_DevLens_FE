@@ -1,28 +1,28 @@
 "use client";
 
+import { loginAction } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
+import { signInSchema } from "@/schemas/signIn";
+import { useAuthStore } from "@/store/useAuthStore";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+  Input,
+} from "@ui";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { signInSchema } from "@/schemas/signIn";
-// import { authenticate } from "@/lib/actions/action";
+import * as z from "zod";
 
 export function LoginForm({
   className,
@@ -32,25 +32,20 @@ export function LoginForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
       loginId: "",
-      pwd: "",
+      password: "",
     },
   });
+  const setUser = useAuthStore((state) => state.setUser);
 
-  async function onSubmit(values: z.infer<typeof signInSchema>) {
-    // TODO: 로그인 기능 구현
-    // setError("");
-
-    // const formData = new FormData();
-    // formData.append("loginId", values.loginId);
-    // formData.append("pwd", values.pwd);
-
-    // const result = await authenticate(undefined, formData);
-    // if (result) {
-    //   setError(result);
-    // }
-    console.log(values);
+  async function handleLoginAction(formData: FormData) {
+    const res = await loginAction(formData);
+    if (res.user) {
+      setUser(res.user);
+      const searchParams = new URLSearchParams(window.location.search);
+      const redirectTo = searchParams.get("redirect_to") || "/projects";
+      redirect(redirectTo);
+    }
   }
-
   return (
     <div
       className={cn(
@@ -59,7 +54,7 @@ export function LoginForm({
       )}
       {...props}
     >
-      <Card className="p-2">Test Account : adminadmin / admin1234</Card>
+      <Card className="p-2">Test Account : jyp123 / qwer123!</Card>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">로그인</CardTitle>
@@ -69,7 +64,7 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form action={handleLoginAction} className="space-y-6">
               <FormField
                 control={form.control}
                 name="loginId"
@@ -85,7 +80,7 @@ export function LoginForm({
               />
               <FormField
                 control={form.control}
-                name="pwd"
+                name="password"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>비밀번호</FormLabel>
