@@ -1,4 +1,3 @@
-
 import { memberColumns } from "./members-columns";
 import { Member } from "@/types/member";
 import { fetchMemberData } from "@/lib/dummy/fetch-member";

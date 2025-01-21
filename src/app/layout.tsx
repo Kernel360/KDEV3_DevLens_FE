@@ -41,7 +41,6 @@ export default function RootLayout({
             </SidebarInset>
           </SidebarProvider>
         </NuqsAdapter>
-
         {/* </ThemeProvider> */}
       </body>
     </html>
