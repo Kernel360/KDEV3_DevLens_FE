@@ -1,5 +1,3 @@
-import { AppSidebar } from "@/components/layout/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@ui";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
@@ -32,14 +30,9 @@ export default function RootLayout({
           disableTransitionOnChange
         > */}
         <NuqsAdapter>
-          <SidebarProvider>
-            <AppSidebar />
-            <SidebarInset className="inset w-full overflow-hidden">
-              <section className="h-full min-h-dvh w-full overflow-hidden px-6 py-2">
-                {children}
-              </section>
-            </SidebarInset>
-          </SidebarProvider>
+          <section className="h-full min-h-dvh w-full overflow-hidden px-6 py-2">
+            {children}
+          </section>
         </NuqsAdapter>
         {/* </ThemeProvider> */}
       </body>
