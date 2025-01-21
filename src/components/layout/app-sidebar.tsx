@@ -16,8 +16,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { MockData, projectsData } from "@/lib/mockData";
 import Link from "next/link";
+import { useAuthStore } from "@/store/useAuthStore";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useAuthStore((state) => state.user);
   const pathname = usePathname();
   const hideSidebarRoutes = ["/login", "/forgot"];
 
@@ -39,7 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             DevLens
           </h1>
         </Link>
-        <NavUser user={MockData.user} />
+        <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={MockData.navMain} />

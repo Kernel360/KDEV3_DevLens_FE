@@ -1,8 +1,9 @@
-export type User = {
-  id: string;
-  LoginId: string;
-  pwd: string;
-  email: string;
+export interface User {
+  loginId: string;
   name: string;
-  role: string;
-};
+  email?: string;
+  auth?: string;
+  role?: string;
+  avatar?: string;
+  memberId: string;
+}
