@@ -28,7 +28,7 @@ export function CompanySelect({
   const [search, setSearch] = useState("");
 
   const { data: companies = [], isLoading } = useQuery({
-    queryKey: ["companies"],
+    queryKey: ["allCompanies"],
     queryFn: () => adminCompanyApi.getAll(),
     initialData: [],
   });
