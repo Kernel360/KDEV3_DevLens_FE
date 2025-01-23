@@ -3,9 +3,6 @@
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
 import { User } from "@/types/user";
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
@@ -20,6 +17,7 @@ import {
 } from "@ui";
 import Link from "next/link";
 import { logoutAction } from "@/lib/actions/auth";
+import { UserAvatar } from "../composites/user-avatar";
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar();
@@ -37,12 +35,7 @@ export function NavUser({ user }: { user: User | null }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={avatar} alt={name} />
-                <AvatarFallback className="rounded-lg">
-                  {name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
+              <UserAvatar className="size-8" name={name} imageSrc={avatar} />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{name}</span>
                 <span className="truncate text-xs">{email}</span>
@@ -58,12 +51,7 @@ export function NavUser({ user }: { user: User | null }) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={avatar} alt={name} />
-                  <AvatarFallback className="rounded-lg">
-                    {name.charAt(0)}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar className="size-8" name={name} imageSrc={avatar} />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{name}</span>
                   <span className="truncate text-xs">{email}</span>

@@ -1,7 +1,4 @@
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   Badge,
   Button,
   DropdownMenu,
@@ -11,6 +8,7 @@ import {
   Separator,
 } from "@ui";
 import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { UserAvatar } from "./user-avatar";
 
 // TODO: 컴포넌트 쪼개기, 데이터 타입 정의
 export default function PostDetail() {
@@ -46,10 +44,7 @@ export default function PostDetail() {
           <div>
             <span className="text-muted-foreground">작성자</span>
             <div className="mt-1 flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>김</AvatarFallback>
-              </Avatar>
+              <UserAvatar className="size-6" name={"김철수"} imageSrc="" />
               <span>김철수</span>
             </div>
           </div>
@@ -149,10 +144,7 @@ export default function PostDetail() {
             {/* 댓글 1 */}
             <div className="space-y-4">
               <div className="flex gap-3">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/placeholder.svg" />
-                  <AvatarFallback>이</AvatarFallback>
-                </Avatar>
+                <UserAvatar className="size-8" name={"김철수"} imageSrc="" />
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <span className="font-medium">이영희</span>
@@ -172,14 +164,10 @@ export default function PostDetail() {
                   </Button>
                 </div>
               </div>
-
               {/* 대댓글 */}
               <div className="ml-11 space-y-4">
                 <div className="flex gap-3">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="/placeholder.svg" />
-                    <AvatarFallback>김</AvatarFallback>
-                  </Avatar>
+                  <UserAvatar className="size-8" name={"김철수"} imageSrc="" />
                   <div className="flex-1 space-y-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">김철수</span>
