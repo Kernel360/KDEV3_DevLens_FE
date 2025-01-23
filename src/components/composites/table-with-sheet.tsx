@@ -2,23 +2,21 @@
 
 import { useQueryState } from "nuqs";
 import { ColumnDef } from "@/types/table";
-
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui";
-import { PostList } from "@/types/post";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@ui";
 import { DataTable } from "./table/data-table";
 import PostDetail from "./post-detail";
 
-
-interface DataTableProps<T> {
+interface TableWithSheetProps<T extends { id: number }> {
   columns: ColumnDef<T>[];
   data: T[];
-  onRowClick?: (row: T) => void;
+  title?: string;
+  SheetContent: React.ComponentType<{ id: number }>;
 }
 
-export default function PostTableWithSheet({
+export default function TableWithSheet<T extends { id: number }>({
   columns,
   data,
-}: DataTableProps<PostList>) {
+}: TableWithSheetProps<T>) {
   const [postId, setPostId] = useQueryState("post");
 
   return (
@@ -26,11 +24,11 @@ export default function PostTableWithSheet({
       <DataTable
         columns={columns}
         data={data}
-        onRowClick={(row) => setPostId(row.id)}
+        onRowClick={(row) => setPostId(String(row.id))}
       />
       <Sheet open={!!postId} onOpenChange={() => setPostId(null)}>
         <SheetContent
-          className="w-3/4 sm:w-[90vw] sm:max-w-3xl"
+          className="w-3/4 sm:w-[100vw] sm:max-w-3xl"
           transparentOverlay
         >
           <SheetHeader>
