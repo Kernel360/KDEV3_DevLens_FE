@@ -1,5 +1,5 @@
-import PostTableWithSheet from "@/components/composites/post-table-with-sheet";
 import SectionTitle from "@/components/composites/section-title";
+import Header from "@/components/layout/Header";
 import {
   Card,
   CardContent,
@@ -9,11 +9,8 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui";
-import { postListData } from "@/lib/mockData";
 import { Info } from "lucide-react";
-import { postListColumns } from "./[stepId]/post-list-columns";
 import { KanbanBoard } from "./_components/kanban-board";
-import Header from "@/components/layout/Header";
 
 export default async function ProjectDetailPage({
   params,
@@ -58,7 +55,7 @@ export default async function ProjectDetailPage({
         </div>
         <SectionTitle>전체 게시물</SectionTitle>
         {/* 스텝 column 추가 */}
-        <PostTableWithSheet columns={postListColumns} data={postListData} />
+        {/* <TableWithSheet columns={postListColumns} data={postListData} /> */}
       </div>
     </>
   );

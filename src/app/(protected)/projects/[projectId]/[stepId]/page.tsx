@@ -1,11 +1,9 @@
-import PostTableWithSheet from "@/components/composites/post-table-with-sheet";
-import { postListData, projectSteps } from "@/lib/mockData";
+import Header from "@/components/layout/Header";
+import { projectSteps } from "@/lib/mockData";
 import { Button, Tabs, TabsList, TabsTrigger } from "@ui";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { CreatePost } from "./_components/create-post";
-import { postListColumns } from "./post-list-columns";
-import Header from "@/components/layout/Header";
 
 export default async function ProjectStepPage(props: {
   params: Promise<{ projectId: string; stepId: string }>;
@@ -27,7 +25,7 @@ export default async function ProjectStepPage(props: {
     <>
       <Header
         breadcrumbs={[
-          { label: "내 프로젝트", href: "/projects" },
+          { label: "내 프로젝트", href: "/dashboard" },
           // TODO: 프로젝트 이름 동적으로 받아오기
           { label: "프로젝트 이름", href: `/projects/${params.projectId}` },
           { label: `단계별 게시판` },
@@ -49,7 +47,7 @@ export default async function ProjectStepPage(props: {
           </Button>
         </Link>
       </div>
-      <PostTableWithSheet columns={postListColumns} data={postListData} />
+      {/* <TableWithSheet columns={postListColumns} data={postListData} /> */}
     </>
   );
 }

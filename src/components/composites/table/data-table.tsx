@@ -20,7 +20,7 @@ import {
 } from "@ui";
 import { parseAsInteger, useQueryState } from "nuqs";
 import TableTools from "./table-tools";
-import PaginationNumbers from "../pagination-numbers";
+import PaginationNumbers from "./pagination-numbers";
 
 export function DataTable<T extends { id: number | string }>({
   columns,

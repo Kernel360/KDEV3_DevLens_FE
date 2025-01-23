@@ -1,15 +1,17 @@
 import Header from "@/components/layout/Header";
 import SectionTitle from "@/components/composites/section-title";
-import ProjectList from "./_components/project-list";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { Suspense } from "react";
+import ProjectListTable from "./_components/project-list-table";
 
 export default function ProjectsPage() {
   return (
     <>
       <Header />
-      <div className="flex justify-between">
-        <SectionTitle>내 프로젝트</SectionTitle>
-      </div>
-      <ProjectList />
+      <SectionTitle>프로젝트 목록</SectionTitle>
+      <Suspense fallback={<TableSkeleton />}>
+        <ProjectListTable />
+      </Suspense>
     </>
   );
 }

@@ -1,7 +1,4 @@
 import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
   Badge,
   Button,
   DropdownMenu,
@@ -9,7 +6,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   Separator,
-} from "../../../../../components/ui";
+} from "@ui";
+import { UserAvatar } from "@/components/composites/user-avatar";
 import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 
 // TODO: 컴포넌트 쪼개기, 데이터 타입 정의
@@ -46,11 +44,7 @@ export default function IssueDetail() {
           <div>
             <span className="text-muted-foreground">작성자</span>
             <div className="mt-1 flex items-center gap-2">
-              <Avatar className="h-6 w-6">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback>김</AvatarFallback>
-              </Avatar>
-              <span>김철수</span>
+              <UserAvatar name="김철수" className="h-6 w-6" imageSrc="" />
             </div>
           </div>
           <div>
