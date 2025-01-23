@@ -1,9 +1,6 @@
 import { ADMIN_ENDPOINTS, API_PATH } from "@/lib/constants/api-endpoints";
 import restClient from "@/lib/restClient";
-import {
-  PaginatedResponse,
-  PaginationParams
-} from "@/types/common";
+import { PaginatedResponse, PaginationParams } from "@/types/common";
 import { Member, MemberUpdateRequest } from "@/types/member";
 
 export const adminMemberApi = {
@@ -13,7 +10,13 @@ export const adminMemberApi = {
   getList: ({ page, size = 10, sort }: PaginationParams) =>
     restClient.get<PaginatedResponse<Member>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BASE}`,
-      { page: String(page), size: String(size), sort: sort?.join(",") },
+      {
+        queryParams: {
+          page: String(page),
+          size: String(size),
+          ...(sort && { sort: sort.join(",") }),
+        },
+      },
     ),
   /*
   @description 계정 상세
@@ -38,7 +41,13 @@ export const adminMemberApi = {
   search: (query: string, { page, size = 10 }: PaginationParams) =>
     restClient.get<PaginatedResponse<Member>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.SEARCH}`,
-      { query, page: String(page), size: String(size) },
+      {
+        queryParams: {
+          query,
+          page: String(page),
+          size: String(size),
+        },
+      },
     ),
 
   batchUpdate: (data: MemberUpdateRequest[]) =>

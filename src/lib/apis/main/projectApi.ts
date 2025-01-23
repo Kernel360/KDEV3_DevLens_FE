@@ -45,7 +45,11 @@ export const ProjectApi = {
     getList: (projectId: number) =>
       restClient.get<ProjectChecklist[]>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.CHECKLIST.BASE}`,
-        { projectId: String(projectId) },
+        {
+          queryParams: {
+            projectId: String(projectId),
+          },
+        },
       ),
 
     create: (data: CreateProjectChecklistRequest) =>

@@ -1,19 +1,26 @@
 import { ADMIN_ENDPOINTS, API_PATH } from "@/lib/constants/api-endpoints";
 import restClient from "@/lib/restClient";
-import type {
-  PaginatedResponse,
-  PaginationParams
-} from "@/types/common";
+import type { PaginatedResponse } from "@/types/common";
 import { Company } from "@/types/company";
+
+interface GetCompanyListParams {
+  page: number;
+  size?: number;
+}
 
 export const adminCompanyApi = {
   /*
     회사 목록 조회
     **/
-  getList: ({ page, size = 10, sort }: PaginationParams) =>
+  getList: ({ page, size = 10 }: GetCompanyListParams) =>
     restClient.get<PaginatedResponse<Company>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.COMPANY.BASE}`,
-      { page: String(page), size: String(size), sort: sort?.join(",") },
+      {
+        queryParams: {
+          page: page - 1, // 백엔드는 0-based pagination 사용
+          size,
+        },
+      },
     ),
 
   /*

@@ -5,6 +5,12 @@ const defaultHeaders: Headers = {
   "Content-Type": "application/json",
 };
 
+interface RequestOptions {
+  rawResponse?: boolean;
+  headers?: Record<string, string>;
+  queryParams?: Record<string, string>;
+}
+
 async function handleResponse<T>(response: Response): Promise<T> {
   try {
     const contentType = response.headers.get("content-type");
@@ -37,12 +43,17 @@ async function handleResponse<T>(response: Response): Promise<T> {
   }
 }
 
-function buildUrl(baseUrl: string, params?: Record<string, string>): string {
-  if (!params) return baseUrl;
+function buildUrl(
+  baseUrl: string,
+  queryParams?: Record<string, string | number>,
+) {
+  if (!queryParams) return baseUrl;
 
   const searchParams = new URLSearchParams();
-  Object.entries(params).forEach(([key, value]) => {
-    searchParams.append(key, value);
+  Object.entries(queryParams).forEach(([key, value]) => {
+    if (value !== undefined) {
+      searchParams.append(key, String(value));
+    }
   });
 
   return `${baseUrl}?${searchParams.toString()}`;
@@ -54,19 +65,22 @@ function buildUrl(baseUrl: string, params?: Record<string, string>): string {
  * @param {object} [headers] - 추가 헤더
  * @returns {Promise<object>} - 응답 데이터
  */
-async function get<T>(url: string, headers = {}): Promise<T> {
-  const response = await fetch(url, {
+async function get<T>(
+  url: string,
+  options: {
+    queryParams?: Record<string, string | number>;
+    headers?: Headers;
+  } = {},
+): Promise<T> {
+  const { queryParams, headers = {} } = options;
+  const fullUrl = buildUrl(url, queryParams);
+
+  const response = await fetch(fullUrl, {
     method: "GET",
     credentials: "include",
     headers: { ...defaultHeaders, ...headers },
   });
   return handleResponse<T>(response);
-}
-
-interface RequestOptions {
-  rawResponse?: boolean;
-  headers?: Record<string, string>;
-  queryParams?: Record<string, string>;
 }
 
 /**

@@ -7,7 +7,13 @@ export const adminProjectApi = {
   getList: ({ page, size = 10, sort }: PaginationParams) =>
     restClient.get<PaginatedResponse<Project>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.PROJECT.BASE}`,
-      { page: String(page), size: String(size), sort: sort?.join(",") },
+      {
+        queryParams: {
+          page: String(page),
+          size: String(size),
+          ...(sort && { sort: sort.join(",") }),
+        },
+      },
     ),
 
   getDetail: (id: number) =>
@@ -23,6 +29,11 @@ export const adminProjectApi = {
   getHistory: (id: number, { page, size = 10 }: PaginationParams) =>
     restClient.get<PaginatedResponse<Project>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.PROJECT.HISTORY(id)}`,
-      { page: String(page), size: String(size) },
+      {
+        queryParams: {
+          page: String(page),
+          size: String(size),
+        },
+      },
     ),
 };
