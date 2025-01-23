@@ -5,6 +5,38 @@ const defaultHeaders: Headers = {
   "Content-Type": "application/json",
 };
 
+async function handleResponse<T>(response: Response): Promise<T> {
+  try {
+    const contentType = response.headers.get("content-type");
+    if (!contentType?.includes("application/json")) {
+      throw new APIError(
+        response.status,
+        `예상치 못한 응답 형식: ${contentType}`,
+      );
+    }
+
+    const data: APIResponse<T> = await response.json();
+
+    if (!response.ok || data.code >= 400) {
+      throw new APIError(data.code, data.message);
+    }
+
+    return data.data;
+  } catch (error) {
+    if (error instanceof APIError) throw error;
+
+    // 세션 만료 체크
+    if (response.status === 401) {
+      throw new APIError(401, "세션이 만료되었습니다.");
+    }
+
+    throw new APIError(
+      response.status,
+      "서버 응답을 처리하는 중 오류가 발생했습니다.",
+    );
+  }
+}
+
 function buildUrl(baseUrl: string, params?: Record<string, string>): string {
   if (!params) return baseUrl;
 
@@ -14,16 +46,6 @@ function buildUrl(baseUrl: string, params?: Record<string, string>): string {
   });
 
   return `${baseUrl}?${searchParams.toString()}`;
-}
-
-async function handleResponse<T>(response: Response): Promise<T> {
-  const data: APIResponse<T> = await response.json();
-
-  if (!response.ok || data.code >= 400) {
-    throw new APIError(data.code, data.message);
-  }
-
-  return data.data;
 }
 
 /**
@@ -41,26 +63,37 @@ async function get<T>(url: string, headers = {}): Promise<T> {
   return handleResponse<T>(response);
 }
 
+interface RequestOptions {
+  rawResponse?: boolean;
+  headers?: Record<string, string>;
+  queryParams?: Record<string, string>;
+}
+
 /**
  * POST 요청
  * @param {string} url - 요청을 보낼 URL
  * @param {object} body - 요청에 포함할 데이터 (JSON 형태)
- * @param {object} [headers] - 추가 헤더
+ * @param {object} [options] - 요청 옵션
  * @returns {Promise<object>} - 응답 데이터
  */
 async function post<T, U>(
   url: string,
   body: T,
-  headers = {},
-  queryParams?: Record<string, string>,
+  options: RequestOptions = {},
 ): Promise<U> {
+  const { rawResponse = false, headers = {}, queryParams } = options;
   const fullUrl = buildUrl(url, queryParams);
+
   const response = await fetch(fullUrl, {
     method: "POST",
     credentials: "include",
     headers: { ...defaultHeaders, ...headers },
     body: JSON.stringify(body),
   });
+
+  if (rawResponse) {
+    return response as unknown as U;
+  }
 
   return handleResponse<U>(response);
 }

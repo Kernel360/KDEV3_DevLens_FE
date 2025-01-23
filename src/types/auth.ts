@@ -13,3 +13,11 @@ export interface EmailVerificationRequest {
   email: string;
   verificationCode: string;
 }
+
+export interface LoginResponse {
+  name: string;
+  role: string;
+  headers: {
+    get(name: string): string | null;
+  };
+}

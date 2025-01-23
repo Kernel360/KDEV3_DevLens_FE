@@ -6,7 +6,7 @@ import type {
 } from "@/types/common";
 import { Company } from "@/types/company";
 
-export const CompanyApi = {
+export const adminCompanyApi = {
   /*
     회사 목록 조회
     **/

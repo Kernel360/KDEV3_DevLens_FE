@@ -1,13 +1,14 @@
 import { MAIN_ENDPOINTS } from "@/lib/constants/api-endpoints";
 import { API_PATH } from "@/lib/constants/api-endpoints";
 import restClient from "@/lib/restClient";
-import { LoginRequest } from "@/types/auth";
+import { LoginRequest, LoginResponse } from "@/types/auth";
 
 export const AuthApi = {
   login: (data: LoginRequest) =>
-    restClient.post<LoginRequest, void>(
+    restClient.post<LoginRequest, LoginResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.LOGIN}`,
       data,
+      { rawResponse: true },
     ),
 
   logout: () =>

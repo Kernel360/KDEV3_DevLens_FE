@@ -2,8 +2,8 @@
 
 import { cookies } from "next/headers";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import restClient from "../restClient";
 import { redirect } from "next/navigation";
+import { AuthApi } from "../apis/main/authApi";
 
 interface CustomJwtPayload extends JwtPayload {
   sub: string;
@@ -15,21 +15,13 @@ const isProduction = process.env.NODE_ENV === "production";
 
 export async function loginAction(formData: FormData) {
   try {
-    const response = await fetch(`${process.env.API_URL}/main/api/login`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        loginId: formData.get("loginId"),
-        password: formData.get("password"),
-      }),
+    const response = await AuthApi.login({
+      loginId: formData.get("loginId") as string,
+      password: formData.get("password") as string,
     });
 
     // 응답 헤더에서 토큰 확인
-    // TODO: api 변경 후 쿠키에서 토큰 확인
-    const accessToken = response.headers.get("authorization");
+    const accessToken = response.headers?.get("authorization");
     if (!accessToken) throw new Error("No access token found");
 
     // JWT 토큰을 쿠키에 저장
@@ -43,20 +35,17 @@ export async function loginAction(formData: FormData) {
 
     const decodedAccessToken = jwtDecode<CustomJwtPayload>(accessToken);
     const { auth, email } = decodedAccessToken;
+    const { name, role } = response;
 
-    const data = await response.json();
-    const { name, role } = data;
-
-    const user = {
-      loginId: formData.get("loginId") as string,
-      name,
-      email,
-      auth,
-      role,
-    };
     return {
       success: true,
-      user,
+      user: {
+        loginId: formData.get("loginId") as string,
+        name,
+        email,
+        auth,
+        role,
+      },
     };
   } catch (error) {
     return { success: false, message: error };
@@ -67,7 +56,7 @@ export async function logoutAction() {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("accessToken");
-    await restClient.post(`${process.env.API_URL}/main/api/login`, {});
+    await AuthApi.logout();
   } catch (error) {
     return { success: false, message: error };
   } finally {
