@@ -1,8 +1,8 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Company } from "@/types/company";
 import { ColumnDef } from "@/types/table";
-import { Badge } from "@/components/ui/badge";
 
 export const companyColumns: ColumnDef<Company>[] = [
   {
