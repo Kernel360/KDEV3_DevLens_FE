@@ -23,7 +23,7 @@ export default function TableSkeleton() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {Array.from({ length: 5 }).map((_, rowIndex) => (
+        {Array.from({ length: 10 }).map((_, rowIndex) => (
           <TableRow key={rowIndex}>
             {columnWidths.map((width, colIndex) => (
               <TableCell key={colIndex} className={`${width} px-4`}>

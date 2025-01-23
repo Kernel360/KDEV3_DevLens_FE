@@ -3,6 +3,7 @@ export interface ColumnDef<T> {
   header: string;
   className?: string;
   href?: (row: T) => string;
+  cell?: ({ row }: { row: { original: T } }) => React.ReactNode;
 }
 
 export interface DataTableProps<T> {
@@ -10,4 +11,5 @@ export interface DataTableProps<T> {
   data: T[];
   className?: string;
   onRowClick?: (row: T) => void;
+  totalPages: number;
 }

@@ -20,19 +20,18 @@ import {
 } from "@ui";
 import { parseAsInteger, useQueryState } from "nuqs";
 import TableTools from "./table-tools";
+import PaginationNumbers from "../pagination-numbers";
 
-export function DataTable<T extends Record<string, unknown>>({
+export function DataTable<T extends { id: number | string }>({
   columns,
   data,
   className,
   onRowClick,
+  totalPages,
 }: DataTableProps<T> & {
   onRowClick?: (row: T) => void;
 }) {
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
-
-  const ITEMS_PER_PAGE = 10;
-  const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE);
 
   return (
     <>
@@ -55,20 +54,19 @@ export function DataTable<T extends Record<string, unknown>>({
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row, rowIndex) => (
+            data.map((row) => (
               <TableRow
-                key={rowIndex}
-                className={cn(
-                  columns[0].href && "cursor-pointer hover:bg-muted",
-                )}
+                key={row.id}
                 onClick={() => onRowClick?.(row)}
+                className="cursor-pointer"
               >
                 {columns.map((column) => (
-                  <TableCell
-                    key={`${rowIndex}-${column.id}`}
-                    className={cn(column.className)}
-                  >
-                    {String(row[column.id])}
+                  <TableCell key={column.id} className="max-w-[180px]">
+                    <div className="truncate">
+                      {column.cell
+                        ? column.cell({ row: { original: row } })
+                        : String(row[column.id as keyof T])}
+                    </div>
                   </TableCell>
                 ))}
               </TableRow>
@@ -76,25 +74,32 @@ export function DataTable<T extends Record<string, unknown>>({
           )}
         </TableBody>
       </Table>
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => page > 1 && setPage(page - 1)}
-              className={cn(page <= 1 && "pointer-events-none opacity-50")}
+      {totalPages > 1 && (
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => page > 1 && setPage(page - 1)}
+                className={cn(page <= 1 && "pointer-events-none opacity-50")}
+              />
+            </PaginationItem>
+            <PaginationNumbers
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
             />
-          </PaginationItem>
-          {/* TODO: 페이지 번호들 */}
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => page < totalPages && setPage(page + 1)}
-              className={cn(
-                page >= totalPages && "pointer-events-none opacity-50",
-              )}
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => page < totalPages && setPage(page + 1)}
+                className={cn(
+                  page >= totalPages && "pointer-events-none opacity-50",
+                )}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      )}
     </>
   );
 }

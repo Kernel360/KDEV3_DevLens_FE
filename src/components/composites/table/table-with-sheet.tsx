@@ -3,28 +3,31 @@
 import { useQueryState } from "nuqs";
 import { ColumnDef } from "@/types/table";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@ui";
-import { DataTable } from "./table/data-table";
-import PostDetail from "./post-detail";
+import { DataTable } from "./data-table";
 
 interface TableWithSheetProps<T extends { id: number }> {
   columns: ColumnDef<T>[];
   data: T[];
   title?: string;
-  SheetContent: React.ComponentType<{ id: number }>;
+  content: React.ComponentType<{ id: number }>;
+  totalPages: number;
 }
 
 export default function TableWithSheet<T extends { id: number }>({
   columns,
   data,
+  content: Content,
+  totalPages,
 }: TableWithSheetProps<T>) {
   const [postId, setPostId] = useQueryState("post");
-
+  const id = postId ? Number(postId) : null;
   return (
     <>
       <DataTable
         columns={columns}
         data={data}
         onRowClick={(row) => setPostId(String(row.id))}
+        totalPages={totalPages}
       />
       <Sheet open={!!postId} onOpenChange={() => setPostId(null)}>
         <SheetContent
@@ -35,7 +38,7 @@ export default function TableWithSheet<T extends { id: number }>({
             <SheetTitle>게시글</SheetTitle>
           </SheetHeader>
           <div className="h-[calc(100vh-4rem)] overflow-y-auto">
-            <PostDetail />
+            {id && <Content id={id} />}
           </div>
         </SheetContent>
       </Sheet>
