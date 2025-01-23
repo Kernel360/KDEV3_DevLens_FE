@@ -10,21 +10,31 @@ import {
 import Link from "next/link";
 
 export default function ProjectCard(props: Project) {
-  const { id, title, description, status, startAt, endAt, client } = props;
+  const {
+    id,
+    projectName,
+    projectDescription,
+    projectStatusCode,
+    startDate,
+    endDate,
+    customerName,
+  } = props;
   return (
     <Link href={`/projects/${id}`}>
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between">
-            <h3>{title}</h3>
-            <Badge variant="outline">{status}</Badge>
+            <h3>{projectName}</h3>
+            <Badge variant="outline">{projectStatusCode}</Badge>
           </CardTitle>
-          <CardDescription className="truncate">{description}</CardDescription>
+          <CardDescription className="truncate">
+            {projectDescription}
+          </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-between text-sm">
-          <div>{client}</div>
+          <div>{customerName}</div>
           <div>
-            {startAt} ~ {endAt}
+            {startDate} ~ {endDate}
           </div>
         </CardContent>
       </Card>

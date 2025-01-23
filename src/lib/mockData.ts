@@ -75,7 +75,7 @@ export const projectsData: Project[] = [
   },
   {
     id: 2,
-    projectName: "전자서명 시스템 고도화",
+    projectName: "전자서명 시스템 ",
     projectDescription: "블록체인 기반 전자서명 시스템 개선 및 신규 기능 개발",
     projectStatusCode: "IN_PROGRESS",
     startDate: "2024-01-15",

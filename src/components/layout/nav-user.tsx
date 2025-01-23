@@ -1,7 +1,6 @@
 "use client";
 
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
-
 import { User } from "@/types/user";
 import {
   Avatar,
@@ -61,7 +60,9 @@ export function NavUser({ user }: { user: User | null }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage src={avatar} alt={name} />
-                  <AvatarFallback className="rounded-lg">관</AvatarFallback>
+                  <AvatarFallback className="rounded-lg">
+                    {name.charAt(0)}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{name}</span>
@@ -83,9 +84,7 @@ export function NavUser({ user }: { user: User | null }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-            onClick={logoutAction}
-            >
+            <DropdownMenuItem onClick={logoutAction}>
               <LogOut />
               로그아웃
             </DropdownMenuItem>
@@ -95,4 +94,3 @@ export function NavUser({ user }: { user: User | null }) {
     </SidebarMenu>
   );
 }
-

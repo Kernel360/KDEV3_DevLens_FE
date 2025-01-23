@@ -1,9 +1,9 @@
 "use client";
 
-import { PostList } from "@/types/post";
+import { Post } from "@/types/post";
 import { ColumnDef } from "@/types/table";
 
-export const postListColumns: ColumnDef<PostList>[] = [
+export const postListColumns: ColumnDef<Post>[] = [
   {
     id: "index",
     header: "번호",
