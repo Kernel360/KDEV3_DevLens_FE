@@ -3,7 +3,7 @@
 import { loginAction } from "@/lib/actions/auth";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/schemas/signIn";
-import { useAuthStore } from "@/store/useAuthStore";
+// import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
@@ -35,12 +35,11 @@ export function LoginForm({
       password: "",
     },
   });
-  const setUser = useAuthStore((state) => state.setUser);
+  // const setUser = useAuthStore((state) => state.setUser);
 
   async function handleLoginAction(formData: FormData) {
     const res = await loginAction(formData);
     if (res.user) {
-      setUser(res.user);
       const searchParams = new URLSearchParams(window.location.search);
       const redirectTo = searchParams.get("redirect_to") || "/projects";
       redirect(redirectTo);

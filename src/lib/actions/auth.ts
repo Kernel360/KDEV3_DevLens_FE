@@ -2,7 +2,6 @@
 
 import { cookies } from "next/headers";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { User } from "@/types/user";
 import restClient from "../restClient";
 import { redirect } from "next/navigation";
 
@@ -44,14 +43,12 @@ export async function loginAction(formData: FormData) {
 
     const decodedAccessToken = jwtDecode<CustomJwtPayload>(accessToken);
     const { auth, email } = decodedAccessToken;
-    console.log(decodedAccessToken);
 
     const data = await response.json();
     const { name, role } = data;
 
-    const user: User = {
+    const user = {
       loginId: formData.get("loginId") as string,
-      memberId: decodedAccessToken.sub,
       name,
       email,
       auth,
