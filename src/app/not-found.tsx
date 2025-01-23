@@ -11,7 +11,7 @@ export default function NotFound() {
           </h1>
           <p className="text-gray-500">404 Page Not Found</p>
         </div>
-        <Link href="/projects" prefetch={false}>
+        <Link href="/dashboard" prefetch={false}>
           <Button className="mt-4">메인 화면으로 돌아가기</Button>
         </Link>
       </div>

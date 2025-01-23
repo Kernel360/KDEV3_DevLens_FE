@@ -41,7 +41,7 @@ export function LoginForm({
     const res = await loginAction(formData);
     if (res.user) {
       const searchParams = new URLSearchParams(window.location.search);
-      const redirectTo = searchParams.get("redirect_to") || "/projects";
+      const redirectTo = searchParams.get("redirect_to") || "/dashboard";
       redirect(redirectTo);
     }
   }
