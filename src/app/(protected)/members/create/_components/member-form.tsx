@@ -1,22 +1,12 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
-import { ko } from "date-fns/locale";
-import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-
+import { CompanySelect } from "@/app/(protected)/my/_components/company-select";
 import { cn, formatPhoneNumber } from "@/lib/utils";
 import { createMemberSchema, type MemberFormValues } from "@/schemas/member";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Calendar,
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
   Form,
   FormControl,
   FormField,
@@ -29,19 +19,12 @@ import {
   PopoverTrigger,
   Select,
   SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  SelectItem
 } from "@ui";
-
-// 예시 데이터
-const companies = [
-  { label: "Vercel", value: "vercel" },
-  { label: "Google", value: "google" },
-  { label: "Microsoft", value: "microsoft" },
-  { label: "Apple", value: "apple" },
-  { label: "Amazon", value: "amazon" },
-];
+import { format } from "date-fns";
+import { ko } from "date-fns/locale";
+import { CalendarIcon } from "lucide-react";
+import { useForm } from "react-hook-form";
 
 const departments = [
   { label: "개발팀", value: "development" },
@@ -52,8 +35,6 @@ const departments = [
 ];
 
 export function MemberForm() {
-  const [open, setOpen] = useState(false);
-
   const form = useForm<MemberFormValues>({
     resolver: zodResolver(createMemberSchema),
     defaultValues: {
@@ -62,7 +43,10 @@ export function MemberForm() {
       confirmPassword: "",
       phone: "",
       email: "",
-      teamLeader: "",
+      birthDate: undefined,
+      companyId: null,
+      department: null,
+      teamLeader: null,
     },
   });
 
@@ -72,7 +56,10 @@ export function MemberForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-6 p-1"
+      >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="flex flex-col space-y-2 md:col-span-2">
             <FormField
@@ -214,59 +201,15 @@ export function MemberForm() {
 
           <FormField
             control={form.control}
-            name="company"
+            name="companyId"
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>소속회사</FormLabel>
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        className={cn(
-                          "w-full justify-between",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value
-                          ? companies.find(
-                              (company) => company.value === field.value,
-                            )?.label
-                          : "회사 검색"}
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0">
-                    <Command>
-                      <CommandInput placeholder="회사명 검색..." />
-                      <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
-                      <CommandGroup>
-                        {companies.map((company) => (
-                          <CommandItem
-                            key={company.value}
-                            value={company.value}
-                            onSelect={(value) => {
-                              form.setValue("company", value);
-                              setOpen(false);
-                            }}
-                          >
-                            <Check
-                              className={cn(
-                                "mr-2 h-4 w-4",
-                                company.value === field.value
-                                  ? "opacity-100"
-                                  : "opacity-0",
-                              )}
-                            />
-                            {company.label}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                <CompanySelect
+                  value={field.value}
+                  onChange={field.onChange}
+                  disabled={field.disabled}
+                />
                 <FormMessage />
               </FormItem>
             )}
@@ -280,12 +223,17 @@ export function MemberForm() {
                 <FormLabel>부서</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value}
+                  defaultValue={field.value || undefined}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <Input
+                      placeholder="부서명 입력"
+                      {...field}
+                      value={field.value || ""}
+                    />
+                    {/* <SelectTrigger>
                       <SelectValue placeholder="부서 선택" />
-                    </SelectTrigger>
+                    </SelectTrigger> */}
                   </FormControl>
                   <SelectContent>
                     {departments.map((department) => (
@@ -310,7 +258,11 @@ export function MemberForm() {
               <FormItem>
                 <FormLabel>팀장</FormLabel>
                 <FormControl>
-                  <Input placeholder="팀장 이름 입력" {...field} />
+                  <Input
+                    placeholder="팀장 이름 입력"
+                    {...field}
+                    value={field.value || ""}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
