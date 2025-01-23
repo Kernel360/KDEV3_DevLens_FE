@@ -4,14 +4,13 @@ import { PaginatedResponse, PaginationParams } from "@/types/common";
 import { Project } from "@/types/project";
 
 export const adminProjectApi = {
-  getList: ({ page, size = 10, sort }: PaginationParams) =>
+  getList: ({ page, size = 10 }: PaginationParams) =>
     restClient.get<PaginatedResponse<Project>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.PROJECT.BASE}`,
       {
         queryParams: {
-          page: String(page),
-          size: String(size),
-          ...(sort && { sort: sort.join(",") }),
+          page: page - 1,
+          size,
         },
       },
     ),

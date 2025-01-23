@@ -17,7 +17,7 @@ export const adminCompanyApi = {
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.COMPANY.BASE}`,
       {
         queryParams: {
-          page: page - 1, // 백엔드는 0-based pagination 사용
+          page: page - 1, 
           size,
         },
       },
