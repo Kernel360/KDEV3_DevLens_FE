@@ -1,8 +1,9 @@
+import QueryProvider from "@/providers/query-provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "sonner";
 import "./globals.css";
-import QueryProvider from "@/providers/query-provider";
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -27,6 +28,7 @@ export default function RootLayout({
           <NuqsAdapter>
             <section className="h-full min-h-dvh w-full overflow-hidden px-6 py-2">
               {children}
+              <Toaster richColors position="top-center" />
             </section>
           </NuqsAdapter>
         </QueryProvider>
