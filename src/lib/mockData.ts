@@ -1,59 +1,6 @@
 import { IssueList } from "@/types/issue-list";
 import { Post } from "@/types/post";
 import { Project } from "@/types/project";
-import { Command, GalleryVerticalEnd, Building2, User } from "lucide-react";
-
-export const MockData = {
-  user: {
-    name: "관리자",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "계정관리",
-      url: "#",
-      icon: User,
-      items: [
-        {
-          title: "계정 목록",
-          url: "/members",
-        },
-        {
-          title: "계정 생성",
-          url: "/members/create",
-        },
-      ],
-    },
-    {
-      title: "회사관리",
-      url: "#",
-      icon: Building2,
-      items: [
-        {
-          title: "회사 목록",
-          url: "/company",
-        },
-        {
-          title: "회사 생성",
-          url: "/company/create",
-        },
-      ],
-    },
-  ],
-};
 
 export const projectsData: Project[] = [
   {
@@ -75,9 +22,9 @@ export const projectsData: Project[] = [
   },
   {
     id: 2,
-    projectName: "전자서명 시스템 ",
-    projectDescription: "블록체인 기반 전자서명 시스템 개선 및 신규 기능 개발",
-    projectStatusCode: "IN_PROGRESS",
+    projectName: "클라우드 마이그레이션",
+    projectDescription: "레거시 시스템의 클라우드 전환 및 현대화",
+    projectStatusCode: "PREPARED",
     startDate: "2024-01-15",
     endDate: "2024-06-30",
     customerName: "한국전자인증",

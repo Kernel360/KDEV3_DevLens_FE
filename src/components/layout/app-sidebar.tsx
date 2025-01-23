@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { MockData, projectsData } from "@/lib/mockData";
+import { projectsData } from "@/lib/mockData";
 import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
+import { NAV_LIST } from "@/lib/constants/nav-list";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAuthStore((state) => state.user);
@@ -30,7 +31,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <Link href="/projects">
+        <Link href="/dashboard">
           <h1
             className={cn(
               "logo py-4 font-mono text-2xl font-bold",
@@ -41,13 +42,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             DevLens
           </h1>
         </Link>
-        <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={MockData.navMain} />
+        <NavMain items={NAV_LIST} />
         <NavProjects projects={projectsData} />
       </SidebarContent>
-      <SidebarFooter>{/* <TeamSwitcher teams={data.teams} /> */}</SidebarFooter>
+      <SidebarFooter>
+        <NavUser user={user} />
+        {/* <TeamSwitcher teams={data.teams} /> */}
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
