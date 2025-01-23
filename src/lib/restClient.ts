@@ -1,34 +1,9 @@
+import { APIError, APIResponse } from "@/types/common";
+
 type Headers = Record<string, string>;
 const defaultHeaders: Headers = {
   "Content-Type": "application/json",
 };
-
-// 모든 요청 쿠키에 토큰 추가
-
-/**
- * GET 요청
- * @param {string} url - 요청을 보낼 URL
- * @param {object} [headers] - 추가 헤더
- * @returns {Promise<object>} - 응답 데이터
- */
-async function get(url: string, headers = {}) {
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      credentials:"include",
-      headers: { ...defaultHeaders, ...headers },
-    });
-
-    if (!response.ok) {
-      throw new Error(`GET request failed with status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("GET Error:", error);
-    throw error;
-  }
-}
 
 function buildUrl(baseUrl: string, params?: Record<string, string>): string {
   if (!params) return baseUrl;
@@ -39,6 +14,31 @@ function buildUrl(baseUrl: string, params?: Record<string, string>): string {
   });
 
   return `${baseUrl}?${searchParams.toString()}`;
+}
+
+async function handleResponse<T>(response: Response): Promise<T> {
+  const data: APIResponse<T> = await response.json();
+
+  if (!response.ok || data.code >= 400) {
+    throw new APIError(data.code, data.message);
+  }
+
+  return data.data;
+}
+
+/**
+ * GET 요청
+ * @param {string} url - 요청을 보낼 URL
+ * @param {object} [headers] - 추가 헤더
+ * @returns {Promise<object>} - 응답 데이터
+ */
+async function get<T>(url: string, headers = {}): Promise<T> {
+  const response = await fetch(url, {
+    method: "GET",
+    credentials: "include",
+    headers: { ...defaultHeaders, ...headers },
+  });
+  return handleResponse<T>(response);
 }
 
 /**
@@ -54,25 +54,15 @@ async function post<T, U>(
   headers = {},
   queryParams?: Record<string, string>,
 ): Promise<U> {
-  try {
-    const fullUrl = buildUrl(url, queryParams);
+  const fullUrl = buildUrl(url, queryParams);
+  const response = await fetch(fullUrl, {
+    method: "POST",
+    credentials: "include",
+    headers: { ...defaultHeaders, ...headers },
+    body: JSON.stringify(body),
+  });
 
-    const response = await fetch(fullUrl, {
-      method: "POST",
-      credentials:"include",
-      headers: { ...defaultHeaders, ...headers },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      throw new Error(`POST request failed with status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("POST Error:", error);
-    throw error;
-  }
+  return handleResponse<U>(response);
 }
 
 /**
@@ -83,48 +73,44 @@ async function post<T, U>(
  * @returns {Promise<object>} - 응답 데이터
  */
 async function put<T, U>(url: string, body: T, headers = {}): Promise<U> {
-  try {
-    const response = await fetch(url, {
-      method: "PUT",
-      credentials:"include",
-      headers: { ...defaultHeaders, ...headers },
-      body: JSON.stringify(body),
-    });
+  const response = await fetch(url, {
+    method: "PUT",
+    credentials: "include",
+    headers: { ...defaultHeaders, ...headers },
+    body: JSON.stringify(body),
+  });
 
-    if (!response.ok) {
-      throw new Error(`PUT request failed with status: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("PUT Error:", error);
-    throw error;
-  }
+  return handleResponse<U>(response);
 }
 
 /**
  * DELETE 요청
  * @param {string} url - 요청을 보낼 URL
- * @param {object} [headers] - 추가 헤더
+ * @param {object} [params] - 추가 파라미터
  * @returns {Promise<object>} - 응답 데이터
  */
-async function del(url: string, headers = {}) {
-  try {
-    const response = await fetch(url, {
-      method: "DELETE",
-      credentials:"include",
-      headers: { ...defaultHeaders, ...headers },
-    });
+async function del<T>(
+  url: string,
+  params?: Record<string, string>,
+): Promise<T> {
+  const fullUrl = buildUrl(url, params);
+  const response = await fetch(fullUrl, {
+    method: "DELETE",
+    credentials: "include",
+    headers: defaultHeaders,
+  });
+  return handleResponse<T>(response);
+}
 
-    if (!response.ok) {
-      throw new Error(`DELETE request failed with status: ${response.status}`);
-    }
+async function patch<T, U>(url: string, body: T, headers = {}): Promise<U> {
+  const response = await fetch(url, {
+    method: "PATCH",
+    credentials: "include",
+    headers: { ...defaultHeaders, ...headers },
+    body: JSON.stringify(body),
+  });
 
-    return await response.json();
-  } catch (error) {
-    console.error("DELETE Error:", error);
-    throw error;
-  }
+  return handleResponse<U>(response);
 }
 
 // 모든 함수 묶어서 하나의 객체로 export
@@ -132,6 +118,7 @@ const restClient = {
   get,
   post,
   put,
+  patch,
   delete: del, // delete는 예약어이므로 del로 함수 이름 변경
 };
 
