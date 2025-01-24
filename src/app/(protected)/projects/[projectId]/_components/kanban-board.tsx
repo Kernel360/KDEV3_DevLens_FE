@@ -7,10 +7,20 @@ import Link from "next/link";
 import AddStepDialog from "./add-step-dialog";
 import { EditStepDialog } from "./edit-step-dialog";
 import IssueCard from "./issue-card";
+import { useQuery } from "@tanstack/react-query";
+import { ProjectApi } from "@/lib/apis/main/projectApi";
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
   const steps = projectSteps;
   const issues = IssueListData;
+
+  const { data } = useQuery({
+    queryKey: ["projectList"],
+    queryFn: () => ProjectApi.steps.getList(1),
+    retry: 2,
+  });
+  console.log("칸반");
+  console.log(data);
 
   const handleStepUpdate = (updatedStep: (typeof steps)[0]) => {
     // TODO: 업데이트 로직 구현
