@@ -1,12 +1,12 @@
 "use client";
 
 import { CompanySelect } from "@/app/(protected)/my/_components/company-select";
-import { cn, formatPhoneNumber } from "@/lib/utils";
+import DatePickerInput from "@/components/composites/date-picker-input";
+import { formatPhoneNumber } from "@/lib/utils";
 import { createMemberSchema, type MemberFormValues } from "@/schemas/member";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
-  Calendar,
   Form,
   FormControl,
   FormField,
@@ -14,16 +14,10 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
   Select,
   SelectContent,
   SelectItem
 } from "@ui";
-import { format } from "date-fns";
-import { ko } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 
 const departments = [
@@ -162,38 +156,11 @@ export function MemberForm() {
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>생년월일</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground",
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: ko })
-                        ) : (
-                          <span>생년월일 선택</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      locale={ko}
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DatePickerInput
+                  value={field.value ? new Date(field.value) : undefined}
+                  onChange={(date) => field.onChange(date?.toISOString())}
+                  placeholder="생년월일 선택"
+                />
                 <FormMessage />
               </FormItem>
             )}

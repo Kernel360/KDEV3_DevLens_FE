@@ -24,6 +24,7 @@ import {
 } from "@ui";
 import { CompanySelect } from "@/app/(protected)/my/_components/company-select";
 import { PROJECT_TYPES } from "@/lib/constants/selects";
+import DatePickerInput from "@/components/composites/date-picker-input";
 
 export default function ProjectForm() {
   const form = useForm<ProjectFormData>({
@@ -203,9 +204,11 @@ export default function ProjectForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>계획 시작일</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
+                  <DatePickerInput
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(date) => field.onChange(date?.toISOString())}
+                    placeholder="시작일 선택"
+                  />
                   <FormMessage />
                 </FormItem>
               )}
@@ -217,9 +220,16 @@ export default function ProjectForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>계획 종료일</FormLabel>
-                  <FormControl>
-                    <Input type="date" {...field} />
-                  </FormControl>
+                  <DatePickerInput
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(date) => field.onChange(date?.toISOString())}
+                    placeholder="종료일 선택"
+                    minDate={
+                      form.watch("plannedStartDate")
+                        ? new Date(form.watch("plannedStartDate"))
+                        : undefined
+                    }
+                  />
                   <FormMessage />
                 </FormItem>
               )}
