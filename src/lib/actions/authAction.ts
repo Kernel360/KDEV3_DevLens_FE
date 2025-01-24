@@ -2,8 +2,8 @@
 
 import { cookies } from "next/headers";
 import { jwtDecode, JwtPayload } from "jwt-decode";
-import { redirect } from "next/navigation";
 import { AuthApi } from "../apis/main/authApi";
+import { redirect } from "next/navigation";
 
 interface CustomJwtPayload extends JwtPayload {
   sub: string;
@@ -56,10 +56,10 @@ export async function logoutAction() {
   try {
     const cookieStore = await cookies();
     cookieStore.delete("accessToken");
+    console.log("logout");
     await AuthApi.logout();
   } catch (error) {
     return { success: false, message: error };
-  } finally {
-    redirect("/login");
   }
+  redirect("/login");
 }

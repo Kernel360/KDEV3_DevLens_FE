@@ -16,8 +16,8 @@ import {
   useSidebar,
 } from "@ui";
 import Link from "next/link";
-import { logoutAction } from "@/lib/actions/auth";
 import { UserAvatar } from "../composites/user-avatar";
+import { logoutAction } from "@/lib/actions/authAction";
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar();
