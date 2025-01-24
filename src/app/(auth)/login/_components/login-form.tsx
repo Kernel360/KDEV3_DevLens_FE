@@ -1,12 +1,11 @@
 "use client";
 
-import { loginAction } from "@/lib/actions/auth";
+import { loginAction } from "@/lib/actions/authAction";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/schemas/signIn";
 // import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
@@ -23,6 +22,9 @@ import {
 import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import LoginSubmitButton from "./login-submit-button";
+import { toast } from "sonner";
+import * as React from "react";
 
 export function LoginForm({
   className,
@@ -40,6 +42,7 @@ export function LoginForm({
   async function handleLoginAction(formData: FormData) {
     const res = await loginAction(formData);
     if (res.user) {
+      toast.info(`반갑습니다, ${res.user.name}님`);
       const searchParams = new URLSearchParams(window.location.search);
       const redirectTo = searchParams.get("redirect_to") || "/dashboard";
       redirect(redirectTo);
@@ -48,12 +51,11 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "mx-auto flex w-full max-w-[500px] flex-col gap-6",
+        "mx-auto flex w-full max-w-[500px] grow flex-col gap-6",
         className,
       )}
       {...props}
     >
-      <Card className="p-2">Test Account : asdf123 / asdf123!</Card>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">로그인</CardTitle>
@@ -90,9 +92,7 @@ export function LoginForm({
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                로그인
-              </Button>
+              <LoginSubmitButton />
             </form>
           </Form>
 
