@@ -53,7 +53,7 @@ export function LoginForm({
       )}
       {...props}
     >
-      <Card className="p-2">Test Account : jyp123 / qwer123!</Card>
+      <Card className="p-2">Test Account : asdf123 / asdf123!</Card>
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">로그인</CardTitle>
