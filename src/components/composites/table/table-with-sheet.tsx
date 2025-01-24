@@ -31,7 +31,7 @@ export default function TableWithSheet<T extends { id: number }>({
       />
       <Sheet open={!!postId} onOpenChange={() => setPostId(null)}>
         <SheetContent
-          className="w-3/4 sm:w-[100vw] sm:max-w-3xl"
+          className="w-[100vw] sm:max-w-3xl md:w-4/5"
           transparentOverlay
         >
           <SheetHeader>
