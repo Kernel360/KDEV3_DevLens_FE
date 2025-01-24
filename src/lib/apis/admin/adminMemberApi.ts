@@ -12,8 +12,8 @@ export const adminMemberApi = {
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BASE}`,
       {
         queryParams: {
-          page: String(page),
-          size: String(size),
+          page: page - 1,
+          size,
           ...(sort && { sort: sort.join(",") }),
         },
       },
