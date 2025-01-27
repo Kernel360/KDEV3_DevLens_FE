@@ -1,8 +1,8 @@
 // 프로젝트 관련 타입
 export interface Project {
-  id: number;
-  projectName: string;
-  customerName: string;
+  projectId: number;
+  name: string;
+  customerCompanyName: string;
   developerName: string;
   projectDescription: string;
   projectTypeName: string;
@@ -21,6 +21,11 @@ export interface Project {
   endDate: string;
   finalApprover: string;
   finalApprovalDate: string;
+}
+
+export interface ProjectListResponse {
+  myProjects: Project[];
+  companyProjects: Project[];
 }
 
 export interface ProjectStep {

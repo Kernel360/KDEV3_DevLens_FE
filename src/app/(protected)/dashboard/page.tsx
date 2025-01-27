@@ -1,8 +1,9 @@
-import ProjectList from "./_components/project-list";
-
 import Header from "@/components/layout/Header";
-import SectionTitle from "@/components/composites/section-title";
-import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Suspense } from "react";
+import { ProjectListSkeleton } from "../../../components/skeleton/project-list-skeleton";
+import ProjectSection from "./_components/project-section";
+import { ErrorBoundary } from "@/components/error/error-boundary";
 
 export default function Dashboard() {
   return (
@@ -31,10 +32,11 @@ export default function Dashboard() {
         </CardContent>
       </Card>
       <Header />
-      <div className="flex justify-between">
-        <SectionTitle>내 프로젝트</SectionTitle>
-      </div>
-      <ProjectList />
+      <ErrorBoundary>
+        <Suspense fallback={<ProjectListSkeleton />}>
+          <ProjectSection />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }

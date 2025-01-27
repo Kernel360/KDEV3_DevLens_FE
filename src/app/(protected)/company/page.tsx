@@ -4,7 +4,7 @@ import CompanyListTable from "./_components/company-list-table";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Suspense } from "react";
 
-export default async function CompanyPage() {
+export default function CompanyPage() {
   return (
     <>
       <Header />

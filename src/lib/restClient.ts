@@ -3,6 +3,8 @@ import { APIError, APIResponse } from "@/types/common";
 type Headers = Record<string, string>;
 const defaultHeaders: Headers = {
   "Content-Type": "application/json",
+  Authorization:
+    "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsImxvZ2luSWQiOiJhc2RmMTIzIiwiZW1haWwiOiJhc2RmMTIzQG1vbmFtaS5jb20iLCJhdXRoIjoiUk9MRV9BRE1JTiIsImV4cCI6MTczODAyODg0Mn0.x91uFtykHz2H6qAS6P08rO_-gY4PmP0tTsJS2REQFFrVTQYentplmLN3INs9j4ZEWT6NagZsH8Zp1ZmvOw_QNA",
 };
 
 interface RequestOptions {
