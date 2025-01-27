@@ -1,4 +1,5 @@
 import SectionTitle from "@/components/composites/section-title";
+import { ErrorBoundary } from "@/components/error/error-boundary";
 import Header from "@/components/layout/Header";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Suspense } from "react";
@@ -9,9 +10,11 @@ export default async function MembersPage() {
     <>
       <Header />
       <SectionTitle>계정 목록</SectionTitle>
-      <Suspense fallback={<TableSkeleton />}>
-        <MemberListTable />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<TableSkeleton />}>
+          <MemberListTable />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }
