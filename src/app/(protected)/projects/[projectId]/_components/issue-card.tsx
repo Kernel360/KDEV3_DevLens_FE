@@ -1,5 +1,5 @@
 import IssueDetail from "@/app/(protected)/projects/[projectId]/_components/issue-detail";
-import { IssueList } from "@/types/issue-list";
+import { ProjectChecklist } from "@/types/project";
 import {
   Badge,
   Button,
@@ -12,7 +12,11 @@ import {
   DialogTrigger,
 } from "@ui";
 
-export default function IssueCard({ issue }: { issue: IssueList }) {
+interface IssueCardProps {
+  issue: ProjectChecklist;
+}
+
+export default function IssueCard({ issue }: IssueCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>

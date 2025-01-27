@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectStep } from "@/types/project";
 import {
   Button,
   Dialog,
@@ -15,20 +16,13 @@ import {
 import { EllipsisVertical } from "lucide-react";
 import { useState } from "react";
 
-interface StepInfo {
-  id: string;
-  title: string;
-  description?: string;
-  order?: number;
-}
-
 interface EditStepDialogProps {
-  stepInfo: StepInfo;
-  onUpdate?: (updatedStep: StepInfo) => void;
+  stepInfo: ProjectStep;
+  onUpdate?: (updatedStep: ProjectStep) => void;
 }
 
 export function EditStepDialog({ stepInfo, onUpdate }: EditStepDialogProps) {
-  const [step, setStep] = useState<StepInfo>(stepInfo);
+  const [step, setStep] = useState<ProjectStep>(stepInfo);
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -59,8 +53,8 @@ export function EditStepDialog({ stepInfo, onUpdate }: EditStepDialogProps) {
               </Label>
               <Input
                 id="title"
-                value={step.title}
-                onChange={(e) => setStep({ ...step, title: e.target.value })}
+                value={step.stepName}
+                onChange={(e) => setStep({ ...step, stepName: e.target.value })}
                 className="col-span-3"
               />
             </div>
@@ -84,16 +78,18 @@ export function EditStepDialog({ stepInfo, onUpdate }: EditStepDialogProps) {
               <Input
                 id="order"
                 type="number"
-                value={step.order || 0}
+                value={step.stepOrder || 0}
                 onChange={(e) =>
-                  setStep({ ...step, order: parseInt(e.target.value) })
+                  setStep({ ...step, stepOrder: parseInt(e.target.value) })
                 }
                 className="col-span-3"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="destructive" type="submit">삭제</Button>
+            <Button variant="destructive" type="submit">
+              삭제
+            </Button>
             <Button type="submit">수정</Button>
           </DialogFooter>
         </form>

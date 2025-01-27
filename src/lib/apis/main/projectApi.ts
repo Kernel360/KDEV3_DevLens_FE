@@ -7,6 +7,7 @@ import {
   ProjectChecklist,
   ProjectListResponse,
   ProjectStep,
+  ProjectStepResponse,
 } from "@/types/project";
 
 export const ProjectApi = {
@@ -15,11 +16,6 @@ export const ProjectApi = {
     restClient.get<ProjectListResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}/${memberId}`,
     ),
-  // getList: (memberId: number, options?: { headers?: Record<string, string> }) =>
-  //   axiosClient.get<void, ProjectListResponse>(
-  //     `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}/${memberId}`,
-  //     { headers: options?.headers }
-  //   ),
 
   // GET {BASE_URL}/main/api/projects/{projectId}
   getDetail: (projectId: number) =>
@@ -30,7 +26,7 @@ export const ProjectApi = {
   steps: {
     // GET {BASE_URL}/main/api/projects/{projectId}/steps
     getList: (projectId: number) =>
-      restClient.get<ProjectStep[]>(
+      restClient.get<ProjectStepResponse>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}`,
       ),
 
