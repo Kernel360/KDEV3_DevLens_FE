@@ -10,8 +10,17 @@ export interface Post {
   content: string;
   authorId: number;
   authorName: string;
-  updatedAt: string;
+  updateDate: string;
   attachments?: PostAttachment[];
+  comments?: PostComment[];
+}
+
+export interface PostComment {
+  id: number;
+  content: string;
+  writer: string;
+  createDate: string;
+  postId: number;
 }
 
 export interface PostAttachment {

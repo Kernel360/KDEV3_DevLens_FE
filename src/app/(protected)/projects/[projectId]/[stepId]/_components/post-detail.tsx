@@ -1,3 +1,13 @@
+"use client";
+
+import { UserAvatar } from "@/components/composites/user-avatar";
+import { PostApi } from "@/lib/apis/main/postApi";
+import {
+  formatDateToRelative,
+  getStatusLabel,
+  getStatusVariant,
+} from "@/lib/utils";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   Badge,
   Button,
@@ -7,19 +17,25 @@ import {
   DropdownMenuTrigger,
   Separator,
 } from "@ui";
-import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { UserAvatar } from "../../../../../../components/composites/user-avatar";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 
-// TODO: 컴포넌트 쪼개기, 데이터 타입 정의
-export default function PostDetail() {
+interface PostDetailProps {
+  id: number;
+}
+
+function PostDetail({ id }: PostDetailProps) {
+  const { data: post } = useSuspenseQuery({
+    queryKey: ["postDetail", id],
+    queryFn: () => PostApi.getDetail(id),
+    retry: 1,
+  });
+
   return (
     <>
       {/* 제목 및 메타 정보 */}
       <div className="space-y-4">
         <div className="flex items-start justify-between">
-          <h1 className="text-2xl font-bold">
-            2024년 1분기 프로젝트 계획 보고
-          </h1>
+          <h1 className="text-2xl font-bold">{post.title}</h1>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
@@ -44,31 +60,37 @@ export default function PostDetail() {
           <div>
             <span className="text-muted-foreground">작성자</span>
             <div className="mt-1 flex items-center gap-2">
-              <UserAvatar className="size-6" name={"김철수"} imageSrc="" />
-              <span>김철수</span>
+              <UserAvatar className="size-6" name={post.writer} imageSrc={""} />
+              <span>{post.writer}</span>
             </div>
           </div>
           <div>
             <span className="text-muted-foreground">상태</span>
             <div className="mt-1">
-              <Badge>진행중</Badge>
+              <Badge variant={getStatusVariant(post.status)}>
+                {getStatusLabel(post.status)}
+              </Badge>
             </div>
           </div>
           <div>
             <span className="text-muted-foreground">마감일</span>
-            <div className="mt-1">2024-03-31</div>
+            <div className="mt-1">
+              {post.deadline
+                ? new Date(post.deadline).toLocaleDateString()
+                : "-"}
+            </div>
           </div>
           <div>
             <span className="text-muted-foreground">문서번호</span>
-            <div className="mt-1">DOC-2024-001</div>
+            <div className="mt-1">{post.postId}</div>
           </div>
           <div>
             <span className="text-muted-foreground">작성일</span>
-            <div className="mt-1">2024-01-10 14:30</div>
+            <div className="mt-1">{formatDateToRelative(post.createDate)}</div>
           </div>
           <div>
             <span className="text-muted-foreground">수정일</span>
-            <div className="mt-1">2024-01-10 15:45</div>
+            <div className="mt-1">{formatDateToRelative(post.updateDate)}</div>
           </div>
         </div>
       </div>
@@ -77,67 +99,54 @@ export default function PostDetail() {
 
       <div className="space-y-6">
         {/* 본문 */}
-        <div className="prose prose-sm max-w-none">
-          <p>안녕하세요, 2024년 1분기 프로젝트 계획에 대해 보고드립니다.</p>
-          <p>주요 내용은 다음과 같습니다:</p>
-          <ul>
-            <li>신규 기능 개발 계획</li>
-            <li>리소스 할당</li>
-            <li>일정 관리</li>
-            <li>예산 계획</li>
-          </ul>
-          <p>자세한 내용은 첨부된 문서를 참고해 주시기 바랍니다.</p>
+        <div className="prose prose-sm max-w-none whitespace-pre-wrap">
+          {post.content}
         </div>
 
         {/* 첨부파일 */}
-        <div>
-          <h3 className="mb-3 font-medium">첨부파일</h3>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <FileIcon className="h-4 w-4" />
-              <a href="#" className="text-primary hover:underline">
-                project-plan-2024-q1.pdf
-              </a>
-              <span className="text-muted-foreground">(2.5MB)</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <FileIcon className="h-4 w-4" />
-              <a href="#" className="text-primary hover:underline">
-                budget-2024-q1.xlsx
-              </a>
-              <span className="text-muted-foreground">(1.8MB)</span>
+        {/* {post.attachments && post.attachments.length > 0 && (
+          <div>
+            <h3 className="mb-3 font-medium">첨부파일</h3>
+            <div className="space-y-2">
+              {post.attachments.map((file) => (
+                <div key={file.id} className="flex items-center gap-2 text-sm">
+                  <FileIcon className="h-4 w-4" />
+                  <a href={file.url} className="text-primary hover:underline">
+                    {file.name}
+                  </a>
+                  <span className="text-muted-foreground">({file.size})</span>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )} */}
 
         {/* 관련 링크 */}
-        <div>
-          <h3 className="mb-3 font-medium">관련 링크</h3>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <LinkIcon className="h-4 w-4" />
-              <a
-                href="#"
-                target="_blank"
-                className="text-primary hover:underline"
-              >
-                2023년 4분기 프로젝트 결과 보고
-              </a>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <LinkIcon className="h-4 w-4" />
-              <a href="#" className="text-primary hover:underline">
-                연간 프로젝트 로드맵
-              </a>
+        {/* {post.attachments && post.relatedLinks.length > 0 && (
+          <div>
+            <h3 className="mb-3 font-medium">관련 링크</h3>
+            <div className="space-y-2">
+              {post.relatedLinks.map((link, index) => (
+                <div key={index} className="flex items-center gap-2 text-sm">
+                  <LinkIcon className="h-4 w-4" />
+                  <a
+                    href={link.url}
+                    target="_blank"
+                    className="text-primary hover:underline"
+                  >
+                    {link.title}
+                  </a>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )} */}
 
         <Separator />
 
         {/* 댓글 */}
         <div className="space-y-4">
-          <h3 className="font-medium">댓글 3개</h3>
+          <h3 className="font-medium">댓글 {post.comments?.length}개</h3>
 
           {/* 댓글 목록 */}
           <div className="space-y-4">
@@ -188,3 +197,5 @@ export default function PostDetail() {
     </>
   );
 }
+
+export default PostDetail;

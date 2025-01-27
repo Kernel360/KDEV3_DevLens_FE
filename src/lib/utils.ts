@@ -13,6 +13,19 @@ export function formatDate(date: Date): string {
   }).format(date);
 }
 
+export function formatDateToRelative(dateStr: string): string {
+  const date = new Date(dateStr);
+  const currentYear = new Date().getFullYear();
+
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const year = String(date.getFullYear()).slice(2); // get last 2 digits of year
+
+  return date.getFullYear() === currentYear
+    ? `${month}.${day}`
+    : `${year}.${month}.${day}`;
+}
+
 export function formatPhoneNumber(value: string) {
   if (!value) return value;
   const phoneNumber = value.replace(/[^\d]/g, "");
