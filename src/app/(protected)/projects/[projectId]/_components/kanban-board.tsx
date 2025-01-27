@@ -12,8 +12,8 @@ import IssueCard from "./issue-card";
 export function KanbanBoard({ projectId }: { projectId: string }) {
   const { data } = useQuery({
     queryKey: ["projectSteps", projectId],
-    queryFn: () => ProjectApi.steps.getList(Number(projectId)),
-    retry: 2,
+    queryFn: () => ProjectApi.steps.getSteps(Number(projectId)),
+    retry: 1,
   });
 
   const steps = data?.projectStepInfo ?? [];
@@ -27,8 +27,8 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
     <div className="w-full overflow-hidden">
       <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
         {steps.map((step) => (
-          <div key={step.projectId} className="w-[15rem] shrink-0">
-            <Card className="h-full border-none bg-zinc-50 px-3 shadow-none *:p-2">
+          <div key={step.stepId} className="w-[15rem] shrink-0">
+            <Card className="group h-full border-none bg-zinc-50 px-3 shadow-none *:p-2">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-lg font-semibold">
                   <Link
@@ -43,11 +43,11 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
               </CardHeader>
               <CardContent className="space-y-2">
                 {step.projectChecklist.map((issue) => (
-                  <IssueCard key={issue.id} issue={issue} />
+                  <IssueCard key={issue.checklistId} issue={issue} />
                 ))}
                 <Button
                   variant="outline"
-                  className="flex h-4 w-full items-center justify-center bg-transparent"
+                  className="invisible flex h-4 w-full items-center justify-center bg-transparent opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
                 >
                   <Plus size={12} />
                 </Button>

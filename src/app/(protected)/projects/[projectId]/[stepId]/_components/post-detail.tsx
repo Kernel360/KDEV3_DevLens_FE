@@ -8,7 +8,7 @@ import {
   Separator,
 } from "@ui";
 import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { UserAvatar } from "./user-avatar";
+import { UserAvatar } from "../../../../../../components/composites/user-avatar";
 
 // TODO: 컴포넌트 쪼개기, 데이터 타입 정의
 export default function PostDetail() {

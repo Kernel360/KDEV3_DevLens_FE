@@ -1,25 +1,35 @@
+"use client";
+
 import Header from "@/components/layout/Header";
-import { projectSteps } from "@/lib/mockData";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Button, Tabs, TabsList, TabsTrigger } from "@ui";
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import { ErrorBoundary } from "@/components/error/error-boundary";
 import { CreatePost } from "./_components/create-post";
+import PostListTable from "./_components/post-list-table";
+import { useParams } from "next/navigation";
+import { useQueryState } from "nuqs";
+import { useQuery } from "@tanstack/react-query";
+import { ProjectApi } from "@/lib/apis/main/projectApi";
 
-export default async function ProjectStepPage(props: {
-  params: Promise<{ projectId: string; stepId: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
-  const params = await props.params;
-  const searchParams = await props.searchParams;
+export default function ProjectStepPage() {
+  const params = useParams();
+  const [isNewPost] = useQueryState("isNewPost");
+  const { projectId, stepId } = params;
 
-  const { stepId } = params;
-  const isNewPost = searchParams.isNewPost === "true";
+  const { data } = useQuery({
+    queryKey: ["projectSteps", projectId],
+    queryFn: () => ProjectApi.steps.getSteps(Number(projectId)),
+    retry: 2,
+  });
+
+  const steps = data?.projectStepInfo ?? [];
 
   if (isNewPost) {
     return <CreatePost />;
   }
-
-  const steps = projectSteps;
 
   return (
     <>
@@ -27,16 +37,18 @@ export default async function ProjectStepPage(props: {
         breadcrumbs={[
           { label: "내 프로젝트", href: "/dashboard" },
           // TODO: 프로젝트 이름 동적으로 받아오기
-          { label: "프로젝트 이름", href: `/projects/${params.projectId}` },
+          { label: "프로젝트 이름", href: `/projects/${projectId}` },
           { label: `단계별 게시판` },
         ]}
       />
       <div className="flex">
-        <Tabs defaultValue={stepId} className="w-full">
+        <Tabs defaultValue={String(stepId)} className="w-full">
           <TabsList>
             {steps.map((step) => (
-              <Link key={step.id} href={`./${step.id}`} replace>
-                <TabsTrigger value={step.id}>{step.title}</TabsTrigger>
+              <Link key={step.stepId} href={`./${step.stepId}`} replace>
+                <TabsTrigger value={String(step.stepId)}>
+                  {step.stepName}
+                </TabsTrigger>
               </Link>
             ))}
           </TabsList>
@@ -47,7 +59,11 @@ export default async function ProjectStepPage(props: {
           </Button>
         </Link>
       </div>
-      {/* <TableWithSheet columns={postListColumns} data={postListData} /> */}
+      <ErrorBoundary>
+        <Suspense fallback={<TableSkeleton />}>
+          <PostListTable />
+        </Suspense>
+      </ErrorBoundary>
     </>
   );
 }

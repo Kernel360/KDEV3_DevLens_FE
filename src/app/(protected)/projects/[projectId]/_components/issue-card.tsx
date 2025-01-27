@@ -20,7 +20,7 @@ export default function IssueCard({ issue }: IssueCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Card key={issue.id} className="flex cursor-pointer flex-col gap-2 p-2">
+        <Card key={issue.checklistId} className="flex cursor-pointer flex-col gap-2 p-2">
           <h2 className="line-clamp-1 text-sm font-medium">{issue.title}</h2>
           <div className="flex w-full justify-end">
             <Badge className="hover:bg-primary">승인요청</Badge>
