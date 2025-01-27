@@ -1,13 +1,16 @@
 export interface Post {
-  id: number;
+  postId: number;
   projectStepId: number;
+  status: "DEFAULT" | "IN_PROGRESS" | "COMPLETED";
+  priority: number;
   title: string;
+  writer: string;
+  createDate: string;
+  deadline: string | null;
   content: string;
   authorId: number;
   authorName: string;
-  createdAt: string;
   updatedAt: string;
-  deadline: string;
   attachments?: PostAttachment[];
 }
 
@@ -25,3 +28,38 @@ export type CreatePostRequest = Omit<
   "id" | "createdAt" | "updatedAt" | "authorId" | "authorName"
 >;
 export type UpdatePostRequest = Partial<CreatePostRequest>;
+
+// Add missing types for API requests
+export interface PostCreateRequest {
+  projectStepId: number;
+  title: string;
+  content: string;
+  deadline: string;
+  attachments?: PostAttachment[];
+}
+
+export interface PostUpdateRequest {
+  title?: string;
+  content?: string;
+  deadline?: string;
+  attachments?: PostAttachment[];
+}
+
+export interface PostListResponse {
+  content: Post[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+}
+
+export interface FileMetadata {
+  id: number;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+  downloadUrl: string;
+  createdAt: string;
+  updatedAt: string;
+}

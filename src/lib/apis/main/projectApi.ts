@@ -17,6 +17,7 @@ export const ProjectApi = {
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}/${memberId}`,
     ),
 
+
   // GET {BASE_URL}/main/api/projects/{projectId}
   getDetail: (projectId: number) =>
     restClient.get<Project>(
@@ -25,7 +26,7 @@ export const ProjectApi = {
 
   steps: {
     // GET {BASE_URL}/main/api/projects/{projectId}/steps
-    getList: (projectId: number) =>
+    getSteps: (projectId: number) =>
       restClient.get<ProjectStepResponse>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}`,
       ),

@@ -1,7 +1,7 @@
 // 프로젝트 관련 타입
 export interface Project {
   projectId: number;
-  name: string;
+  projectName: string;
   customerCompanyName: string;
   developerName: string;
   projectDescription: string;
@@ -27,20 +27,25 @@ export interface ProjectListResponse {
   myProjects: Project[];
   companyProjects: Project[];
 }
+export interface ProjectStepResponse {
+  projectId: number;
+  projectStepInfo: ProjectStep[];
+}
 
 export interface ProjectStep {
-  id: number;
+  stepId: number;
   projectId: number;
   stepName: string;
   stepOrder: number;
-  startDate: string;
-  endDate: string;
-  status: "READY" | "IN_PROGRESS" | "COMPLETED";
+  projectChecklist: ProjectChecklist[];
+  startDate?: string;
+  endDate?: string;
+  status?: "READY" | "IN_PROGRESS" | "COMPLETED";
   description?: string;
 }
 
 export interface ProjectChecklist {
-  id: number;
+  checklistId: number;
   projectId: number;
   title: string;
   description: string;
