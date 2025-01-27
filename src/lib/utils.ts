@@ -34,3 +34,41 @@ export function formatRegistrationNumber(value: string) {
     return `${p1}-${p2}-${p3}`;
   });
 }
+
+// 상태 관련 헬퍼 함수들
+export function getStatusVariant(status: string) {
+  switch (status) {
+    case "PREPARED":
+      return "secondary";
+    case "IN_PROGRESS":
+      return "default";
+    case "COMPLETED":
+      return "success";
+    case "CLOSED":
+      return "outline";
+    case "CANCELLED":
+    case "DELETED":
+      return "destructive";
+    default:
+      return "secondary";
+  }
+}
+
+export function getStatusLabel(status: string) {
+  switch (status) {
+    case "PREPARED":
+      return "준비";
+    case "IN_PROGRESS":
+      return "진행중";
+    case "COMPLETED":
+      return "완료";
+    case "CLOSED":
+      return "종료";
+    case "CANCELLED":
+      return "취소";
+    case "DELETED":
+      return "삭제";
+    default:
+      return status;
+  }
+}

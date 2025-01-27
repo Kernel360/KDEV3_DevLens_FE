@@ -49,7 +49,7 @@ export function CompanyForm() {
       representativeContact: "", // 대표번호
       email: "", // 대표 이메일
       address: "", // 주소
-      departments: [], // 부서
+      // departments: [], // 부서
     },
   });
   const router = useRouter();
