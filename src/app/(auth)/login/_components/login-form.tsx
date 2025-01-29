@@ -39,8 +39,8 @@ export function LoginForm({
   });
   // const setUser = useAuthStore((state) => state.setUser);
 
-  async function handleLoginAction(formData: FormData) {
-    const res = await loginAction(formData);
+  async function onSubmit(values: z.infer<typeof signInSchema>) {
+    const res = await loginAction(values);
     if (res.user) {
       toast.info(`반갑습니다, ${res.user.name}님`);
       const searchParams = new URLSearchParams(window.location.search);
@@ -48,6 +48,7 @@ export function LoginForm({
       redirect(redirectTo);
     }
   }
+
   return (
     <div
       className={cn(
@@ -65,7 +66,7 @@ export function LoginForm({
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form action={handleLoginAction} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <FormField
                 control={form.control}
                 name="loginId"

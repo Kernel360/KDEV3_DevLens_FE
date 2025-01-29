@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { AuthApi } from "../apis/main/authApi";
 import { redirect } from "next/navigation";
+import { LoginRequest } from "@/types/auth";
 
 interface CustomJwtPayload extends JwtPayload {
   sub: string;
@@ -13,11 +14,11 @@ interface CustomJwtPayload extends JwtPayload {
 
 const isProduction = process.env.NODE_ENV === "production";
 
-export async function loginAction(formData: FormData) {
+export async function loginAction(data: LoginRequest) {
   try {
     const response = await AuthApi.login({
-      loginId: formData.get("loginId") as string,
-      password: formData.get("password") as string,
+      loginId: data.loginId,
+      password: data.password,
     });
 
     // 응답 헤더에서 토큰 확인
@@ -40,7 +41,7 @@ export async function loginAction(formData: FormData) {
     return {
       success: true,
       user: {
-        loginId: formData.get("loginId") as string,
+        loginId: data.loginId,
         name,
         email,
         auth,
