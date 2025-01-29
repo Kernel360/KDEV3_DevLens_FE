@@ -50,7 +50,7 @@ export const adminMemberApi = {
       },
     ),
 
-  batchUpdate: (data: MemberUpdateRequest[]) =>
+  batchMembers: (data: MemberUpdateRequest[]) =>
     restClient.post<MemberUpdateRequest[], void>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BATCH}`,
       data,

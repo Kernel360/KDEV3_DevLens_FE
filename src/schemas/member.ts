@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const createMemberSchema = z
   .object({
-    username: z
+    loginId: z
       .string()
       .min(4, "아이디는 최소 4자 이상이어야 합니다.")
       .max(12, "아이디는 최대 12자까지 가능합니다.")

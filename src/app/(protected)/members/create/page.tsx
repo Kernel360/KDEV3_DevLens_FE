@@ -1,6 +1,7 @@
-import Header from "@/components/layout/Header";
 import { MemberForm } from "@/app/(protected)/members/create/_components/member-form";
 import SectionTitle from "@/components/composites/section-title";
+import Header from "@/components/layout/Header";
+import BatchMembersButton from "./_components/batch-members-button";
 
 export default function CreateMemberPage() {
   return (
@@ -11,7 +12,10 @@ export default function CreateMemberPage() {
           { label: "계정 생성" },
         ]}
       />
-      <SectionTitle>계정 생성</SectionTitle>
+      <div className="flex justify-between">
+        <SectionTitle>계정 생성</SectionTitle>
+        <BatchMembersButton />
+      </div>
       <MemberForm />
     </>
   );

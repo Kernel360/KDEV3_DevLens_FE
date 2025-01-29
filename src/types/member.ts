@@ -23,3 +23,17 @@ export interface MemberUpdateRequest {
   department?: string;
   position?: string;
 }
+
+// 필수 필드만 포함하는 타입 정의
+export type BatchMemberFormValues = Pick<
+  Member,
+  | "loginId"
+  | "name"
+  | "email"
+  | "role"
+  | "phoneNumber"
+  | "birthDate"
+  | "department"
+  | "position"
+  | "companyId"
+>;
