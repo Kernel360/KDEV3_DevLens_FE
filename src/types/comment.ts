@@ -1,20 +1,26 @@
+// API 응답 타입
 export interface Comment {
-  id: number;
-  postId: number;
+  commentId: number;
+  parentCommentId: number | null;
+  registerId: number;
+  writer: string;
   content: string;
-  authorId: number;
-  authorName: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface PostCommentRequest {
-  content: string;
+// 댓글 트리 구조를 위한 타입
+export interface CommentWithReplies extends Comment {
+  replies?: Comment[];
 }
 
-export interface PatchCommentRequest {
+// API 요청 타입
+export interface CommentRequest {
   content: string;
+  parentCommentId?: number | null;
 }
+
+export type UpdateCommentRequest = Pick<CommentRequest, "content">;
 
 export interface DeleteCommentRequest {
   authorId: number;

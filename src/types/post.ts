@@ -1,3 +1,5 @@
+import type { Comment } from "./comment";
+
 export interface Post {
   postId: number;
   projectStepId: number;
@@ -12,15 +14,17 @@ export interface Post {
   authorName: string;
   updateDate: string;
   attachments?: PostAttachment[];
-  comments?: PostComment[];
+  comments?: Comment[];
 }
 
 export interface PostComment {
-  id: number;
-  content: string;
+  commentId: number;
+  parentCommentId: number | null;
+  registerId: number;
   writer: string;
-  createDate: string;
-  postId: number;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface PostAttachment {

@@ -18,13 +18,10 @@ import {
   Separator,
 } from "@ui";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { CommentsSection } from "./comments-section";
 
-interface PostDetailProps {
-  id: number;
-}
-
-function PostDetail({ id }: PostDetailProps) {
-  const { data: post } = useSuspenseQuery({
+function PostDetail({ id }: { id: number }) {
+  const { data: post, refetch } = useSuspenseQuery({
     queryKey: ["postDetail", id],
     queryFn: () => PostApi.getDetail(id),
     retry: 1,
@@ -142,57 +139,13 @@ function PostDetail({ id }: PostDetailProps) {
           </div>
         )} */}
 
-        <Separator />
-
         {/* 댓글 */}
-        <div className="space-y-4">
-          <h3 className="font-medium">댓글 {post.comments?.length}개</h3>
-
-          {/* 댓글 목록 */}
-          <div className="space-y-4">
-            {/* 댓글 1 */}
-            <div className="space-y-4">
-              <div className="flex gap-3">
-                <UserAvatar className="size-8" name={"김철수"} imageSrc="" />
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">이영희</span>
-                    <span className="text-xs text-muted-foreground">
-                      2024-01-10 16:00
-                    </span>
-                  </div>
-                  <p className="text-sm">
-                    예산 계획에 대해 추가 검토가 필요해 보입니다.
-                  </p>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-auto p-0 text-xs text-muted-foreground"
-                  >
-                    답글달기
-                  </Button>
-                </div>
-              </div>
-              {/* 대댓글 */}
-              <div className="ml-11 space-y-4">
-                <div className="flex gap-3">
-                  <UserAvatar className="size-8" name={"김철수"} imageSrc="" />
-                  <div className="flex-1 space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">김철수</span>
-                      <span className="text-xs text-muted-foreground">
-                        2024-01-10 16:15
-                      </span>
-                    </div>
-                    <p className="text-sm">
-                      네, 수정해서 다시 공유하도록 하겠습니다.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {post.comments && post.comments.length > 0 && (
+          <>
+            <Separator />
+            <CommentsSection comments={post.comments} postId={post.postId} onCommentUpdate={refetch} />
+          </>
+        )}
       </div>
     </>
   );

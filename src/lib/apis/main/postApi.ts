@@ -1,8 +1,17 @@
 import { API_PATH, MAIN_ENDPOINTS } from "@/lib/constants/api-endpoints";
 import restClient from "@/lib/restClient";
 import { APIResponse } from "@/types/common";
-import { Post, PostListResponse, PostUpdateRequest, PostCreateRequest } from "@/types/post";
-
+import {
+  Post,
+  PostListResponse,
+  PostUpdateRequest,
+  PostCreateRequest,
+} from "@/types/post";
+import {
+  CommentRequest,
+  UpdateCommentRequest,
+  DeleteCommentRequest,
+} from "@/types/comment";
 
 export const PostApi = {
   // GET /api/posts/{postId}
@@ -47,5 +56,34 @@ export const PostApi = {
           ...(filter && { filter }),
         },
       },
+    ),
+
+  // POST /api/posts/{postId}/comments
+  createComment: (postId: number, data: CommentRequest) =>
+    restClient.post<CommentRequest, APIResponse>(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.DETAIL(postId)}/comments`,
+      data,
+    ),
+
+  // PATCH /api/posts/{postId}/comments/{commentId}
+  updateComment: (
+    postId: number,
+    commentId: number,
+    data: UpdateCommentRequest,
+  ) =>
+    restClient.patch<UpdateCommentRequest, APIResponse>(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.DETAIL(postId)}/comments/${commentId}`,
+      data,
+    ),
+
+  // DELETE /api/posts/{postId}/comments/{commentId}
+  deleteComment: (
+    postId: number,
+    commentId: number,
+    data: DeleteCommentRequest,
+  ) =>
+    restClient.delete<DeleteCommentRequest, APIResponse>(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.DETAIL(postId)}/comments/${commentId}`,
+      data,
     ),
 };
