@@ -4,6 +4,7 @@ import { useQueryState } from "nuqs";
 import { ColumnDef } from "@/types/table";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@ui";
 import { DataTable } from "./data-table";
+import { Suspense } from "react";
 
 interface TableWithSheetProps<T extends { id: number }> {
   columns: ColumnDef<T>[];
@@ -38,7 +39,17 @@ export default function TableWithSheet<T extends { id: number }>({
             <SheetTitle>게시글</SheetTitle>
           </SheetHeader>
           <div className="h-[calc(100vh-4rem)] overflow-y-auto">
-            {id && <Content id={id} />}
+            {id && (
+              <Suspense
+                fallback={
+                  <div className="flex h-full items-center justify-center">
+                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
+                  </div>
+                }
+              >
+                <Content id={id} />
+              </Suspense>
+            )}
           </div>
         </SheetContent>
       </Sheet>
