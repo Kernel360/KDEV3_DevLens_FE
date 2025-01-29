@@ -1,10 +1,12 @@
+import type { MemberRole } from "@/lib/constants/member";
+
 // 회원 관련 타입
 export interface Member {
   id: number;
   loginId: string;
   name: string;
   email: string;
-  role: "ADMIN" | "SUPER" | "USER";
+  role: MemberRole;
   // profileImageExists: "Y" | "N";
   status: "ACTIVE" | "INACTIVE" | "WITHDRAW" | "SUSPENDED";
   phoneNumber: string;
@@ -18,7 +20,7 @@ export interface Member {
 export interface MemberUpdateRequest {
   name?: string;
   companyId?: number;
-  role?: "ADMIN" | "SUPER" | "USER";
+  role?: MemberRole;
   phoneNumber?: string;
   department?: string;
   position?: string;

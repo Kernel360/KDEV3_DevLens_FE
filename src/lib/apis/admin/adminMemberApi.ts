@@ -2,6 +2,7 @@ import { ADMIN_ENDPOINTS, API_PATH } from "@/lib/constants/api-endpoints";
 import restClient from "@/lib/restClient";
 import { PaginatedResponse, PaginationParams } from "@/types/common";
 import { Member, MemberUpdateRequest } from "@/types/member";
+import { MemberFormValues } from "@/schemas/member";
 
 export const adminMemberApi = {
   /*
@@ -49,7 +50,11 @@ export const adminMemberApi = {
         },
       },
     ),
-
+  create: (data: Omit<MemberFormValues, "confirmPassword">) =>
+    restClient.post<Omit<MemberFormValues, "confirmPassword">, Member>(
+      `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BASE}`,
+      data,
+    ),
   batchMembers: (data: MemberUpdateRequest[]) =>
     restClient.post<MemberUpdateRequest[], void>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BATCH}`,

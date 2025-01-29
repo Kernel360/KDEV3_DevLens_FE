@@ -80,9 +80,9 @@ export const ProjectApi = {
       ),
 
     // DELETE {BASE_URL}/main/api/projects?checklistId={checklistId}
-    delete: (checklistId: number) =>
-      restClient.delete<void>(
-        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.CHECKLIST.BASE}`,
-      ),
+    // delete: (checklistId: number) =>
+    //   restClient.delete<void>(
+    //     `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.CHECKLIST.BASE}`,
+    //   ),
   },
 };
