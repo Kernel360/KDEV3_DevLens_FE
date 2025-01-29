@@ -12,7 +12,7 @@ import Link from "next/link";
 export default function ProjectCard(props: Project) {
   const {
     projectId,
-    name,
+    projectName,
     projectDescription,
     projectStatusCode,
     startDate,
@@ -24,7 +24,7 @@ export default function ProjectCard(props: Project) {
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between">
-            <h3>{name}</h3>
+            <h3>{projectName}</h3>
             <Badge variant="outline">{projectStatusCode}</Badge>
           </CardTitle>
           <CardDescription className="truncate">
