@@ -6,7 +6,7 @@ import { Button, Card, CardContent, CardHeader, CardTitle } from "@ui";
 import { ChevronRight, Plus } from "lucide-react";
 import Link from "next/link";
 import AddStepDialog from "./add-step-dialog";
-import { EditStepDialog } from "./edit-step-dialog";
+import EditStepDialog from "./edit-step-dialog";
 import IssueCard from "./issue-card";
 
 export function KanbanBoard({ projectId }: { projectId: string }) {
@@ -17,11 +17,6 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
   });
 
   const steps = data?.projectStepInfo ?? [];
-
-  const handleStepUpdate = (updatedStep: (typeof steps)[0]) => {
-    // TODO: 업데이트 로직 구현
-    console.log("Updated step:", updatedStep);
-  };
 
   return (
     <div className="w-full overflow-hidden">
@@ -38,7 +33,7 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
                     {step.stepName}
                     <ChevronRight className="text-zinc-700" />
                   </Link>
-                  <EditStepDialog stepInfo={step} onUpdate={handleStepUpdate} />
+                  <EditStepDialog stepInfo={step} />
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">

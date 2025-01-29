@@ -6,8 +6,9 @@ import {
   Project,
   ProjectChecklist,
   ProjectListResponse,
-  ProjectStep,
   ProjectStepResponse,
+  UpdateStepRequest,
+  DeleteStepRequest,
 } from "@/types/project";
 
 export const ProjectApi = {
@@ -16,7 +17,6 @@ export const ProjectApi = {
     restClient.get<ProjectListResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}/${memberId}`,
     ),
-
 
   // GET {BASE_URL}/main/api/projects/{projectId}
   getDetail: (projectId: number) =>
@@ -39,17 +39,17 @@ export const ProjectApi = {
       ),
 
     // PUT {BASE_URL}/main/api/projects/steps
-    update: (data: ProjectStep) =>
-      restClient.put<ProjectStep, void>(
+    update: (data: UpdateStepRequest) =>
+      restClient.put<UpdateStepRequest, void>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.BASE}`,
         data,
       ),
 
-    // DELETE {BASE_URL}/main/api/projects/steps?projectId={projectId}&stepId={stepId}
-    delete: (projectId: number, stepId: number) =>
-      restClient.delete<void>(
+    // DELETE {BASE_URL}/main/api/projects/steps
+    delete: (data: DeleteStepRequest) =>
+      restClient.delete<DeleteStepRequest, void>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.BASE}`,
-        { projectId: String(projectId), stepId: String(stepId) },
+        data,
       ),
   },
 
@@ -83,7 +83,6 @@ export const ProjectApi = {
     delete: (checklistId: number) =>
       restClient.delete<void>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.CHECKLIST.BASE}`,
-        { checklistId: String(checklistId) },
       ),
   },
 };

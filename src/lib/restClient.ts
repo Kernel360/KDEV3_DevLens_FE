@@ -135,20 +135,17 @@ async function put<T, U>(url: string, body: T, headers = {}): Promise<U> {
 /**
  * DELETE 요청
  * @param {string} url - 요청을 보낼 URL
- * @param {object} [params] - 추가 파라미터
+ * @param {object} [body] - 요청에 포함할 데이터 (JSON 형태)
  * @returns {Promise<object>} - 응답 데이터
  */
-async function del<T>(
-  url: string,
-  params?: Record<string, string>,
-): Promise<T> {
-  const fullUrl = buildUrl(url, params);
-  const response = await fetch(fullUrl, {
+async function del<T, U = void>(url: string, body?: T): Promise<U> {
+  const response = await fetch(url, {
     method: "DELETE",
     credentials: "include",
     headers: defaultHeaders,
+    ...(body && { body: JSON.stringify(body) }),
   });
-  return handleResponse<T>(response);
+  return handleResponse<U>(response);
 }
 
 async function patch<T, U>(url: string, body: T, headers = {}): Promise<U> {

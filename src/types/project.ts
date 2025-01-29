@@ -62,3 +62,15 @@ export type CreateProjectChecklistRequest = Omit<
   "id" | "checklistStatus"
 >;
 export type UpdateProjectChecklistRequest = ProjectChecklist;
+
+export interface UpdateStepRequest {
+  stepId: number;
+  stepName: string;
+  stepDescription: string;
+  stepOrder: number;
+}
+
+export interface DeleteStepRequest {
+  projectId: number;
+  stepId: number;
+}
