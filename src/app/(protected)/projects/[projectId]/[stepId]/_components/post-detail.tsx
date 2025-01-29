@@ -140,12 +140,12 @@ function PostDetail({ id }: { id: number }) {
         )} */}
 
         {/* 댓글 */}
-        {post.comments && post.comments.length > 0 && (
-          <>
-            <Separator />
-            <CommentsSection comments={post.comments} postId={post.postId} onCommentUpdate={refetch} />
-          </>
-        )}
+        <Separator />
+        <CommentsSection
+          comments={post.comments || []}
+          postId={post.postId}
+          onCommentUpdate={refetch}
+        />
       </div>
     </>
   );
