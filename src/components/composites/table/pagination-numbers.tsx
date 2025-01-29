@@ -29,6 +29,7 @@ export default function PaginationNumbers({
       {visiblePages.map((pageNum) => (
         <PaginationItem key={pageNum}>
           <PaginationLink
+            className="cursor-pointer"
             onClick={() => onPageChange(pageNum)}
             isActive={currentPage === pageNum}
           >
