@@ -2,7 +2,8 @@
 export interface Project {
   projectId: number;
   projectName: string;
-  customerCompanyName: string;
+  customerName: string;
+  // customerCompanyName: string;
   developerName: string;
   projectDescription: string;
   projectTypeName: string;

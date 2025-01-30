@@ -37,6 +37,15 @@ export function formatPhoneNumber(value: string) {
     .replace(/(\d{3,4})(?=\d{4})/g, "$1-");
 }
 
+export function handlePhoneNumberChange(
+  e: React.ChangeEvent<HTMLInputElement>,
+  onChange: (value: string) => void,
+) {
+  onChange(formatPhoneNumber(e.target.value));
+}
+
+
+// 회사 사업자등록번호
 export function formatRegistrationNumber(value: string) {
   if (!value) return value;
   const numbers = value.replace(/[^\d]/g, "");
@@ -46,6 +55,13 @@ export function formatRegistrationNumber(value: string) {
     if (!p3) return `${p1}-${p2}`;
     return `${p1}-${p2}-${p3}`;
   });
+}
+
+export function handleRegistrationNumberChange(
+  e: React.ChangeEvent<HTMLInputElement>,
+  onChange: (value: string) => void,
+) {
+  onChange(formatRegistrationNumber(e.target.value));
 }
 
 // 상태 관련 헬퍼 함수들

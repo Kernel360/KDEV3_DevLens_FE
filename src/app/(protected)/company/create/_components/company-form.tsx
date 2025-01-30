@@ -1,10 +1,13 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 import { adminCompanyApi } from "@/lib/apis/admin/adminCompanyApi";
-import { formatPhoneNumber, formatRegistrationNumber } from "@/lib/utils";
+import { BUSINESS_TYPE_OPTIONS } from "@/lib/constants/selects";
+import {
+  handlePhoneNumberChange,
+  handleRegistrationNumberChange,
+} from "@/lib/utils";
 import { createCompanySchema, type CompanyFormData } from "@/schemas/company";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
   Form,
@@ -18,32 +21,15 @@ import {
   RadioGroupItem,
 } from "@ui";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-function handleRegistrationNumberChange(
-  e: React.ChangeEvent<HTMLInputElement>,
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-) {
-  const formatted = formatRegistrationNumber(e.target.value);
-  e.target.value = formatted;
-  onChange(e);
-}
-
-function handlePhoneNumberChange(
-  e: React.ChangeEvent<HTMLInputElement>,
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
-) {
-  const formatted = formatPhoneNumber(e.target.value);
-  e.target.value = formatted;
-  onChange(e);
-}
 
 export function CompanyForm() {
   const form = useForm<CompanyFormData>({
     resolver: zodResolver(createCompanySchema),
     defaultValues: {
       companyName: "",
-      businessType: "법인",
+      businessType: "CORPORATION",
       registrationNumber: "", // 사업자등록번호
       representativeName: "", // 대표자명
       representativeContact: "", // 대표번호
@@ -59,8 +45,7 @@ export function CompanyForm() {
     try {
       const requestData = {
         companyName: data.companyName,
-        businessType:
-          data.businessType === "법인" ? "CORPORATION" : "INDIVIDUAL",
+        businessType: data.businessType,
         businessRegistrationNumber: data.registrationNumber,
         representativeName: data.representativeName,
         representativeContact: data.representativeContact,
@@ -140,14 +125,12 @@ export function CompanyForm() {
                       defaultValue={field.value}
                       className="flex gap-4 pt-2"
                     >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="법인" id="corporate" />
-                        <FormLabel htmlFor="corporate">법인</FormLabel>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="개인" id="individual" />
-                        <FormLabel htmlFor="individual">개인</FormLabel>
-                      </div>
+                      {Object.entries(BUSINESS_TYPE_OPTIONS).map(([key, value]) => (
+                        <div key={key} className="flex items-center space-x-2">
+                          <RadioGroupItem value={key} id={key} />
+                          <FormLabel htmlFor={key}>{value}</FormLabel>
+                        </div>
+                      ))}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />

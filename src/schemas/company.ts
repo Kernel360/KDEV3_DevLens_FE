@@ -5,7 +5,7 @@ export const createCompanySchema = z.object({
     .string()
     .min(1, { message: "회사명은 필수입니다" })
     .max(100, { message: "회사명은 100자 이내로 입력해주세요" }),
-  businessType: z.enum(["법인", "개인"], {
+  businessType: z.enum(["CORPORATION", "INDIVIDUAL"], {
     required_error: "사업자 유형을 선택해주세요",
   }),
   registrationNumber: z
