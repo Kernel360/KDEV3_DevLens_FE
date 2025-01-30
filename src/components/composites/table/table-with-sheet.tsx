@@ -36,7 +36,7 @@ export default function TableWithSheet<T extends { id: number }>({
           transparentOverlay
         >
           <SheetHeader>
-            <SheetTitle>게시글</SheetTitle>
+            <SheetTitle className="sr-only">상세 조회</SheetTitle>
           </SheetHeader>
           <div className="h-[calc(100vh-4rem)] overflow-y-auto">
             {id && (

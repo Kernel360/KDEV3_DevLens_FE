@@ -39,7 +39,10 @@ export function DataTable<T extends { id: number | string }>({
         <TableHeader>
           <TableRow>
             {columns.map((column) => (
-              <TableHead key={column.id} className={cn(column.className)}>
+              <TableHead
+                key={column.id}
+                className={cn(column.className, "break-keep")}
+              >
                 {column.header}
               </TableHead>
             ))}

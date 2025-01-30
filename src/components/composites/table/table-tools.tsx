@@ -21,7 +21,7 @@ export default function TableTools() {
   const [filter, setFilter] = useQueryState("filter");
 
   return (
-    <div className="my-3 flex w-full justify-between gap-2">
+    <div className="my-3 flex w-full justify-between gap-2 p-1">
       <div className="flex flex-grow gap-2">
         <Select value={filter ?? undefined} onValueChange={setFilter}>
           <SelectTrigger className="w-20">
@@ -48,7 +48,7 @@ export default function TableTools() {
         </Button>
       </div>
       <Select value={sort} onValueChange={setSort}>
-        <SelectTrigger className="w-20">
+        <SelectTrigger className="w-fit">
           <SelectValue placeholder="정렬" />
         </SelectTrigger>
         <SelectContent>
