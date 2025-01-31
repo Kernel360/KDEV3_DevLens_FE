@@ -14,7 +14,6 @@ export const AuthApi = {
     restClient.post<LoginRequest, LoginResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.LOGIN}`,
       data,
-      { rawResponse: true },
     ),
 
   // POST /api/logout
@@ -39,5 +38,12 @@ export const AuthApi = {
     restClient.patch(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.RESET_PASSWORD}`,
       data,
+    ),
+
+  // POST /api/auth/refresh
+  refreshToken: () =>
+    restClient.post<void, void>(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.REFRESH}`,
+      undefined,
     ),
 };

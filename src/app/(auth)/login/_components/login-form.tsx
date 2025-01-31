@@ -24,7 +24,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import LoginSubmitButton from "./login-submit-button";
 import { toast } from "sonner";
-import * as React from "react";
 
 export function LoginForm({
   className,
@@ -46,6 +45,8 @@ export function LoginForm({
       const searchParams = new URLSearchParams(window.location.search);
       const redirectTo = searchParams.get("redirect_to") || "/dashboard";
       redirect(redirectTo);
+    } else {
+      toast.error(res.message);
     }
   }
 

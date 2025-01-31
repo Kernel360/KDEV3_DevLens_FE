@@ -1,18 +1,10 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { jwtDecode, JwtPayload } from "jwt-decode";
-import { AuthApi } from "../apis/main/authApi";
 import { redirect } from "next/navigation";
+import { AuthApi } from "../apis/main/authApi";
 import { LoginRequest } from "@/types/auth";
-
-interface CustomJwtPayload extends JwtPayload {
-  sub: string;
-  email: string;
-  auth: string;
-}
-
-const isProduction = process.env.NODE_ENV === "production";
+import { APIError } from "@/types/common";
 
 export async function loginAction(data: LoginRequest) {
   try {
@@ -21,46 +13,45 @@ export async function loginAction(data: LoginRequest) {
       password: data.password,
     });
 
-    // 응답 헤더에서 토큰 확인
-    const accessToken = response.headers?.get("authorization");
-    if (!accessToken) throw new Error("No access token found");
-
-    // JWT 토큰을 쿠키에 저장
-    const cookieStore = await cookies();
-    cookieStore.set("accessToken", accessToken, {
-      httpOnly: true,
-      secure: isProduction || process.env.API_URL?.startsWith("https://"),
-      sameSite: isProduction ? "strict" : "lax",
-      path: "/",
-    });
-
-    const decodedAccessToken = jwtDecode<CustomJwtPayload>(accessToken);
-    const { auth, email } = decodedAccessToken;
-    const { name, role } = response;
+    console.log(response);
 
     return {
       success: true,
       user: {
-        loginId: data.loginId,
-        name,
-        email,
-        auth,
-        role,
+        loginId: response.loginId,
+        name: response.name,
+        email: response.email,
+        role: response.role,
+        profileUrl: response.profileUrl,
+        companyId: response.companyId,
+        companyName: response.companyName,
+        department: response.department,
+        position: response.position,
       },
     };
   } catch (error) {
-    return { success: false, message: error };
+    return {
+      success: false,
+      message:
+        error instanceof APIError
+          ? error.message
+          : "로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+    };
   }
 }
 
 export async function logoutAction() {
   try {
-    const cookieStore = await cookies();
-    cookieStore.delete("accessToken");
-    console.log("logout");
+    // 서버에 로그아웃 요청
     await AuthApi.logout();
+
+    // 쿠키 삭제
+    const cookieStore = await cookies();
+    cookieStore.delete("X-Access-Token");
+    cookieStore.delete("X-Refresh-Token");
   } catch (error) {
     return { success: false, message: error };
   }
+
   redirect("/login");
 }

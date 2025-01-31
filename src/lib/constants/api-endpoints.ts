@@ -37,6 +37,7 @@ export const MAIN_ENDPOINTS = {
     SEND_MAIL: "/api/send-mail",
     CHECK_MAIL: "/api/check-mail",
     RESET_PASSWORD: "/api/members/reset-password",
+    REFRESH: "/api/auth/refresh",
   },
 
   MEMBER: {

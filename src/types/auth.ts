@@ -15,9 +15,13 @@ export interface EmailVerificationRequest {
 }
 
 export interface LoginResponse {
+  loginId: string;
   name: string;
+  email: string;
   role: string;
-  headers: {
-    get(name: string): string | null;
-  };
+  profileUrl: string | null;
+  companyId: number;
+  companyName: string;
+  department: string | null;
+  position: string | null;
 }
