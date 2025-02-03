@@ -2,20 +2,20 @@ import { API_PATH, MAIN_ENDPOINTS } from "@/lib/constants/api-endpoints";
 import restClient from "@/lib/restClient";
 import {
   CreateProjectChecklistRequest,
-  CreateProjectStepRequest,
   Project,
   ProjectChecklist,
   ProjectListResponse,
   ProjectStepResponse,
   UpdateStepRequest,
   DeleteStepRequest,
+  CreateStepRequest,
 } from "@/types/project";
 
 export const ProjectApi = {
   // GET {BASE_URL}/main/api/projects/{memberId}
-  getList: (memberId: number) =>
+  getList: () =>
     restClient.get<ProjectListResponse>(
-      `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}/${memberId}`,
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}`,
     ),
 
   // GET {BASE_URL}/main/api/projects/{projectId}
@@ -32,24 +32,23 @@ export const ProjectApi = {
       ),
 
     // POST {BASE_URL}/main/api/projects/steps
-    create: (data: CreateProjectStepRequest) =>
-      restClient.post<CreateProjectStepRequest, void>(
-        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.BASE}`,
+    create: (projectId: number, data: CreateStepRequest) =>
+      restClient.post<CreateStepRequest, void>(
+        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}`,
         data,
       ),
 
     // PUT {BASE_URL}/main/api/projects/steps
-    update: (data: UpdateStepRequest) =>
+    update: (stepId: number, data: UpdateStepRequest) =>
       restClient.put<UpdateStepRequest, void>(
-        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.BASE}`,
+        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.BASE}/${stepId}`,
         data,
       ),
 
     // DELETE {BASE_URL}/main/api/projects/steps
-    delete: (data: DeleteStepRequest) =>
+    delete: (projectId: number, stepId: number) =>
       restClient.delete<DeleteStepRequest, void>(
-        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.BASE}`,
-        data,
+        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}${stepId}`,
       ),
   },
 

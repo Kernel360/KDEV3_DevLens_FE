@@ -49,16 +49,16 @@ export interface ProjectStep {
 
 export interface ProjectChecklist {
   checklistId: number;
-  projectId: number;
-  title: string;
-  description: string;
+  // projectId: number;
+  checklistName: string;
+  // description: string;
   checklistStatus: "PENDING" | "APPROVED" | "REJECTED";
-  createdAt: string;
-  updatedAt: string;
+  approvalTime: string;
+  // createdAt: string;
+  // updatedAt: string;
 }
 
 // API 요청 타입들
-export type CreateProjectStepRequest = Omit<ProjectStep, "id">;
 export type UpdateProjectStepRequest = ProjectStep;
 export type CreateProjectChecklistRequest = Omit<
   ProjectChecklist,
@@ -66,8 +66,13 @@ export type CreateProjectChecklistRequest = Omit<
 >;
 export type UpdateProjectChecklistRequest = ProjectChecklist;
 
+export interface CreateStepRequest {
+  stepName: string;
+  stepDescription: string;
+  stepOrderNumber: number;
+  checklists: [];
+}
 export interface UpdateStepRequest {
-  stepId: number;
   stepName: string;
   stepDescription: string;
   stepOrder: number;

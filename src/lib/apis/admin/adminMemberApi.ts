@@ -60,4 +60,8 @@ export const adminMemberApi = {
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BATCH}`,
       data,
     ),
+  delete: (id: number) =>
+    restClient.delete<void>(
+      `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.DETAIL(id)}`,
+    ),
 };

@@ -1,16 +1,8 @@
 import SectionTitle from "@/components/composites/section-title";
 import Header from "@/components/layout/Header";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui";
-import { Info } from "lucide-react";
 import { KanbanBoard } from "./_components/kanban-board";
+import { ErrorBoundary } from "@/components/error/error-boundary";
+import { Suspense } from "react";
 
 export default async function ProjectDetailPage({
   params,
@@ -18,6 +10,8 @@ export default async function ProjectDetailPage({
   params: Promise<{ projectId: string }>;
 }) {
   const { projectId } = await params;
+
+  console.log("projectId", projectId);
 
   return (
     <>
@@ -29,29 +23,13 @@ export default async function ProjectDetailPage({
         ]}
       />
       <div className="flex h-full flex-col overflow-hidden">
-        <Collapsible>
-          <div className="flex">
-            <SectionTitle>이슈</SectionTitle>
-
-            <CollapsibleTrigger className="flex items-center">
-              <Info className="mb-4 ml-4" />
-            </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent>
-            <Card className="mb-4">
-              <CardHeader>
-                <CardTitle>프로젝트 개요</CardTitle>
-              </CardHeader>
-              <CardContent>
-                프로젝트 설명프로젝트 설명프로젝트 설명프로젝트 설명프로젝트
-                설명프로젝트 설명프로젝트 설명프로젝트 설명프로젝트 설명프로젝트
-                설명프로젝트 설명프로젝트 설명프로젝트 설명프로젝트
-              </CardContent>
-            </Card>
-          </CollapsibleContent>
-        </Collapsible>
+      <SectionTitle>이슈</SectionTitle>
         <div className="mb-4 overflow-hidden">
-          <KanbanBoard projectId={projectId} />
+          <ErrorBoundary>
+            <Suspense fallback={<div>Loading...</div>}>
+              <KanbanBoard projectId={projectId} />
+            </Suspense>
+          </ErrorBoundary>
         </div>
         <SectionTitle>전체 게시물</SectionTitle>
         {/* 스텝 column 추가 */}

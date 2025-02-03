@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export default function ProjectCard(props: Project) {
   const {
-    projectId,
+    id,
     projectName,
     name,
     projectDescription,
@@ -21,7 +21,7 @@ export default function ProjectCard(props: Project) {
     customerCompanyName,
   } = props;
   return (
-    <Link href={`/projects/${projectId}`}>
+    <Link href={`/projects/${id}`}>
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between">

@@ -40,7 +40,12 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
   const queryClient = useQueryClient();
 
   const { mutate: updateStep, isPending: isUpdating } = useMutation({
-    mutationFn: ProjectApi.steps.update,
+    mutationFn: () =>
+      ProjectApi.steps.update(step.stepId, {
+        stepName: step.stepName,
+        stepDescription: step.description || "",
+        stepOrder: step.stepOrder,
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projectSteps"] });
       toast.success("단계가 수정되었습니다.");
@@ -54,11 +59,7 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
   });
 
   const { mutate: deleteStep, isPending: isDeleting } = useMutation({
-    mutationFn: () =>
-      ProjectApi.steps.delete({
-        projectId: Number(params.projectId),
-        stepId: step.stepId,
-      }),
+    mutationFn: () => ProjectApi.steps.delete(Number(params.projectId), step.stepId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projectSteps"] });
       toast.success("단계가 삭제되었습니다.");
@@ -74,12 +75,7 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
 
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    updateStep({
-      stepId: step.stepId,
-      stepName: step.stepName,
-      stepDescription: step.description || "",
-      stepOrder: step.stepOrder,
-    });
+    updateStep();
   };
 
   const isLoading = isUpdating || isDeleting;
@@ -136,7 +132,8 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
                 <Input
                   id="order"
                   type="number"
-                  value={step.stepOrder || 0}
+                  value={step.stepOrder || 1}
+                  min={1}
                   onChange={(e) =>
                     setStep({ ...step, stepOrder: Number(e.target.value) })
                   }
