@@ -10,10 +10,11 @@ import {
 
 export const AuthApi = {
   // POST /api/login
-  login: (data: LoginRequest) =>
-    restClient.post<LoginRequest, LoginResponse>(
+  login: (data: LoginRequest, options?: { rawResponse?: boolean }) =>
+    restClient.post<LoginRequest, Response | LoginResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.LOGIN}`,
       data,
+      { rawResponse: options?.rawResponse },
     ),
 
   // POST /api/logout

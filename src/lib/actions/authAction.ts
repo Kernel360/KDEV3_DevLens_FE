@@ -8,25 +8,55 @@ import { APIError } from "@/types/common";
 
 export async function loginAction(data: LoginRequest) {
   try {
-    const response = await AuthApi.login({
-      loginId: data.loginId,
-      password: data.password,
-    });
+    const response = (await AuthApi.login(
+      {
+        loginId: data.loginId,
+        password: data.password,
+      },
+      { rawResponse: true },
+    )) as Response;
 
-    console.log(response);
+    const cookieStore = await cookies();
+    const setCookieHeader = response.headers.get("set-cookie");
 
+    if (setCookieHeader) {
+      const cookies = setCookieHeader.split(",");
+      cookies.forEach((cookie) => {
+        const [cookieMain] = cookie.split(";");
+        const [cookieName, cookieValue] = cookieMain.split("=");
+
+        if (
+          cookieName.trim() === "X-Access-Token" ||
+          cookieName.trim() === "X-Refresh-Token"
+        ) {
+          cookieStore.set(cookieName.trim(), cookieValue, {
+            path: "/",
+            maxAge: cookieName.trim() === "X-Access-Token" ? 86400 : 3600,
+            expires: new Date(
+              Date.now() +
+                (cookieName.trim() === "X-Access-Token" ? 86400000 : 3600000),
+            ),
+            secure: true,
+            httpOnly: true,
+            sameSite: "none",
+          });
+        }
+      });
+    }
+
+    const responseData = await response.json();
     return {
       success: true,
       user: {
-        loginId: response.loginId,
-        name: response.name,
-        email: response.email,
-        role: response.role,
-        profileUrl: response.profileUrl,
-        companyId: response.companyId,
-        companyName: response.companyName,
-        department: response.department,
-        position: response.position,
+        loginId: responseData.data.loginId,
+        name: responseData.data.name,
+        email: responseData.data.email,
+        role: responseData.data.role,
+        profileUrl: responseData.data.profileUrl,
+        companyId: responseData.data.companyId,
+        companyName: responseData.data.companyName,
+        department: responseData.data.department,
+        position: responseData.data.position,
       },
     };
   } catch (error) {
