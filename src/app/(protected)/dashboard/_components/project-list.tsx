@@ -14,15 +14,17 @@ export default function ProjectList({
     return (
       <>
         <SectionTitle>{title}</SectionTitle>
-        <Card className="w-fit bg-muted/50">
-          <CardHeader>
-            <CardTitle className="text-base text-muted-foreground">
-              {title === "내 프로젝트"
-                ? "참여 중인 프로젝트가 없습니다"
-                : "현재 진행중인 프로젝트가 없습니다"}
-            </CardTitle>
-          </CardHeader>
-        </Card>
+        <section className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <Card className="bg-muted/50">
+            <CardHeader>
+              <CardTitle className="text-center text-base text-muted-foreground">
+                {title === "내 프로젝트"
+                  ? "참여 중인 프로젝트가 없습니다"
+                  : "현재 진행중인 프로젝트가 없습니다"}
+              </CardTitle>
+            </CardHeader>
+          </Card>
+        </section>
       </>
     );
   }

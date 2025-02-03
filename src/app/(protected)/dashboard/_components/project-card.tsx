@@ -1,6 +1,6 @@
 import { Project } from "@/types/project";
 import {
-  Badge,
+  // Badge,
   Card,
   CardContent,
   CardDescription,
@@ -15,10 +15,10 @@ export default function ProjectCard(props: Project) {
     projectName,
     name,
     projectDescription,
-    projectStatusCode,
+    // projectStatusCode,
     startDate,
     endDate,
-    customerCompanyName,
+    customerName,
   } = props;
   return (
     <Link href={`/projects/${id}`}>
@@ -26,14 +26,14 @@ export default function ProjectCard(props: Project) {
         <CardHeader>
           <CardTitle className="flex justify-between">
             <h3>{projectName || name}</h3>
-            <Badge variant="outline">{projectStatusCode}</Badge>
+            {/* <Badge variant="outline">{projectStatusCode}</Badge> */}
           </CardTitle>
           <CardDescription className="truncate">
             {projectDescription}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex justify-between text-sm">
-          <div>{customerCompanyName}</div>
+          <div>{customerName}</div>
           <div>
             {startDate} ~ {endDate}
           </div>
