@@ -3,14 +3,19 @@ import { APIError, APIResponse } from "@/types/common";
 type Headers = Record<string, string>;
 const defaultHeaders: Headers = {
   "Content-Type": "application/json",
-  Authorization:
-    "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsImxvZ2luSWQiOiJhc2RmMTIzIiwiZW1haWwiOiJhc2RmMTIzQG1vbmFtaS5jb20iLCJhdXRoIjoiUk9MRV9BRE1JTiIsImV4cCI6MTczODAyODg0Mn0.x91uFtykHz2H6qAS6P08rO_-gY4PmP0tTsJS2REQFFrVTQYentplmLN3INs9j4ZEWT6NagZsH8Zp1ZmvOw_QNA",
 };
 
 interface RequestOptions {
   rawResponse?: boolean;
   headers?: Record<string, string>;
   queryParams?: Record<string, string>;
+}
+
+interface NextRequestOptions extends RequestOptions {
+  next?: {
+    revalidate?: number | false;
+    tags?: string[];
+  };
 }
 
 async function handleResponse<T>(response: Response): Promise<T> {
@@ -72,15 +77,17 @@ async function get<T>(
   options: {
     queryParams?: Record<string, string | number>;
     headers?: Headers;
+    next?: NextRequestOptions["next"];
   } = {},
 ): Promise<T> {
-  const { queryParams, headers = {} } = options;
+  const { queryParams, headers = {}, next } = options;
   const fullUrl = buildUrl(url, queryParams);
 
   const response = await fetch(fullUrl, {
     method: "GET",
     credentials: "include",
     headers: { ...defaultHeaders, ...headers },
+    next,
   });
   return handleResponse<T>(response);
 }
@@ -135,11 +142,16 @@ async function put<T, U>(url: string, body: T, headers = {}): Promise<U> {
 /**
  * DELETE 요청
  * @param {string} url - 요청을 보낼 URL
- * @param {object} [body] - 요청에 포함할 데이터 (JSON 형태)
+ * @param {object} [params] - 추가 파라미터
  * @returns {Promise<object>} - 응답 데이터
  */
-async function del<T, U = void>(url: string, body?: T): Promise<U> {
-  const response = await fetch(url, {
+async function del<T, U = T>(
+  url: string,
+  body?: T,
+  params?: Record<string, string>,
+): Promise<U> {
+  const fullUrl = buildUrl(url, params);
+  const response = await fetch(fullUrl, {
     method: "DELETE",
     credentials: "include",
     headers: defaultHeaders,
