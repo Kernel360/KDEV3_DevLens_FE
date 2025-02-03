@@ -1,209 +1,212 @@
 "use client";
 
-import { InfoRow } from "@/components/composites/info-row";
-import { Badge } from "@/components/ui/badge";
+import DatePickerInput from "@/components/composites/date-picker-input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { adminProjectApi } from "@/lib/apis/admin/adminProjectApi";
-import { getStatusVariant } from "@/lib/utils";
-import { getStatusLabel } from "@/lib/utils";
-import { Project } from "@/types/project";
-import { useQuery } from "@tanstack/react-query";
-import { Edit2, Save } from "lucide-react";
+import { createProjectSchema } from "@/schemas/project";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function ProjectDetail({ id }: { id: number }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState<Partial<Project>>({});
 
-  const { data, isLoading } = useQuery({
+  const { data } = useSuspenseQuery({
     queryKey: ["projectDetail", id],
     queryFn: () => adminProjectApi.getDetail(id),
-    enabled: !!id,
   });
 
-  if (isLoading || !data) return null;
+  const form = useForm({
+    resolver: zodResolver(createProjectSchema),
+    defaultValues: {
+      projectName: data?.projectName || "",
+      projectDescription: data?.projectDescription || "",
+      bnsManager: data?.bnsManager || "",
+      contractNumber: data?.contractNumber || "",
+      plannedStartDate: data?.plannedStartDate || "",
+      plannedEndDate: data?.plannedEndDate || "",
+    },
+  });
 
-  const handleValueChange = (key: keyof Project, value: string) => {
-    setEditedData((prev) => ({ ...prev, [key]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      console.log("Saving:", editedData);
-      setIsEditing(false);
-    } catch (error) {
-      console.error("Failed to save:", error);
-    }
+  const statusOptions = {
+    PREPARED: "준비중",
+    IN_PROGRESS: "진행중",
+    COMPLETED: "완료",
+    CLOSED: "종료",
+    CANCELLED: "취소",
+    DELETED: "삭제됨",
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-end">
-        {isEditing ? (
-          <Button onClick={handleSave} variant="default" className="gap-2">
-            <Save className="h-4 w-4" />
-            저장
-          </Button>
-        ) : (
-          <Button
-            onClick={() => setIsEditing(true)}
-            variant="outline"
-            className="gap-2"
-          >
-            <Edit2 className="h-4 w-4" />
-            수정
-          </Button>
-        )}
+    <div className="mx-auto w-full max-w-4xl p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-2xl font-bold">프로젝트 상세</h2>
+        <Button
+          variant={isEditing ? "outline" : "default"}
+          onClick={() => setIsEditing(!isEditing)}
+        >
+          {isEditing ? "취소" : "수정"}
+        </Button>
       </div>
 
-      {/* 프로젝트 기본 정보 */}
-      <div>
-        <h2 className="mb-4 text-lg font-semibold">기본 정보</h2>
-        <Card>
-          <CardContent className="space-y-4 pt-6">
-            <InfoRow
-              label="프로젝트명"
-              value={data.projectName}
-              isEditing={isEditing}
-              onValueChange={(value) => handleValueChange("projectName", value)}
-            />
-            <InfoRow
-              label="상태"
-              value={
-                <Badge variant={getStatusVariant(data.projectStatusCode)}>
-                  {getStatusLabel(data.projectStatusCode)}
-                </Badge>
-              }
-            />
-            <InfoRow
-              label="계약번호"
-              value={data.contractNumber}
-              isEditing={isEditing}
-              onValueChange={(value) =>
-                handleValueChange("contractNumber", value)
-              }
-            />
-            <InfoRow
-              label="프로젝트 유형"
-              value={data.projectTypeName}
-              isEditing={isEditing}
-              onValueChange={(value) =>
-                handleValueChange("projectTypeName", value)
-              }
-            />
-          </CardContent>
-        </Card>
-      </div>
+      <Form {...form}>
+        <div className="grid grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="projectName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>프로젝트명</FormLabel>
+                <FormControl>
+                  <Input {...field} disabled={!isEditing} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      <Separator />
+          <FormItem>
+            <FormLabel>상태</FormLabel>
+            <Select disabled={!isEditing} defaultValue={data.projectStatusCode}>
+              <SelectTrigger>
+                <SelectValue>
+                  {statusOptions[data.projectStatusCode]}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(statusOptions).map(([key, value]) => (
+                  <SelectItem key={key} value={key}>
+                    {value}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormItem>
 
-      {/* 참여 기업 정보 */}
-      <div>
-        <h2 className="mb-4 text-lg font-semibold">참여 기업</h2>
-        <Card>
-          <CardContent className="space-y-4 pt-6">
-            <InfoRow
-              label="고객사"
-              value={data.customerName}
-              isEditing={isEditing}
-              onValueChange={(value) =>
-                handleValueChange("customerName", value)
-              }
-            />
-            <InfoRow
-              label="개발사"
-              value={data.developerName}
-              isEditing={isEditing}
-              onValueChange={(value) =>
-                handleValueChange("developerName", value)
-              }
-            />
-            <InfoRow
-              label="BNS 담당자"
-              value={data.bnsManagerName}
-              isEditing={isEditing}
-              onValueChange={(value) =>
-                handleValueChange("bnsManagerName", value)
-              }
-            />
-          </CardContent>
-        </Card>
-      </div>
+          <FormItem>
+            <FormLabel>고객사</FormLabel>
+            <Input value={data.customerCompanyName} disabled />
+          </FormItem>
 
-      <Separator />
+          <FormItem>
+            <FormLabel>개발사</FormLabel>
+            <Input value={data.developerCompanyName} disabled />
+          </FormItem>
 
-      {/* 프로젝트 일정 */}
-      <div>
-        <h2 className="mb-4 text-lg font-semibold">프로젝트 일정</h2>
-        <Card>
-          <CardContent className="space-y-4 pt-6">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <div className="space-y-4">
-                <InfoRow
-                  label="계획 시작일"
-                  value={data.plannedStartDate}
-                  isEditing={isEditing}
-                  onValueChange={(value) =>
-                    handleValueChange("plannedStartDate", value)
-                  }
-                />
-                <InfoRow
-                  label="계획 종료일"
-                  value={data.plannedEndDate}
-                  isEditing={isEditing}
-                  onValueChange={(value) =>
-                    handleValueChange("plannedEndDate", value)
-                  }
-                />
-              </div>
-              <div className="space-y-4">
-                <InfoRow
-                  label="실제 시작일"
-                  value={data.startDate || "미정"}
-                  valueClassName={
-                    !data.startDate ? "text-muted-foreground" : ""
-                  }
-                  isEditing={isEditing}
-                  onValueChange={(value) =>
-                    handleValueChange("startDate", value)
-                  }
-                />
-                <InfoRow
-                  label="실제 종료일"
-                  value={data.endDate || "미정"}
-                  valueClassName={!data.endDate ? "text-muted-foreground" : ""}
-                  isEditing={isEditing}
-                  onValueChange={(value) => handleValueChange("endDate", value)}
-                />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          <FormField
+            control={form.control}
+            name="projectDescription"
+            render={({ field }) => (
+              <FormItem className="col-span-2">
+                <FormLabel>프로젝트 설명</FormLabel>
+                <FormControl>
+                  <Textarea {...field} disabled={!isEditing} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-      {/* 프로젝트 설명 */}
-      {data.projectDescription && (
-        <>
-          <Separator />
-          <div>
-            <h2 className="mb-4 text-lg font-semibold">프로젝트 설명</h2>
-            <Card>
-              <CardContent className="pt-6">
-                <InfoRow
-                  label="설명"
-                  value={data.projectDescription}
-                  isEditing={isEditing}
-                  onValueChange={(value) =>
-                    handleValueChange("projectDescription", value)
-                  }
-                />
-              </CardContent>
-            </Card>
+          <FormField
+            control={form.control}
+            name="bnsManager"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>BNS 매니저</FormLabel>
+                <FormControl>
+                  <Input {...field} disabled={!isEditing} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="contractNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>계약번호</FormLabel>
+                <FormControl>
+                  <Input {...field} disabled={!isEditing} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="plannedStartDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>계획 시작일</FormLabel>
+                <FormControl>
+                  <DatePickerInput
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(date) =>
+                      field.onChange(date?.toISOString().split("T")[0])
+                    }
+                    disabled={!isEditing}
+                    placeholder="시작일 선택"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="plannedEndDate"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>계획 종료일</FormLabel>
+                <FormControl>
+                  <DatePickerInput
+                    value={field.value ? new Date(field.value) : undefined}
+                    onChange={(date) =>
+                      field.onChange(date?.toISOString().split("T")[0])
+                    }
+                    disabled={!isEditing}
+                    placeholder="종료일 선택"
+                    minDate={
+                      form.getValues("plannedStartDate")
+                        ? new Date(form.getValues("plannedStartDate"))
+                        : undefined
+                    }
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {isEditing && (
+          <div className="mt-6 flex justify-end space-x-2">
+            <Button type="submit">저장</Button>
           </div>
-        </>
-      )}
+        )}
+      </Form>
     </div>
   );
 }

@@ -1,10 +1,12 @@
 // 프로젝트 관련 타입
 export interface Project {
+  id: number;
   projectId: number;
-  projectName: string;
-  customerName: string;
-  // customerCompanyName: string;
-  developerName: string;
+  projectName?: string;
+  name?: string;
+  customerCompanyName?: string;
+  customerName?: string;
+  developerCompanyName: string;
   projectDescription: string;
   projectTypeName: string;
   projectStatusCode:
@@ -14,7 +16,7 @@ export interface Project {
     | "CLOSED"
     | "CANCELLED"
     | "DELETED";
-  bnsManagerName: string;
+  bnsManager: string;
   contractNumber: string;
   plannedStartDate: string;
   plannedEndDate: string;

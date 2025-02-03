@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { projectsData } from "@/lib/mockData";
 import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
 import { NAV_LIST } from "@/lib/constants/nav-list";
@@ -45,7 +44,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={NAV_LIST} />
-        <NavProjects projects={projectsData} />
+        <NavProjects projects={[]} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

@@ -36,7 +36,7 @@ export default function ProjectForm() {
       projectDescription: "",
       projectTypeId: 1,
       // projectStatusCode: "PREPARED",
-      bnsManagerName: "",
+      bnsManager: "",
       contractNumber: "",
       plannedStartDate: "",
       plannedEndDate: "",
@@ -172,7 +172,7 @@ export default function ProjectForm() {
 
             <FormField
               control={form.control}
-              name="bnsManagerName"
+              name="bnsManager"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>BNS 매니저</FormLabel>

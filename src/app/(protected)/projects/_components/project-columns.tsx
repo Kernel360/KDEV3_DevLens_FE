@@ -10,7 +10,9 @@ export const projectColumns: ColumnDef<Project>[] = [
   {
     id: "projectName",
     header: "프로젝트명",
-    cell: ({ row }) => <span className="font-bold">{row.original.projectName}</span>,
+    cell: ({ row }) => (
+      <span className="font-bold">{row.original.projectName}</span>
+    ),
   },
   {
     id: "customerCompanyName",
@@ -18,9 +20,9 @@ export const projectColumns: ColumnDef<Project>[] = [
     cell: ({ row }) => row.original.customerCompanyName,
   },
   {
-    id: "developerName",
+    id: "developerCompanyName",
     header: "개발사",
-    cell: ({ row }) => row.original.developerName,
+    cell: ({ row }) => row.original.developerCompanyName,
   },
   {
     id: "projectTypeName",
@@ -37,9 +39,9 @@ export const projectColumns: ColumnDef<Project>[] = [
     ),
   },
   {
-    id: "bnsManagerName",
+    id: "bnsManager",
     header: "BNS 담당자",
-    cell: ({ row }) => row.original.bnsManagerName,
+    cell: ({ row }) => row.original.bnsManager,
   },
   {
     id: "plannedStartDate",

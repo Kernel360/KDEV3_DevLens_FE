@@ -13,6 +13,7 @@ export default function ProjectCard(props: Project) {
   const {
     projectId,
     projectName,
+    name,
     projectDescription,
     projectStatusCode,
     startDate,
@@ -24,7 +25,7 @@ export default function ProjectCard(props: Project) {
       <Card>
         <CardHeader>
           <CardTitle className="flex justify-between">
-            <h3>{projectName}</h3>
+            <h3>{projectName || name}</h3>
             <Badge variant="outline">{projectStatusCode}</Badge>
           </CardTitle>
           <CardDescription className="truncate">

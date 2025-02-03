@@ -14,7 +14,7 @@ export const createProjectSchema = z.object({
   //   "CANCELLED",
   //   "DELETED",
   // ]),
-  bnsManagerName: z.string().min(1, "BNS 매니저명은 필수입니다"),
+  bnsManager: z.string().min(1, "BNS 매니저명은 필수입니다"),
   contractNumber: z.string().min(1, "계약번호는 필수입니다"),
   plannedStartDate: z.string().min(1, "계획 시작일은 필수입니다"),
   plannedEndDate: z.string().min(1, "계획 종료일은 필수입니다"),
