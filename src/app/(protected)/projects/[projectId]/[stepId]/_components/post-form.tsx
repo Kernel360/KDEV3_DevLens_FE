@@ -67,7 +67,7 @@ const formSchema = z.object({
       })
       .optional(),
   ),
-  // isPinned: z.boolean().default(false),
+  isPinned: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -93,8 +93,6 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
     // isPinned: false,
     // links: [{ title: "", url: "" }],
   };
-
-  console.log(steps);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -318,9 +316,10 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
           </div>
           <Card className="h-fit lg:w-72">
             <CardHeader>옵션</CardHeader>
-            <CardContent className="flex space-y-6 lg:flex-col">
-              {/* 상단고정 */}
-              {/* <FormField
+            <CardContent className="flex flex-col gap-6 lg:flex-row">
+              <div className="grid w-full grid-cols-2 gap-6 lg:grid-cols-1">
+                {/* 상단고정 */}
+                {/* <FormField
                 control={form.control}
                 name="isPinned"
                 render={({ field }) => (
@@ -337,76 +336,77 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                   </FormItem>
                 )}
               /> */}
-              {/* 상태 선택 */}
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>상태</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="상태를 선택하세요" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="default">기본</SelectItem>
-                        <SelectItem value="requested">요청</SelectItem>
-                        <SelectItem value="in_progress">진행</SelectItem>
-                        <SelectItem value="feedback">피드백</SelectItem>
-                        <SelectItem value="completed">완료</SelectItem>
-                        <SelectItem value="holding">보류</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              {/* 마감일 선택 */}
-              <FormField
-                control={form.control}
-                name="dueDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>마감일</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                {/* 상태 선택 */}
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem className="w-full min-w-[200px]">
+                      <FormLabel>상태</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-full pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>날짜를 선택하세요</span>
-                            )}
-                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                          </Button>
+                          <SelectTrigger>
+                            <SelectValue placeholder="상태를 선택하세요" />
+                          </SelectTrigger>
                         </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={field.onChange}
-                          disabled={(date) => date < new Date()}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                        <SelectContent>
+                          <SelectItem value="default">기본</SelectItem>
+                          <SelectItem value="requested">요청</SelectItem>
+                          <SelectItem value="in_progress">진행</SelectItem>
+                          <SelectItem value="feedback">피드백</SelectItem>
+                          <SelectItem value="completed">완료</SelectItem>
+                          <SelectItem value="holding">보류</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 마감일 선택 */}
+                <FormField
+                  control={form.control}
+                  name="dueDate"
+                  render={({ field }) => (
+                    <FormItem className="w-full min-w-[200px]">
+                      <FormLabel>마감일</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground",
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>날짜를 선택하세요</span>
+                              )}
+                              <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            disabled={(date) => date < new Date()}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
