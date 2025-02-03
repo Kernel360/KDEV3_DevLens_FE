@@ -1,6 +1,5 @@
 "use client";
 
-import { projectSteps } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,7 +24,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea
+  Textarea,
 } from "@ui";
 import { format } from "date-fns";
 import {
@@ -37,8 +36,13 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { PostApi } from "@/lib/apis/main/postApi";
+import { useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
+import { toast } from "sonner";
 
 import * as z from "zod";
+import { ProjectStep } from "@/types/project";
 
 const formSchema = z.object({
   step: z.string().min(1, { message: "단계를 선택해주세요" }),
@@ -68,19 +72,29 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function PostForm() {
+interface PostFormProps {
+  steps: ProjectStep[];
+  defaultStepId: number;
+}
+
+export default function PostForm({ steps, defaultStepId }: PostFormProps) {
+  const router = useRouter();
+  const params = useParams();
+  const stepId = Number(params.stepId);
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // TODO: 프로젝트 단계 가져오기 및 현재 단계 디폴트 값으로
-  const steps = projectSteps;
-
   const defaultValues: Partial<FormValues> = {
-    step: steps[0].id.toString(),
+    step: String(defaultStepId),
     status: "default",
+    title: "",
+    content: "",
+    links: [],
     // isPinned: false,
     // links: [{ title: "", url: "" }],
   };
+
+  console.log(steps);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -93,8 +107,22 @@ export default function PostForm() {
   });
 
   const onSubmit = async (data: FormValues) => {
-    // TODO: Implement form submission
-    console.log(data);
+    try {
+      await PostApi.create({
+        projectStepId: stepId,
+        title: data.title,
+        content: data.content,
+        deadline: data.dueDate ? data.dueDate.toISOString() : "",
+        // TODO: attachments 처리
+      });
+
+      toast.success("게시물이 작성되었습니다");
+      router.back();
+      router.refresh();
+    } catch (error) {
+      toast.error("게시물 작성에 실패했습니다");
+      console.error(error);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,7 +139,7 @@ export default function PostForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-6 lg:flex-row lg:gap-10">
+        <div className="flex flex-col gap-6 p-1 lg:flex-row lg:gap-10">
           <div className="flex grow flex-col space-y-6">
             {/* 단계 필드 */}
             <FormField
@@ -131,8 +159,11 @@ export default function PostForm() {
                     </FormControl>
                     <SelectContent>
                       {steps.map((step) => (
-                        <SelectItem key={step.id} value={step.id}>
-                          {step.title}
+                        <SelectItem
+                          key={step.stepId}
+                          value={String(step.stepId)}
+                        >
+                          {step.stepName}
                         </SelectItem>
                       ))}
                     </SelectContent>

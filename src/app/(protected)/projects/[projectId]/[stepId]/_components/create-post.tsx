@@ -5,8 +5,15 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Heading from "@/components/ui/heading";
 import PostForm from "./post-form";
+import { ProjectStep } from "@/types/project";
 
-export function CreatePost() {
+interface CreatePostProps {
+  steps: ProjectStep[];
+  currentStepId: number;
+}
+
+
+export function CreatePost({ steps, currentStepId }: CreatePostProps) {
   const router = useRouter();
 
   return (
@@ -17,7 +24,7 @@ export function CreatePost() {
         </Button>
         <Heading>새 게시물 작성</Heading>
       </div>
-      <PostForm />
+      <PostForm steps={steps} defaultStepId={currentStepId} />
     </div>
   );
 }

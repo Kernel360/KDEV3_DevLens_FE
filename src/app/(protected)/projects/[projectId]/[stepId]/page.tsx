@@ -9,14 +9,15 @@ import { Suspense } from "react";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 import { CreatePost } from "./_components/create-post";
 import PostListTable from "./_components/post-list-table";
-import { useParams } from "next/navigation";
-import { useQueryState } from "nuqs";
+import { useParams, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { ProjectApi } from "@/lib/apis/main/projectApi";
 
 export default function ProjectStepPage() {
   const params = useParams();
-  const [isNewPost] = useQueryState("isNewPost");
+  const searchParams = useSearchParams();
+  const isNewPost = searchParams.has("new");
+
   const { projectId, stepId } = params;
 
   const { data } = useQuery({
@@ -28,7 +29,7 @@ export default function ProjectStepPage() {
   const steps = data?.projectStepInfo ?? [];
 
   if (isNewPost) {
-    return <CreatePost />;
+    return <CreatePost steps={steps} currentStepId={Number(stepId)} />;
   }
 
   return (
@@ -53,9 +54,9 @@ export default function ProjectStepPage() {
             ))}
           </TabsList>
         </Tabs>
-        <Link href={{ query: { isNewPost: "true" } }}>
+        <Link href="?new">
           <Button>
-            <Plus />새 게시물
+            <Plus className="mr-2 h-4 w-4" />새 게시물
           </Button>
         </Link>
       </div>
