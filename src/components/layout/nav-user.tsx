@@ -1,7 +1,7 @@
 "use client";
 
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
-import { User } from "@/types/user";
+import { LoginResponse } from "@/types/auth";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,10 +18,24 @@ import {
 import Link from "next/link";
 import { UserAvatar } from "../composites/user-avatar";
 import { logoutAction } from "@/lib/actions/authAction";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
-export function NavUser({ user }: { user: User | null }) {
+export function NavUser({ user }: { user: LoginResponse | null }) {
   const { isMobile } = useSidebar();
-  const { name = "", email, avatar } = user || {};
+  const { name = "", email, profileUrl } = user || {};
+
+  const handleLogout = async () => {
+    const res = await logoutAction();
+
+    if (res?.success && res?.message) {
+      toast.info(res.message);
+    } else {
+      toast.error(res?.message);
+    }
+    redirect("/login");
+  };
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -31,7 +45,11 @@ export function NavUser({ user }: { user: User | null }) {
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <UserAvatar className="size-8" name={name} imageSrc={avatar} />
+              <UserAvatar
+                className="size-8"
+                name={name}
+                imageSrc={profileUrl || undefined}
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">{name}</span>
                 <span className="truncate text-xs">{email}</span>
@@ -47,7 +65,11 @@ export function NavUser({ user }: { user: User | null }) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <UserAvatar className="size-8" name={name} imageSrc={avatar} />
+                <UserAvatar
+                  className="size-8"
+                  name={name}
+                  imageSrc={profileUrl || undefined}
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">{name}</span>
                   <span className="truncate text-xs">{email}</span>
@@ -68,7 +90,7 @@ export function NavUser({ user }: { user: User | null }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logoutAction}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               로그아웃
             </DropdownMenuItem>

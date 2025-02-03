@@ -16,6 +16,12 @@ export const ProjectApi = {
   getList: () =>
     restClient.get<ProjectListResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}`,
+      {
+        next: {
+          tags: ["projects"],
+          revalidate: 60,
+        },
+      },
     ),
 
   // GET {BASE_URL}/main/api/projects/{projectId}
@@ -48,7 +54,7 @@ export const ProjectApi = {
     // DELETE {BASE_URL}/main/api/projects/steps
     delete: (projectId: number, stepId: number) =>
       restClient.delete<DeleteStepRequest, void>(
-        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}${stepId}`,
+        `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}/${stepId}`,
       ),
   },
 

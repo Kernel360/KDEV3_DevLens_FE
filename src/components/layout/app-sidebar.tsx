@@ -17,15 +17,24 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
 import { NAV_LIST } from "@/lib/constants/nav-list";
+import { ProjectApi } from "@/lib/apis/main/projectApi";
+import { useQuery } from "@tanstack/react-query";
+import { projectKeys } from "@/lib/queries/project";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAuthStore((state) => state.user);
   const pathname = usePathname();
   const hideSidebarRoutes = ["/login", "/forgot"];
 
+  const { data: projects } = useQuery({
+    queryKey: projectKeys.list(),
+    queryFn: () => ProjectApi.getList(),
+  });
+
   if (hideSidebarRoutes.includes(pathname)) {
     return null;
   }
+  const { role } = user;
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -33,7 +42,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <Link href="/dashboard">
           <h1
             className={cn(
-              "logo py-4 font-mono text-2xl font-bold",
+              "logo py-4 text-center font-mono text-2xl font-bold",
               "group-data-[collapsible=icon]:hidden",
               "group-data-[state=expanded]:block",
             )}
@@ -41,15 +50,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             DevLens
           </h1>
         </Link>
+        <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={NAV_LIST} />
-        <NavProjects projects={[]} />
+        <NavProjects projects={projects?.myProjects || []} />
+
+        {/* {role === "ADMIN" ? (
+          <NavMain items={NAV_LIST} />
+        ) : (
+          <NavProjects projects={projects?.myProjects || []} />
+        )} */}
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} />
-        {/* <TeamSwitcher teams={data.teams} /> */}
-      </SidebarFooter>
+      {/* <SidebarFooter></SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );
