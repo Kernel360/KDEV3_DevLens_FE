@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { AuthApi } from "../apis/main/authApi";
 import { LoginRequest } from "@/types/auth";
 import { APIError } from "@/types/common";
@@ -38,7 +37,7 @@ export async function loginAction(data: LoginRequest) {
             ),
             secure: true,
             httpOnly: true,
-            sameSite: "none",
+            sameSite: "lax",
           });
         }
       });
@@ -71,17 +70,26 @@ export async function loginAction(data: LoginRequest) {
 }
 
 export async function logoutAction() {
+  const cookieStore = await cookies();
   try {
-    // 서버에 로그아웃 요청
-    await AuthApi.logout();
-
-    // 쿠키 삭제
-    const cookieStore = await cookies();
     cookieStore.delete("X-Access-Token");
     cookieStore.delete("X-Refresh-Token");
-  } catch (error) {
-    return { success: false, message: error };
-  }
+    // 서버에 로그아웃 요청
+    const response = await AuthApi.logout();
 
-  redirect("/login");
+    if (response) {
+      return {
+        success: true,
+        message: response.message,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof APIError
+          ? error.message
+          : "로그아웃 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+    };
+  }
 }

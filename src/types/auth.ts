@@ -25,3 +25,7 @@ export interface LoginResponse {
   department: string | null;
   position: string | null;
 }
+
+export interface LogoutResponse {
+  message: string;
+}

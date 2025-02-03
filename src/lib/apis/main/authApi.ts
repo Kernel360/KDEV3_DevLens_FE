@@ -6,6 +6,7 @@ import {
   LoginResponse,
   ResetPasswordRequest,
   EmailVerificationRequest,
+  LogoutResponse,
 } from "@/types/auth";
 
 export const AuthApi = {
@@ -19,7 +20,7 @@ export const AuthApi = {
 
   // POST /api/logout
   logout: () =>
-    restClient.post<void, string>( // 응답 타입을 string으로 변경 (OK, UPDATED 등)
+    restClient.post<void, LogoutResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.LOGOUT}`,
       undefined,
     ),
