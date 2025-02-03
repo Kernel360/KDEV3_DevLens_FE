@@ -44,16 +44,18 @@ export const PostApi = {
   getListByStep: (
     projectStepId: number,
     page: number,
-    keyword?: string,
-    filter?: "TITLE" | "CONTENT" | "WRITER",
+    keyword: string = "",
+    filter?: "ALL" | "TITLE" | "CONTENT" | "WRITER",
+    sort?: "LATEST" | "OLDEST",
   ) =>
     restClient.get<PostListResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.LIST_BY_STEP(projectStepId)}`,
       {
         queryParams: {
           page: String(page),
-          ...(keyword && { keyword }),
+          keyword,
           ...(filter && { filter }),
+          ...(sort && { sort }),
         },
       },
     ),
