@@ -3,23 +3,32 @@
 import { InfoRow } from "@/components/composites/info-row";
 import { UserAvatar } from "@/components/composites/user-avatar";
 import Heading from "@/components/ui/heading";
-import { User } from "@/types/user";
 import { Button, Card } from "@ui";
 import { useState } from "react";
 import EditAccountInfoDialog from "./edit-account-info-dialog";
 import EditAvatarButton from "./edit-avatar-button";
 import WithdrawAlert from "./withdraw-alert";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { UserApi } from "@/lib/apis/main/userApi";
 
-interface AccountInfoProps {
-  userInfo: User;
-  avatar?: string;
-}
-
-export default function AccountInfo({ userInfo, avatar }: AccountInfoProps) {
+export default function AccountInfo() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const { name, loginId, email, phoneNumber, company, department, position } =
-    userInfo;
 
+  const { data: userInfo } = useSuspenseQuery({
+    queryKey: ["user"],
+    queryFn: () => UserApi.getDetail(),
+  });
+
+  const {
+    name,
+    loginId,
+    email,
+    phoneNumber,
+    company,
+    department,
+    position,
+    avatar,
+  } = userInfo;
 
   return (
     <section className="flex w-full flex-col">

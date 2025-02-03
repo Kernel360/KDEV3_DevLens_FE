@@ -21,11 +21,7 @@ import { logoutAction } from "@/lib/actions/authAction";
 
 export function NavUser({ user }: { user: User | null }) {
   const { isMobile } = useSidebar();
-  const {
-    name = "게스트",
-    email = "guest@example.com",
-    avatar = "",
-  } = user || {};
+  const { name = "", email, avatar } = user || {};
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -66,7 +62,7 @@ export function NavUser({ user }: { user: User | null }) {
                   기본 정보
                 </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="line-through">
                 <Bell />
                 알림
               </DropdownMenuItem>

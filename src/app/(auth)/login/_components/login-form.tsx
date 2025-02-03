@@ -3,7 +3,7 @@
 import { loginAction } from "@/lib/actions/authAction";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/schemas/signIn";
-// import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
@@ -36,11 +36,23 @@ export function LoginForm({
       password: "",
     },
   });
-  // const setUser = useAuthStore((state) => state.setUser);
+  const setUser = useAuthStore((state) => state.setUser);
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
     const res = await loginAction(values);
-    if (res.user) {
+    if (res.success && res.user) {
+      setUser({
+        loginId: res.user.loginId,
+        name: res.user.name,
+        email: res.user.email,
+        role: res.user.role,
+        profileUrl: res.user.profileUrl,
+        companyId: res.user.companyId,
+        companyName: res.user.companyName,
+        department: res.user.department,
+        position: res.user.position,
+      });
+
       toast.info(`반갑습니다, ${res.user.name}님`);
       const searchParams = new URLSearchParams(window.location.search);
       const redirectTo = searchParams.get("redirect_to") || "/dashboard";

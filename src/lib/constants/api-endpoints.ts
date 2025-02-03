@@ -42,7 +42,6 @@ export const MAIN_ENDPOINTS = {
 
   MEMBER: {
     BASE: "/api/members",
-    DETAIL: (loginId: string) => `/api/members/${loginId}`,
     PROFILE_IMAGE: (memberId: number) =>
       `/api/members/${memberId}/profile-image`,
   },

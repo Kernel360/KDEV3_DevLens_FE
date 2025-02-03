@@ -12,11 +12,13 @@ import {
   Button,
   Checkbox,
 } from "@ui";
+import { toast } from "sonner";
 
 export default function WithdrawAlert() {
   const handleWithdraw = () => {
     // TODO: API 호출하여 회원 탈퇴 처리
-    console.log("회원 탈퇴 처리");
+    // console.log("회원 탈퇴 처리");
+    toast.error("기능 업데이트 예정입니다.");
   };
 
   return (
@@ -24,7 +26,7 @@ export default function WithdrawAlert() {
       <AlertDialogTrigger asChild>
         <Button
           variant="link"
-          className="w-fit text-muted-foreground self-center"
+          className="w-fit self-center text-muted-foreground line-through"
           onClick={handleWithdraw}
         >
           회원 탈퇴

@@ -1,10 +1,10 @@
-import { User } from "@/types/user";
+import { LoginResponse } from "@/types/auth";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 interface AuthState {
-  user: User | null;
-  setUser: (user: User) => void;
+  user: LoginResponse | null;
+  setUser: (user: LoginResponse) => void;
   logout: () => void;
 }
 

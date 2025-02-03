@@ -6,7 +6,7 @@ export interface User {
   phoneNumber: string;
   company: string;
   companyId: number;
-  companyStatus: "Y" | "N";
+  companyStatus?: "Y" | "N";
   department: string;
   position: string;
   birthDate?: string;

@@ -11,10 +11,11 @@ import {
   Input,
   Label,
 } from "@ui";
-import { EmailVerification } from "@/app/(protected)/my/_components/email-verification";
+// import { EmailVerification } from "@/app/(protected)/my/_components/email-verification";
 import { useState } from "react";
 import { User } from "@/types/user";
 import { CompanySelect } from "./company-select";
+import { toast } from "sonner";
 
 interface EditAccountInfoDialogProps {
   isOpen: boolean;
@@ -28,12 +29,16 @@ export default function EditAccountInfoDialog({
   userInfo,
 }: EditAccountInfoDialogProps) {
   const [editingInfo, setEditingInfo] = useState<User>(userInfo);
-  const { loginId, email, phoneNumber, department, position } = editingInfo;
+  const { name, loginId, email, phoneNumber, department, position } =
+    editingInfo;
+
+  console.log(userInfo);
 
   const handleSave = () => {
     // TODO: API 호출하여 사용자 정보 업데이트
     // setUserInfo(editingInfo);
-    onOpenChange(false);
+    toast.error("기능 업데이트 예정입니다.");
+    // onOpenChange(false);
   };
 
   return (
@@ -44,6 +49,10 @@ export default function EditAccountInfoDialog({
           <DialogDescription>수정할 정보를 입력해주세요.</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="name">이름</Label>
+            <Input id="name" value={name} disabled className="bg-muted" />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="id">아이디</Label>
             <Input id="id" value={loginId} disabled className="bg-muted" />
@@ -58,7 +67,7 @@ export default function EditAccountInfoDialog({
                 setEditingInfo({ ...editingInfo, email: e.target.value })
               }
             />
-            <EmailVerification />
+            {/* <EmailVerification /> */}
           </div>
           <div className="space-y-2">
             <Label htmlFor="company">소속 회사</Label>

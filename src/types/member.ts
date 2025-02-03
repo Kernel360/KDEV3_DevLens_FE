@@ -15,6 +15,7 @@ export interface Member {
   position: string;
   companyId?: number;
   company?: string;
+  profileUrl?: string;
 }
 
 export interface MemberUpdateRequest {
