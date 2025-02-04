@@ -19,7 +19,7 @@ export default function CompanyListTable() {
   return (
     <TableWithSheet
       columns={companyColumns}
-      data={data.content}
+      data={data.content || []}
       content={CompanyDetail}
       totalPages={data.totalPages}
     />

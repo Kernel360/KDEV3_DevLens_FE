@@ -19,7 +19,7 @@ export default function ProjectListTable() {
   return (
     <TableWithSheet
       columns={projectColumns}
-      data={data.content}
+      data={data.content || []}
       content={ProjectDetail}
       totalPages={data.totalPages}
     />

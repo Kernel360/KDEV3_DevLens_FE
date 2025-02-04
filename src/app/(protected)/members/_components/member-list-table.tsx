@@ -19,7 +19,7 @@ export default function MemberListTable() {
   return (
     <TableWithSheet
       columns={memberColumns}
-      data={data.content}
+      data={data.content || []}
       content={MemberDetail}
       totalPages={data.totalPages}
     />
