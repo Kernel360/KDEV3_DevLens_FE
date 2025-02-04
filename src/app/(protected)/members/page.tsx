@@ -5,7 +5,7 @@ import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Suspense } from "react";
 import MemberListTable from "./_components/member-list-table";
 
-export default async function MembersPage() {
+export default function MembersPage() {
   return (
     <>
       <Header />

@@ -35,9 +35,10 @@ export async function loginAction(data: LoginRequest) {
               Date.now() +
                 (cookieName.trim() === "X-Access-Token" ? 86400000 : 3600000),
             ),
+            domain: ".devlens.work",
             secure: true,
             httpOnly: true,
-            sameSite: "lax",
+            sameSite: "none",
           });
         }
       });

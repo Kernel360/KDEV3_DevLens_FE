@@ -32,8 +32,6 @@ export default function EditAccountInfoDialog({
   const { name, loginId, email, phoneNumber, department, position } =
     editingInfo;
 
-  console.log(userInfo);
-
   const handleSave = () => {
     // TODO: API 호출하여 사용자 정보 업데이트
     // setUserInfo(editingInfo);

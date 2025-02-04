@@ -8,7 +8,6 @@ import { NavUser } from "@/components/layout/nav-user";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
@@ -53,16 +52,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={NAV_LIST} />
-        <NavProjects projects={projects?.myProjects || []} />
-
-        {/* {role === "ADMIN" ? (
+        {role === "ADMIN" ? (
           <NavMain items={NAV_LIST} />
         ) : (
           <NavProjects projects={projects?.myProjects || []} />
-        )} */}
+        )}
       </SidebarContent>
-      {/* <SidebarFooter></SidebarFooter> */}
       <SidebarRail />
     </Sidebar>
   );

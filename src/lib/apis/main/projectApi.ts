@@ -16,12 +16,12 @@ export const ProjectApi = {
   getList: () =>
     restClient.get<ProjectListResponse>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.BASE}`,
-      {
-        next: {
-          tags: ["projects"],
-          revalidate: 60,
-        },
-      },
+      // {
+      //   next: {
+      //     tags: ["projects"],
+      //     revalidate: 60,
+      //   },
+      // },
     ),
 
   // GET {BASE_URL}/main/api/projects/{projectId}

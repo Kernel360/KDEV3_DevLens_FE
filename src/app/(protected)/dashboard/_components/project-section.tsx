@@ -1,25 +1,22 @@
-import {
-  HydrationBoundary,
-  QueryClient,
-  dehydrate,
-} from "@tanstack/react-query";
+"use client";
+
+import { ProjectApi } from "@/lib/apis/main/projectApi";
 import ProjectList from "./project-list";
-import { prefetchProjects } from "@/lib/queries/project";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-export default async function ProjectSection() {
-  const queryClient = new QueryClient();
+export default function ProjectSection() {
+  // const projects = await ProjectApi.getList();
+  const { data: projects } = useSuspenseQuery({
+    queryKey: ["projects"],
+    queryFn: () => ProjectApi.getList(),
+  });
 
-  const { myProjects, companyProjects } = await prefetchProjects(queryClient);
-
-  console.log(myProjects);
-  console.log(companyProjects);
+  const { myProjects, companyProjects } = projects;
 
   return (
     <div className="space-y-6">
-      <HydrationBoundary state={dehydrate(queryClient)}>
-        <ProjectList projects={myProjects} title="내 프로젝트" />
-        <ProjectList projects={companyProjects} title="회사 프로젝트" />
-      </HydrationBoundary>
+      <ProjectList projects={myProjects} title="내 프로젝트" />
+      <ProjectList projects={companyProjects} title="회사 프로젝트" />
     </div>
   );
 }
