@@ -71,5 +71,15 @@ export const MAIN_ENDPOINTS = {
     DETAIL: (postId: number) => `/api/posts/${postId}`,
     LIST_BY_STEP: (projectStepId: number) =>
       `/api/posts/steps/${projectStepId}`,
+    LINKS: {
+      LIST: (postId: number) => `/api/posts/${postId}/links`,
+      DELETE: (postId: number, linkId: number) =>
+        `/api/posts/${postId}/links/${linkId}`,
+    },
+    FILES: {
+      LIST: (postId: number) => `/api/posts/${postId}/files`,
+      DELETE: (postId: number, fileId: number) =>
+        `/api/posts/${postId}/files/${fileId}`,
+    },
   },
 } as const;

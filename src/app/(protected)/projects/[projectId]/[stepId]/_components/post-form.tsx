@@ -36,9 +36,8 @@ import {
 } from "lucide-react";
 import { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { PostApi } from "@/lib/apis/main/postApi";
+import { PostApi, uploadFiles } from "@/lib/apis/main/postApi";
 import { useRouter } from "next/navigation";
-import { useParams } from "next/navigation";
 import { toast } from "sonner";
 
 import * as z from "zod";
@@ -47,27 +46,16 @@ import { ProjectStep } from "@/types/project";
 const formSchema = z.object({
   step: z.string().min(1, { message: "단계를 선택해주세요" }),
   title: z.string().min(2, { message: "제목은 필수 입력 항목입니다" }),
-  status: z.string(),
+  status: z.enum(["DEFAULT", "IN_PROGRESS", "COMPLETED"]),
+  priority: z.enum(["DEFAULT", "LOW", "MEDIUM", "HIGH"]),
   dueDate: z.date().optional(),
   content: z.string().min(10, { message: "본문을 10자 이상 입력해주세요" }),
-  files: z
-    .array(
-      z.object({
-        name: z.string(),
-        size: z.number(),
-        type: z.string(),
-      }),
-    )
-    .optional(),
   links: z.array(
-    z
-      .object({
-        title: z.string(),
-        url: z.string().url({ message: "올바른 URL을 입력해주세요" }),
-      })
-      .optional(),
+    z.object({
+      linkTitle: z.string(),
+      link: z.string().url({ message: "올바른 URL을 입력해주세요" }),
+    }),
   ),
-  isPinned: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -79,19 +67,16 @@ interface PostFormProps {
 
 export default function PostForm({ steps, defaultStepId }: PostFormProps) {
   const router = useRouter();
-  const params = useParams();
-  const stepId = Number(params.stepId);
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const defaultValues: Partial<FormValues> = {
     step: String(defaultStepId),
-    status: "default",
+    status: "DEFAULT",
     title: "",
     content: "",
     links: [],
-    // isPinned: false,
-    // links: [{ title: "", url: "" }],
+    priority: "DEFAULT",
   };
 
   const form = useForm<FormValues>({
@@ -106,13 +91,29 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      await PostApi.create({
-        projectStepId: stepId,
+      // 1. 게시글 생성
+      const response = await PostApi.create({
+        projectStepId: Number(data.step),
+        priority: data.priority,
+        status: data.status,
         title: data.title,
         content: data.content,
-        deadline: data.dueDate ? data.dueDate.toISOString() : "",
-        // TODO: attachments 처리
+        deadline: data.dueDate ? format(data.dueDate, "yyyy-MM-dd") : "",
+        linkInputList: data.links.map((link) => ({
+          linkTitle: link.linkTitle,
+          link: link.link,
+        })),
       });
+
+      // 2. 파일이 있다면 업로드
+      if (files.length > 0) {
+        const formData = new FormData();
+        files.forEach((file) => {
+          formData.append("files", file);
+        });
+
+        await uploadFiles(response.data.postId, formData);
+      }
 
       toast.success("게시물이 작성되었습니다");
       router.back();
@@ -225,8 +226,9 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full"
+                      className="w-full line-through"
                       onClick={() => fileInputRef.current?.click()}
+                      disabled={true}
                     >
                       <UploadIcon className="mr-2 h-4 w-4" />
                       파일 선택
@@ -269,7 +271,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => append({ title: "", url: "" })}
+                  onClick={() => append({ linkTitle: "", link: "" })}
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
                   링크 추가
@@ -279,7 +281,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                 <div key={field.id} className="flex gap-4">
                   <FormField
                     control={form.control}
-                    name={`links.${index}.title`}
+                    name={`links.${index}.linkTitle`}
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
@@ -291,7 +293,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                   />
                   <FormField
                     control={form.control}
-                    name={`links.${index}.url`}
+                    name={`links.${index}.link`}
                     render={({ field }) => (
                       <FormItem className="flex-1">
                         <FormControl>
@@ -318,24 +320,6 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
             <CardHeader>옵션</CardHeader>
             <CardContent className="flex flex-col gap-6 lg:flex-row">
               <div className="grid w-full grid-cols-2 gap-6 lg:grid-cols-1">
-                {/* 상단고정 */}
-                {/* <FormField
-                control={form.control}
-                name="isPinned"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center space-x-3 space-y-0">
-                    <FormControl>
-                      <Checkbox
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                    <div className="space-y-1 leading-none">
-                      <FormLabel>상단 고정</FormLabel>
-                    </div>
-                  </FormItem>
-                )}
-              /> */}
                 {/* 상태 선택 */}
                 <FormField
                   control={form.control}
@@ -353,12 +337,37 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="default">기본</SelectItem>
-                          <SelectItem value="requested">요청</SelectItem>
-                          <SelectItem value="in_progress">진행</SelectItem>
-                          <SelectItem value="feedback">피드백</SelectItem>
-                          <SelectItem value="completed">완료</SelectItem>
-                          <SelectItem value="holding">보류</SelectItem>
+                          <SelectItem value="DEFAULT">기본</SelectItem>
+                          <SelectItem value="IN_PROGRESS">진행</SelectItem>
+                          <SelectItem value="COMPLETED">완료</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* 우선순위 선택 */}
+                <FormField
+                  control={form.control}
+                  name="priority"
+                  render={({ field }) => (
+                    <FormItem className="w-full min-w-[200px]">
+                      <FormLabel>우선순위</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="우선순위를 선택하세요" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="DEFAULT">기본</SelectItem>
+                          <SelectItem value="LOW">낮음</SelectItem>
+                          <SelectItem value="MEDIUM">중간</SelectItem>
+                          <SelectItem value="HIGH">높음</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />

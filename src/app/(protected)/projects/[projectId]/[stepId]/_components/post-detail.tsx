@@ -7,7 +7,7 @@ import {
   getStatusLabel,
   getStatusVariant,
 } from "@/lib/utils";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import {
   Badge,
   Button,
@@ -17,15 +17,38 @@ import {
   DropdownMenuTrigger,
   Separator,
 } from "@ui";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Trash2, FileIcon, LinkIcon } from "lucide-react";
 import { CommentsSection } from "./comments-section";
+import { toast } from "sonner";
 
 function PostDetail({ id }: { id: number }) {
-  const { data: post, refetch } = useSuspenseQuery({
-    queryKey: ["postDetail", id],
-    queryFn: () => PostApi.getDetail(id),
-    retry: 1,
-  });
+  const [{ data: post, refetch }, { data: files }, { data: links }] =
+    useSuspenseQueries({
+      queries: [
+        {
+          queryKey: ["postDetail", id],
+          queryFn: () => PostApi.getDetail(id),
+        },
+        {
+          queryKey: ["postFiles", id],
+          queryFn: () => PostApi.getFiles(id),
+        },
+        {
+          queryKey: ["postLinks", id],
+          queryFn: () => PostApi.getLinks(id),
+        },
+      ],
+    });
+
+  const handleDeleteFile = async (fileId: number) => {
+    try {
+      await PostApi.deleteFile(id, fileId);
+      toast.success("파일이 삭제되었습니다");
+    } catch (error) {
+      toast.error(`파일 삭제에 실패했습니다 ${error}`);
+    }
+  };
+
 
   return (
     <>
@@ -101,43 +124,62 @@ function PostDetail({ id }: { id: number }) {
         </div>
 
         {/* 첨부파일 */}
-        {/* {post.attachments && post.attachments.length > 0 && (
+        {files && files.length > 0 && (
           <div>
             <h3 className="mb-3 font-medium">첨부파일</h3>
             <div className="space-y-2">
-              {post.attachments.map((file) => (
+              {files.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-sm">
                   <FileIcon className="h-4 w-4" />
-                  <a href={file.url} className="text-primary hover:underline">
-                    {file.name}
+                  <a
+                    href={file.path}
+                    className="text-primary hover:underline"
+                  >
+                    {file.displayTitle}
                   </a>
-                  <span className="text-muted-foreground">({file.size})</span>
+                  <span className="text-muted-foreground">
+                    ({file.size})
+                  </span>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteFile(file.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </div>
               ))}
             </div>
           </div>
-        )} */}
+        )}
 
         {/* 관련 링크 */}
-        {/* {post.attachments && post.relatedLinks.length > 0 && (
+        {links && links.length > 0 && (
           <div>
             <h3 className="mb-3 font-medium">관련 링크</h3>
             <div className="space-y-2">
-              {post.relatedLinks.map((link, index) => (
-                <div key={index} className="flex items-center gap-2 text-sm">
+              {links.map((link) => (
+                <div key={link.id} className="flex items-center gap-2 text-sm">
                   <LinkIcon className="h-4 w-4" />
                   <a
-                    href={link.url}
+                    href={link.link}
                     target="_blank"
                     className="text-primary hover:underline"
                   >
-                    {link.title}
+                    {link.linkTitle}
                   </a>
+                  {/* <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteLink(link.id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button> */}
                 </div>
               ))}
             </div>
           </div>
-        )} */}
+        )}
 
         {/* 댓글 */}
         <Separator />

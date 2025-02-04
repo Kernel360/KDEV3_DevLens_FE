@@ -2,7 +2,10 @@
   "openapi": "3.0.1",
   "info": { "title": "OpenAPI definition", "version": "v0" },
   "servers": [
-    { "url": "http://34.64.177.75:8444", "description": "Generated server url" }
+    {
+      "url": "http://34.64.208.235:8444",
+      "description": "Generated server url"
+    }
   ],
   "tags": [
     { "name": "Post API", "description": "게시글 관련 API" },
@@ -180,6 +183,30 @@
         "responses": {
           "200": {
             "description": "게시글 수정 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/APIResponse" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Post API"],
+        "summary": "게시글 삭제",
+        "description": "기존 게시글을 삭제합니다.",
+        "operationId": "deletePost",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "게시글 삭제 성공",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/APIResponse" }
@@ -1061,14 +1088,6 @@
             "example": 1
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/DeleteCommentRequest" }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
             "description": "댓글 삭제 성공",
@@ -1422,38 +1441,6 @@
         }
       }
     },
-    "/api/posts/{postId}/{registerId}": {
-      "delete": {
-        "tags": ["Post API"],
-        "summary": "게시글 삭제",
-        "description": "기존 게시글을 삭제합니다.",
-        "operationId": "deletePost",
-        "parameters": [
-          {
-            "name": "postId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          },
-          {
-            "name": "registerId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "게시글 삭제 성공",
-            "content": {
-              "application/json": {
-                "schema": { "$ref": "#/components/schemas/APIResponse" }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/posts/{postId}/links/{linkId}": {
       "delete": {
         "tags": ["Post API"],
@@ -1563,21 +1550,12 @@
         }
       },
       "PostUpdateRequest": {
-        "required": [
-          "content",
-          "isPinnedPost",
-          "modifierId",
-          "postId",
-          "projectStepId",
-          "status",
-          "title"
-        ],
+        "required": ["content", "postId", "projectStepId", "status", "title"],
         "type": "object",
         "properties": {
           "projectStepId": { "type": "integer", "format": "int64" },
           "parentPostId": { "type": "integer", "format": "int64" },
           "postId": { "type": "integer", "format": "int64" },
-          "isPinnedPost": { "type": "string", "enum": ["YES", "NO"] },
           "priority": {
             "type": "string",
             "enum": ["DEFAULT", "LOW", "MEDIUM", "HIGH"]
@@ -1594,8 +1572,7 @@
           },
           "title": { "maxLength": 100, "minLength": 5, "type": "string" },
           "content": { "maxLength": 10000, "minLength": 10, "type": "string" },
-          "deadline": { "type": "string", "format": "date" },
-          "modifierId": { "type": "integer", "format": "int64" }
+          "deadline": { "type": "string", "format": "date" }
         }
       },
       "PostProjectStepPostChecklist": {
@@ -1846,20 +1823,11 @@
         }
       },
       "PostCreateRequest": {
-        "required": [
-          "content",
-          "isPinnedPost",
-          "projectStepId",
-          "registerDate",
-          "registerId",
-          "status",
-          "title"
-        ],
+        "required": ["content", "projectStepId", "status", "title"],
         "type": "object",
         "properties": {
           "projectStepId": { "type": "integer", "format": "int64" },
           "parentPostId": { "type": "integer", "format": "int64" },
-          "isPinnedPost": { "type": "string", "enum": ["YES", "NO"] },
           "priority": {
             "type": "string",
             "enum": ["DEFAULT", "LOW", "MEDIUM", "HIGH"]
@@ -1877,8 +1845,6 @@
           "title": { "maxLength": 100, "minLength": 5, "type": "string" },
           "content": { "maxLength": 10000, "minLength": 10, "type": "string" },
           "deadline": { "type": "string", "format": "date" },
-          "registerId": { "type": "integer", "format": "int64" },
-          "registerDate": { "type": "string", "format": "date-time" },
           "linkInputList": {
             "maxItems": 2147483647,
             "minItems": 0,
@@ -1888,12 +1854,11 @@
         }
       },
       "PostCommentRequest": {
-        "required": ["content", "registerIp"],
+        "required": ["content"],
         "type": "object",
         "properties": {
           "parentCommentId": { "type": "integer", "format": "int64" },
-          "content": { "maxLength": 300, "minLength": 1, "type": "string" },
-          "registerIp": { "type": "string" }
+          "content": { "maxLength": 300, "minLength": 1, "type": "string" }
         }
       },
       "LoginPostRequest": {
@@ -1948,18 +1913,9 @@
         }
       },
       "PatchCommentRequest": {
-        "required": ["content", "modifierId", "modifierIp"],
+        "required": ["content"],
         "type": "object",
-        "properties": {
-          "content": { "type": "string" },
-          "modifierId": {
-            "maximum": 300,
-            "minimum": 1,
-            "type": "integer",
-            "format": "int64"
-          },
-          "modifierIp": { "type": "string" }
-        }
+        "properties": { "content": { "type": "string" } }
       },
       "PatchMemberResponse": {
         "type": "object",
@@ -2213,7 +2169,6 @@
           "postId": { "type": "integer", "format": "int64" },
           "projectStepId": { "type": "integer", "format": "int64" },
           "parentPostId": { "type": "integer", "format": "int64" },
-          "isPinnedPost": { "type": "string", "enum": ["YES", "NO"] },
           "priority": {
             "type": "string",
             "enum": ["DEFAULT", "LOW", "MEDIUM", "HIGH"]
@@ -2330,14 +2285,6 @@
         "properties": {
           "checklistId": { "type": "integer", "format": "int64" },
           "checklistStatus": { "type": "boolean" }
-        }
-      },
-      "DeleteCommentRequest": {
-        "required": ["modifierId", "modifierIp"],
-        "type": "object",
-        "properties": {
-          "modifierId": { "type": "integer", "format": "int64" },
-          "modifierIp": { "type": "string" }
         }
       }
     }

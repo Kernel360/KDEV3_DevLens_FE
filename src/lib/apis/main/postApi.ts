@@ -6,6 +6,9 @@ import {
   PostListResponse,
   PostUpdateRequest,
   PostCreateRequest,
+  LinkResponse,
+  FileMetadataDto,
+  CreatePostResponse,
 } from "@/types/post";
 import {
   CommentRequest,
@@ -22,7 +25,7 @@ export const PostApi = {
 
   // POST /api/posts
   create: (data: PostCreateRequest) =>
-    restClient.post<PostCreateRequest, APIResponse>(
+    restClient.post<PostCreateRequest, { data: CreatePostResponse }>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.BASE}`,
       data,
     ),
@@ -88,4 +91,45 @@ export const PostApi = {
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.DETAIL(postId)}/comments/${commentId}`,
       data,
     ),
+
+  // GET /api/posts/{postId}/links
+  getLinks: (postId: number) =>
+    restClient.get<LinkResponse[]>(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.LINKS.LIST(postId)}`,
+    ),
+
+  // DELETE /api/posts/{postId}/links/{linkId}
+  deleteLink: (postId: number, linkId: number) =>
+    restClient.delete(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.LINKS.DELETE(postId, linkId)}`,
+    ),
+
+  // GET /api/posts/{postId}/files
+  getFiles: (postId: number) =>
+    restClient.get<FileMetadataDto[]>(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.FILES.LIST(postId)}`,
+    ),
+
+  // DELETE /api/posts/{postId}/files/{fileId}
+  deleteFile: (postId: number, fileId: number) =>
+    restClient.delete(
+      `${API_PATH.MAIN}${MAIN_ENDPOINTS.POST.FILES.DELETE(postId, fileId)}`,
+    ),
 };
+
+export async function uploadFiles(
+  postId: number,
+  formData: FormData,
+): Promise<FileMetadataDto[]> {
+  const response = await fetch(`${API_PATH.MAIN}/api/posts/${postId}/files`, {
+    method: "POST",
+    body: formData,
+    credentials: "include",
+  });
+
+  if (!response.ok) {
+    throw new Error("파일 업로드에 실패했습니다");
+  }
+
+  return response.json();
+}
