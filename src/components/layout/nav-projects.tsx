@@ -29,7 +29,7 @@ export function NavProjects({ projects }: { projects: Project[] }) {
       <SidebarGroupLabel>프로젝트</SidebarGroupLabel>
       <SidebarMenu>
         {projects.map((item) => (
-          <SidebarMenuItem key={item.projectName}>
+          <SidebarMenuItem key={item.id}>
             <SidebarMenuButton asChild>
               <Link href={`/projects/${item.id}`}>
                 <span className="ml-4">{item.projectName}</span>
