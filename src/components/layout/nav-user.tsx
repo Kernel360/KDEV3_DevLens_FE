@@ -18,8 +18,8 @@ import {
 import Link from "next/link";
 import { UserAvatar } from "../composites/user-avatar";
 import { logoutAction } from "@/lib/actions/authAction";
-import { redirect } from "next/navigation";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 export function NavUser({ user }: { user: LoginResponse | null }) {
   const { isMobile } = useSidebar();
@@ -90,7 +90,7 @@ export function NavUser({ user }: { user: LoginResponse | null }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout}>
+            <DropdownMenuItem onClick={handleLogout} className="line-through">
               <LogOut />
               로그아웃
             </DropdownMenuItem>

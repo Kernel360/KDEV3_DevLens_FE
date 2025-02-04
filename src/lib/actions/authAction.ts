@@ -72,9 +72,9 @@ export async function loginAction(data: LoginRequest) {
 
 export async function logoutAction() {
   const cookieStore = await cookies();
+  cookieStore.delete("X-Access-Token");
+  cookieStore.delete("X-Refresh-Token");
   try {
-    cookieStore.delete("X-Access-Token");
-    cookieStore.delete("X-Refresh-Token");
     // 서버에 로그아웃 요청
     const response = await AuthApi.logout();
 

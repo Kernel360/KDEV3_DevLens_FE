@@ -11,17 +11,17 @@ interface RequestOptions {
   queryParams?: Record<string, string>;
 }
 
-interface NextRequestOptions extends RequestOptions {
-  next?: {
-    revalidate?: number | false;
-    tags?: string[];
-  };
-}
+// interface NextRequestOptions extends RequestOptions {
+//   next?: {
+//     revalidate?: number | false;
+//     tags?: string[];
+//   };
+// }
 
 async function handleResponse<T>(response: Response): Promise<T> {
   try {
     const contentType = response.headers.get("content-type");
-    if (!contentType?.includes("application/json")) {
+    if (contentType && !contentType.includes("application/json")) {
       throw new APIError(
         response.status,
         `예상치 못한 응답 형식: ${contentType}`,
@@ -77,17 +77,29 @@ async function get<T>(
   options: {
     queryParams?: Record<string, string | number>;
     headers?: Headers;
-    next?: NextRequestOptions["next"];
+    // next?: NextRequestOptions["next"];
   } = {},
 ): Promise<T> {
-  const { queryParams, headers = {}, next } = options;
+  const {
+    queryParams,
+    headers = {},
+    // , next
+  } = options;
   const fullUrl = buildUrl(url, queryParams);
+
+  console.log("[RestClient] Calling GET:", {
+    url: fullUrl,
+    headers,
+    // next,
+    // 실행 환경 확인
+    isServer: typeof window === "undefined",
+  });
 
   const response = await fetch(fullUrl, {
     method: "GET",
     credentials: "include",
     headers: { ...defaultHeaders, ...headers },
-    next,
+    // next,
   });
   return handleResponse<T>(response);
 }
