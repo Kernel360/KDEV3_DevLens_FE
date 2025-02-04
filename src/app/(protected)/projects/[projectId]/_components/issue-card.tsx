@@ -1,15 +1,9 @@
-import IssueDetail from "@/app/(protected)/projects/[projectId]/_components/issue-detail";
 import { ProjectChecklist } from "@/types/project";
 import {
   Badge,
-  Button,
   Card,
   Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTrigger
 } from "@ui";
 
 interface IssueCardProps {
@@ -17,7 +11,6 @@ interface IssueCardProps {
 }
 
 export default function IssueCard({ issue }: IssueCardProps) {
-  console.log("issue", issue);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -31,7 +24,7 @@ export default function IssueCard({ issue }: IssueCardProps) {
           </div>
         </Card>
       </DialogTrigger>
-      <DialogContent className="flex h-[90vh] max-w-3xl flex-col">
+      {/* <DialogContent className="flex h-[90vh] max-w-3xl flex-col">
         <DialogHeader>
           <DialogTitle>이슈 상세</DialogTitle>
         </DialogHeader>
@@ -44,7 +37,7 @@ export default function IssueCard({ issue }: IssueCardProps) {
           </Button>
           <Button type="submit">승인</Button>
         </DialogFooter>
-      </DialogContent>
+      </DialogContent> */}
     </Dialog>
   );
 }

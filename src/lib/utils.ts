@@ -27,14 +27,20 @@ export function formatDateToRelative(dateStr: string): string {
 }
 
 export function formatPhoneNumber(value: string) {
-  if (!value) return value;
-  const phoneNumber = value.replace(/[^\d]/g, "");
+  // 숫자만 추출
+  const numbers = value.replace(/[^\d]/g, "");
 
-  return phoneNumber
-    .replace(/^02(?=\d{4})/g, "02-")
-    .replace(/^02(?=\d{7})/g, "02-")
-    .replace(/^(\d{3})(?=\d{4})/g, "$1-")
-    .replace(/(\d{3,4})(?=\d{4})/g, "$1-");
+  // 11자리로 제한
+  const limitedNumbers = numbers.slice(0, 11);
+
+  // 포맷팅
+  if (limitedNumbers.length <= 3) {
+    return limitedNumbers;
+  }
+  if (limitedNumbers.length <= 7) {
+    return `${limitedNumbers.slice(0, 3)}-${limitedNumbers.slice(3)}`;
+  }
+  return `${limitedNumbers.slice(0, 3)}-${limitedNumbers.slice(3, 7)}-${limitedNumbers.slice(7, 11)}`;
 }
 
 export function handlePhoneNumberChange(
@@ -43,7 +49,6 @@ export function handlePhoneNumberChange(
 ) {
   onChange(formatPhoneNumber(e.target.value));
 }
-
 
 // 회사 사업자등록번호
 export function formatRegistrationNumber(value: string) {

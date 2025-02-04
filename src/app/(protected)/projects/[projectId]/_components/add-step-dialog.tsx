@@ -98,6 +98,7 @@ export default function AddStepDialog({ nextStepOrder }: AddStepDialogProps) {
                 value={form.stepName}
                 onChange={(e) => setForm({ ...form, stepName: e.target.value })}
                 disabled={isPending}
+                maxLength={15}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -113,6 +114,7 @@ export default function AddStepDialog({ nextStepOrder }: AddStepDialogProps) {
                   setForm({ ...form, stepDescription: e.target.value })
                 }
                 disabled={isPending}
+                maxLength={30}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -123,6 +125,7 @@ export default function AddStepDialog({ nextStepOrder }: AddStepDialogProps) {
                 id="stepOrder"
                 type="number"
                 min={1}
+                max={10}
                 className="col-span-3"
                 value={form.stepOrderNumber}
                 onChange={(e) =>

@@ -17,6 +17,7 @@ export default function ProjectStepPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const isNewPost = searchParams.has("new");
+  const projectName = searchParams.get("projectName") || "프로젝트";
 
   const { projectId, stepId } = params;
 
@@ -37,8 +38,7 @@ export default function ProjectStepPage() {
       <Header
         breadcrumbs={[
           { label: "내 프로젝트", href: "/dashboard" },
-          // TODO: 프로젝트 이름 동적으로 받아오기
-          { label: "프로젝트 이름", href: `/projects/${projectId}` },
+          { label: projectName, href: `/projects/${projectId}` },
           { label: `단계별 게시판` },
         ]}
       />

@@ -11,8 +11,6 @@ export default async function ProjectDetailPage({
 }) {
   const { projectId } = await params;
 
-  console.log("projectId", projectId);
-
   return (
     <>
       <Header

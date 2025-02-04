@@ -45,6 +45,7 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
                   <Button
                     variant="outline"
                     className="invisible flex h-4 w-full items-center justify-center bg-transparent opacity-0 transition-all duration-200 group-hover:visible group-hover:opacity-100"
+                    disabled
                   >
                     <Plus size={12} />
                   </Button>
@@ -52,7 +53,7 @@ export function KanbanBoard({ projectId }: { projectId: string }) {
               </Card>
             </div>
           ))}
-        <AddStepDialog nextStepOrder={steps.length + 1} />
+        {steps.length < 10 && <AddStepDialog nextStepOrder={steps.length + 1} />}
       </div>
     </div>
   );

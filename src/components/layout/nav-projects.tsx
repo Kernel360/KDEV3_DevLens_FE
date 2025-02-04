@@ -1,28 +1,28 @@
 "use client";
 
-import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react";
+// import { Folder, Forward, MoreHorizontal, Trash2 } from "lucide-react";
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuSeparator,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuAction,
+  // SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
+  // useSidebar,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
 import { Project } from "@/types/project";
 
 export function NavProjects({ projects }: { projects: Project[] }) {
-  const { isMobile } = useSidebar();
+  // const { isMobile } = useSidebar();
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -35,7 +35,7 @@ export function NavProjects({ projects }: { projects: Project[] }) {
                 <span className="ml-4">{item.projectName}</span>
               </Link>
             </SidebarMenuButton>
-            <DropdownMenu>
+            {/* <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuAction showOnHover>
                   <MoreHorizontal />
@@ -61,7 +61,7 @@ export function NavProjects({ projects }: { projects: Project[] }) {
                   <span>Delete Project</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
-            </DropdownMenu>
+            </DropdownMenu> */}
           </SidebarMenuItem>
         ))}
         {/* <SidebarMenuItem>

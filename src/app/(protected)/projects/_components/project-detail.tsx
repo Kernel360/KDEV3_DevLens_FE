@@ -43,6 +43,7 @@ export default function ProjectDetail({ id }: { id: number }) {
       contractNumber: data?.contractNumber || "",
       plannedStartDate: data?.plannedStartDate || "",
       plannedEndDate: data?.plannedEndDate || "",
+      projectStatusCode: data?.projectStatusCode || "PREPARED",
     },
   });
 
@@ -83,23 +84,34 @@ export default function ProjectDetail({ id }: { id: number }) {
             )}
           />
 
-          <FormItem>
-            <FormLabel>상태</FormLabel>
-            <Select disabled={!isEditing} defaultValue={data.projectStatusCode}>
-              <SelectTrigger>
-                <SelectValue>
-                  {statusOptions[data.projectStatusCode]}
-                </SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(statusOptions).map(([key, value]) => (
-                  <SelectItem key={key} value={key}>
-                    {value}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </FormItem>
+          <FormField
+            control={form.control}
+            name="projectStatusCode"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>상태</FormLabel>
+                <Select
+                  disabled={!isEditing}
+                  value={field.value}
+                  onValueChange={field.onChange}
+                >
+                  <SelectTrigger>
+                    <SelectValue>
+                      {statusOptions[field.value as keyof typeof statusOptions]}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(statusOptions).map(([key, value]) => (
+                      <SelectItem key={key} value={key}>
+                        {value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
           <FormItem>
             <FormLabel>고객사</FormLabel>
