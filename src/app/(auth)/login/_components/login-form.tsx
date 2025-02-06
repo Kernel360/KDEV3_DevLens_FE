@@ -1,6 +1,6 @@
 "use client";
 
-import { loginAction } from "@/lib/actions/authAction";
+import { loginAction } from "@/lib/actions/loginAction";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/schemas/signIn";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import LoginSubmitButton from "./login-submit-button";
 import { toast } from "sonner";
+// import { AuthApi } from "@/lib/apis/main/authApi";
 
 export function LoginForm({
   className,
@@ -39,19 +40,10 @@ export function LoginForm({
   const setUser = useAuthStore((state) => state.setUser);
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
+    // const res = await AuthApi.login(values);
     const res = await loginAction(values);
     if (res.success && res.user) {
-      setUser({
-        loginId: res.user.loginId,
-        name: res.user.name,
-        email: res.user.email,
-        role: res.user.role,
-        profileUrl: res.user.profileUrl,
-        companyId: res.user.companyId,
-        companyName: res.user.companyName,
-        department: res.user.department,
-        position: res.user.position,
-      });
+      setUser({ ...res.user });
 
       toast.info(`반갑습니다, ${res.user.name}님`);
       const searchParams = new URLSearchParams(window.location.search);
@@ -106,7 +98,7 @@ export function LoginForm({
                   </FormItem>
                 )}
               />
-              <LoginSubmitButton />
+              <LoginSubmitButton isSubmitting={form.formState.isSubmitting} />
             </form>
           </Form>
 

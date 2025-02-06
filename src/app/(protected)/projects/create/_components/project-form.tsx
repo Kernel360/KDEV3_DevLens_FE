@@ -25,7 +25,7 @@ import {
 import { CompanySelect } from "@/app/(protected)/my/_components/company-select";
 import { PROJECT_TYPES } from "@/lib/constants/selects";
 import DatePickerInput from "@/components/composites/date-picker-input";
-
+import { MemberAssignment } from "./member-assignment";
 export default function ProjectForm() {
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(createProjectSchema),
@@ -252,6 +252,11 @@ export default function ProjectForm() {
                 <FormMessage />
               </FormItem>
             )}
+          />
+
+          <MemberAssignment
+            customerId={form.watch("customerId")}
+            developerId={form.watch("developerId")}
           />
 
           <Button type="submit" className="w-full">

@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useFormStatus } from "react-dom";
 
-export default function LoginSubmitButton() {
-  const { pending } = useFormStatus();
-
+export default function LoginSubmitButton({
+  isSubmitting,
+}: {
+  isSubmitting: boolean;
+}) {
   return (
-    <Button disabled={pending} type="submit" className="w-full">
-      {pending ? (
+    <Button disabled={isSubmitting} type="submit" className="w-full">
+      {isSubmitting ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           로그인 중...

@@ -82,3 +82,30 @@ export interface DeleteStepRequest {
   projectId: number;
   stepId: number;
 }
+
+export interface GetMemberByCompanyResponse {
+  memberId: string;
+  memberName: string;
+  department?: string;
+  position?: string;
+}
+
+export type MemberRole = "approver" | "normal";
+export type CompanyType = "developer" | "customer";
+
+export type ExtendedMember = GetMemberByCompanyResponse & {
+  company: CompanyType;
+};
+
+export interface MemberSection {
+  members: ExtendedMember[];
+  selectedApprovers: ExtendedMember[];
+  selectedNormal: ExtendedMember[];
+  activeRole: MemberRole;
+  isLoading: boolean;
+}
+
+export interface MemberState {
+  developer: MemberSection;
+  customer: MemberSection;
+}
