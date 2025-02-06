@@ -3,7 +3,6 @@
 import { Button, Card } from "@/components/ui";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import * as Sentry from "@sentry/nextjs";
 import {
   ErrorBoundary as ReactErrorBoundary,
   FallbackProps,
@@ -44,13 +43,6 @@ export function ErrorBoundary({ children }: ErrorBoundaryProps) {
       onReset={() => {
         queryClient.clear();
         router.refresh();
-      }}
-      onError={(error: Error, info: React.ErrorInfo) => {
-        Sentry.captureException(error, {
-          extra: {
-            componentStack: info.componentStack ?? "Unknown stack",
-          },
-        });
       }}
     >
       {children}
