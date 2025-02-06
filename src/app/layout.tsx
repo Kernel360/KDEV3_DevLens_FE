@@ -4,7 +4,6 @@ import localFont from "next/font/local";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { Toaster } from "sonner";
 import "./globals.css";
-import FloatingButton from "@/components/composites/floating-button";
 
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
@@ -28,7 +27,6 @@ export default function RootLayout({
         <QueryProvider>
           <NuqsAdapter>
             <section className="flex w-full grow overflow-hidden px-6 py-2">
-              <FloatingButton />
               {children}
               <Toaster richColors position="top-center" />
             </section>
