@@ -3,7 +3,7 @@
 import * as React from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { DayPicker } from "react-day-picker";
-import { ko } from 'date-fns/locale'
+import { ko } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -19,12 +19,21 @@ function Calendar({
     <DayPicker
       locale={ko}
       showOutsideDays={showOutsideDays}
+      captionLayout="dropdown"
+      fromDate={new Date(2014, 6)}
+      toDate={new Date(2050, 9)}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4",
         caption: "flex justify-center pt-1 relative items-center",
-        caption_label: "text-sm font-medium",
+        caption_label: "text-sm font-medium hidden",
+        caption_dropdowns: "flex justify-center gap-1 text-sm ",
+        dropdown:
+          "cursor-pointer rounded-md bg-background pl-2 py-1.5 text-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50",
+        dropdown_month: "mr-1 [&_.rdp-vhidden]:hidden font-bold order-2",
+        dropdown_year: "ml-1 [&_.rdp-vhidden]:hidden font-bold order-1",
+        dropdown_icon: "opacity-50 h-4 w-4",
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
