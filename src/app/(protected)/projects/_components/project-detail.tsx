@@ -175,7 +175,7 @@ export default function ProjectDetail({ id }: { id: number }) {
                   <DatePickerInput
                     value={field.value ? new Date(field.value) : undefined}
                     onChange={(date) =>
-                      field.onChange(date?.toISOString().split("T")[0])
+                      field.onChange(date?.toISOString())
                     }
                     disabled={!isEditing}
                     placeholder="시작일 선택"
@@ -196,7 +196,7 @@ export default function ProjectDetail({ id }: { id: number }) {
                   <DatePickerInput
                     value={field.value ? new Date(field.value) : undefined}
                     onChange={(date) =>
-                      field.onChange(date?.toISOString().split("T")[0])
+                      field.onChange(date?.toISOString())
                     }
                     disabled={!isEditing}
                     placeholder="종료일 선택"
