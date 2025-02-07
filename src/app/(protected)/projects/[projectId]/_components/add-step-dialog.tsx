@@ -1,5 +1,6 @@
 "use client";
 
+import NumberStepperInput from "@/components/composites/number-stepper-input";
 import { ProjectApi } from "@/lib/apis/main/projectApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -98,7 +99,7 @@ export default function AddStepDialog({ nextStepOrder }: AddStepDialogProps) {
                 value={form.stepName}
                 onChange={(e) => setForm({ ...form, stepName: e.target.value })}
                 disabled={isPending}
-                maxLength={15}
+                maxLength={10}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
@@ -114,28 +115,22 @@ export default function AddStepDialog({ nextStepOrder }: AddStepDialogProps) {
                   setForm({ ...form, stepDescription: e.target.value })
                 }
                 disabled={isPending}
-                maxLength={30}
+                maxLength={20}
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="stepOrder" className="text-right">
                 순서
               </Label>
-              <Input
-                id="stepOrder"
-                type="number"
-                min={1}
-                max={10}
-                className="col-span-3"
-                value={form.stepOrderNumber}
-                onChange={(e) =>
-                  setForm({
-                    ...form,
-                    stepOrderNumber: Number(e.target.value),
-                  })
-                }
-                disabled={isPending}
-              />
+              <div className="col-span-3">
+                <NumberStepperInput
+                  value={form.stepOrderNumber}
+                  onChange={(value) =>
+                    setForm({ ...form, stepOrderNumber: value })
+                  }
+                  disabled={isPending}
+                />
+              </div>
             </div>
           </div>
           <DialogFooter>

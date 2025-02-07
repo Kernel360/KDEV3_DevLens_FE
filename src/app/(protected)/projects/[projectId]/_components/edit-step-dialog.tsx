@@ -1,5 +1,6 @@
 "use client";
 
+import NumberStepperInput from "@/components/composites/number-stepper-input";
 import { ProjectApi } from "@/lib/apis/main/projectApi";
 import { ProjectStep } from "@/types/project";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -59,7 +60,8 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
   });
 
   const { mutate: deleteStep, isPending: isDeleting } = useMutation({
-    mutationFn: () => ProjectApi.steps.delete(Number(params.projectId), step.stepId),
+    mutationFn: () =>
+      ProjectApi.steps.delete(Number(params.projectId), step.stepId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projectSteps"] });
       toast.success("단계가 삭제되었습니다.");
@@ -109,6 +111,7 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
                   }
                   className="col-span-3"
                   disabled={isLoading}
+                  maxLength={10}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -123,23 +126,20 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
                   }
                   className="col-span-3"
                   disabled={isLoading}
+                  maxLength={20}
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="order" className="text-right">
                   순서
                 </Label>
-                <Input
-                  id="order"
-                  type="number"
-                  value={step.stepOrder || 1}
-                  min={1}
-                  onChange={(e) =>
-                    setStep({ ...step, stepOrder: Number(e.target.value) })
-                  }
-                  className="col-span-3"
-                  disabled={isLoading}
-                />
+                <div className="col-span-3">
+                  <NumberStepperInput
+                    value={step.stepOrder}
+                    onChange={(value) => setStep({ ...step, stepOrder: value })}
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
             </div>
             <DialogFooter>
