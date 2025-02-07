@@ -6,13 +6,13 @@ import {
 } from "@/types/project";
 import { create } from "zustand";
 
-const initialSection = {
+const createInitialSection = () => ({
   members: [],
   selectedApprovers: [],
   selectedNormal: [],
   activeRole: "approver" as const,
   isLoading: false,
-};
+});
 
 export const useMemberStore = create<
   MemberState & {
@@ -28,10 +28,10 @@ export const useMemberStore = create<
     reset: (type: CompanyType) => void;
     formatMemberLabel: (member: ExtendedMember) => string;
   }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >((set, get) => ({
-  developer: initialSection,
-  customer: initialSection,
+  developer: createInitialSection(),
+  customer: createInitialSection(),
 
   setMembers: (type, members) =>
     set((state) => ({

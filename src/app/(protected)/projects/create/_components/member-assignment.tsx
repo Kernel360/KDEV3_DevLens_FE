@@ -85,7 +85,7 @@ export function MemberAssignment({
           store.setLoading("customer", false);
         });
     }
-  }, [customerId, store]);
+  }, [customerId]);
 
   // 개발사 멤버 로딩
   useEffect(() => {
@@ -106,7 +106,7 @@ export function MemberAssignment({
           store.setLoading("developer", false);
         });
     }
-  }, [developerId, store]);
+  }, [developerId]);
 
   return (
     <div className="space-y-8">
