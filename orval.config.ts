@@ -1,12 +1,46 @@
 module.exports = {
-  "dev-lens": {
+  "admin-api": {
     output: {
-      target: "src/lib/api/generated/services",
-      schemas: "src/lib/api/generated/models",
+      mode: "tags-split",
+      target: "./src/lib/api/generated/admin/services",
+      schemas: "./src/lib/api/generated/admin/models",
       client: "react-query",
+      override: {
+        mutator: {
+          path: "./src/lib/axiosClient.ts",
+          name: "adminAxios",
+        },
+        query: {
+          useQuery: true,
+          useInfinite: true,
+          useInfiniteQueryParam: "page",
+        },
+      },
     },
     input: {
-      target: "src/api-docs.json",
+      target: "./src/admin-api-docs.json",
+    },
+  },
+  "main-api": {
+    output: {
+      mode: "tags-split",
+      target: "./src/lib/api/generated/main/services",
+      schemas: "./src/lib/api/generated/main/models",
+      client: "react-query",
+      override: {
+        mutator: {
+          path: "./src/lib/axiosClient.ts",
+          name: "mainAxios",
+        },
+        query: {
+          useQuery: true,
+          useInfinite: true,
+          useInfiniteQueryParam: "page",
+        },
+      },
+    },
+    input: {
+      target: "./src/main-api-docs.json",
     },
   },
 };

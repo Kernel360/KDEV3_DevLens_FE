@@ -3,15 +3,18 @@
   "info": { "title": "OpenAPI definition", "version": "v0" },
   "servers": [
     {
-      "url": "http://34.47.103.225:8443",
+      "url": "http://34.64.208.235:8443",
       "description": "Generated server url"
     }
   ],
-  "security": [{ "Bearer Token": [] }],
   "tags": [
     {
       "name": "Administrator Company Management API",
       "description": "API for administrators to manage companies"
+    },
+    {
+      "name": "Authentication API",
+      "description": "Access Token & Refresh Token 관련 API"
     },
     {
       "name": "Administrator Member Management API",
@@ -174,11 +177,11 @@
           }
         }
       },
-      "delete": {
+      "patch": {
         "tags": ["Administrator Company Management API"],
-        "summary": "회사 삭제",
-        "description": "회사 삭제",
-        "operationId": "deleteCompany",
+        "summary": "회사 상태 변경",
+        "description": "회사 상태 변경",
+        "operationId": "changeCompanyIsActive",
         "parameters": [
           {
             "name": "id",
@@ -191,10 +194,36 @@
         ],
         "responses": {
           "200": {
-            "description": "성공적으로 회사를 삭제했습니다.",
+            "description": "수정 완료.",
             "content": {
               "*/*": {
                 "schema": { "$ref": "#/components/schemas/APIResponseObject" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/login": {
+      "post": {
+        "tags": ["Administrator Member Management API"],
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginPostRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseLoginResponse"
+                }
               }
             }
           }
@@ -239,9 +268,11 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "string",
-                "description": "File to upload",
-                "format": "binary"
+                "required": ["file"],
+                "type": "object",
+                "properties": {
+                  "file": { "type": "string", "format": "binary" }
+                }
               }
             }
           }
@@ -271,6 +302,48 @@
         "responses": {
           "200": {
             "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseSuccessCode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": ["Authentication API"],
+        "summary": "Access Token 재발급",
+        "description": "Access Token이 만료된 경우 Refresh Token을 통해 새로운 Access Token을 재발급합니다.",
+        "operationId": "refreshAccessToken",
+        "parameters": [
+          {
+            "name": "X-Access-Token",
+            "in": "cookie",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "X-Refresh-Token",
+            "in": "cookie",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Access Token 재발급 성공",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/APIResponse" }
+              }
+            }
+          },
+          "401": {
+            "description": "인증 실패 또는 토큰 유효성 검증 실패",
             "content": {
               "*/*": {
                 "schema": {
@@ -342,42 +415,10 @@
         "operationId": "getFilteredMembers",
         "parameters": [
           {
-            "name": "name",
+            "name": "memberList",
             "in": "query",
-            "description": "회원 이름",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "description": "회원 상태",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "enum": ["ACTIVE", "INACTIVE", "WITHDRAW", "SUSPENDED"]
-            }
-          },
-          {
-            "name": "role",
-            "in": "query",
-            "description": "회원 역할",
-            "required": false,
-            "schema": { "type": "string", "enum": ["ADMIN", "SUPER", "USER"] }
-          },
-          {
-            "name": "loginId",
-            "in": "query",
-            "description": "로그인 ID",
-            "required": false,
-            "schema": { "type": "string" }
-          },
-          {
-            "name": "pageable",
-            "in": "query",
-            "description": "페이징 정보",
             "required": true,
-            "schema": { "$ref": "#/components/schemas/Pageable" }
+            "schema": { "$ref": "#/components/schemas/GetMemberListRequest" }
           }
         ],
         "responses": {
@@ -495,7 +536,7 @@
         }
       }
     },
-    "/api/admin/members/{loginId}": {
+    "/api/admin/members/{memberId}": {
       "get": {
         "tags": ["Administrator Member Management API"],
         "summary": "회원 상세 조회",
@@ -503,12 +544,12 @@
         "operationId": "memberDetail",
         "parameters": [
           {
-            "name": "loginId",
+            "name": "memberId",
             "in": "path",
             "description": "조회할 회원의 ID",
             "required": true,
-            "schema": { "type": "string" },
-            "example": "john123"
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
           }
         ],
         "responses": {
@@ -529,12 +570,12 @@
         "operationId": "deleteMember",
         "parameters": [
           {
-            "name": "loginId",
+            "name": "memberId",
             "in": "path",
             "description": "삭제할 회원의 ID",
             "required": true,
-            "schema": { "type": "string" },
-            "example": "john123"
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
           }
         ],
         "responses": {
@@ -565,12 +606,12 @@
         "operationId": "updateMember",
         "parameters": [
           {
-            "name": "loginId",
+            "name": "memberId",
             "in": "path",
             "description": "수정할 회원의 ID",
             "required": true,
-            "schema": { "type": "string" },
-            "example": "john123"
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
           }
         ],
         "requestBody": {
@@ -595,7 +636,7 @@
         }
       }
     },
-    "/api/admin/members/{loginId}/reset-password": {
+    "/api/admin/members/{memberId}/reset-password": {
       "patch": {
         "tags": ["Administrator Member Management API"],
         "summary": "비밀번호 초기화",
@@ -603,12 +644,12 @@
         "operationId": "resetPwd",
         "parameters": [
           {
-            "name": "loginId",
+            "name": "memberId",
             "in": "path",
             "description": "비밀번호를 초기화할 회원의 ID",
             "required": true,
-            "schema": { "type": "string" },
-            "example": "john123"
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
           }
         ],
         "responses": {
@@ -785,6 +826,35 @@
         }
       }
     },
+    "/api/admin/companies/{companyId}/members": {
+      "get": {
+        "tags": ["Administrator Company Management API"],
+        "summary": "회사 소속 회원 전체 조회",
+        "description": "회사에 소속된 모든 회원을 반환합니다.",
+        "operationId": "getCompanyMembers",
+        "parameters": [
+          {
+            "name": "companyId",
+            "in": "path",
+            "description": "조회할 회사의 ID",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "회사의 회원들이 성공적으로 조회되었습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCompanyMemberResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/admin/companies/search": {
       "get": {
         "tags": ["Administrator Company Management API"],
@@ -870,6 +940,7 @@
         }
       },
       "PutProjectRequest": {
+        "required": ["projectName"],
         "type": "object",
         "properties": {
           "projectName": { "type": "string" },
@@ -915,6 +986,7 @@
         }
       },
       "PutCompanyRequest": {
+        "required": ["companyName"],
         "type": "object",
         "properties": {
           "companyName": { "type": "string" },
@@ -929,6 +1001,35 @@
           "businessRegistrationNumber": { "type": "string" }
         }
       },
+      "LoginPostRequest": {
+        "type": "object",
+        "properties": {
+          "loginId": { "type": "string" },
+          "password": { "type": "string" }
+        }
+      },
+      "APIResponseLoginResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/LoginResponse" }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "properties": {
+          "loginId": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "role": { "type": "string", "enum": ["ADMIN", "SUPER", "USER"] },
+          "profileUrl": { "type": "string" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "companyName": { "type": "string" },
+          "department": { "type": "string" },
+          "position": { "type": "string" }
+        }
+      },
       "APIResponse": {
         "type": "object",
         "properties": {
@@ -937,13 +1038,31 @@
           "data": { "type": "object" }
         }
       },
+      "APIResponseSuccessCode": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "UPDATED",
+              "DELETED",
+              "CREATED",
+              "MULTISTATUS",
+              "NO_CONTENT"
+            ]
+          }
+        }
+      },
       "PostProjectResponse": {
         "type": "object",
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
-          "customerName": { "type": "string" },
-          "developerName": { "type": "string" },
+          "customerCompanyName": { "type": "string" },
+          "developerCompanyName": { "type": "string" },
           "projectDescription": { "type": "string" },
           "projectTypeName": { "type": "string" },
           "projectStatusCode": {
@@ -957,13 +1076,14 @@
               "DELETED"
             ]
           },
-          "bnsManagerName": { "type": "string" },
+          "bnsManager": { "type": "string" },
           "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
           "plannedEndDate": { "type": "string", "format": "date" }
         }
       },
       "PostProjectRequest": {
+        "required": ["projectName"],
         "type": "object",
         "properties": {
           "projectName": { "type": "string" },
@@ -991,8 +1111,12 @@
           },
           "phoneNumber": { "type": "string" },
           "birthDate": { "type": "string", "format": "date" },
+          "companyId": { "type": "integer", "format": "int64" },
+          "company": { "type": "string" },
           "department": { "type": "string" },
-          "position": { "type": "string" }
+          "position": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
         }
       },
       "MemberDtoRequest": {
@@ -1027,6 +1151,7 @@
         }
       },
       "PostCompanyRequest": {
+        "required": ["companyName"],
         "type": "object",
         "properties": {
           "companyName": { "type": "string" },
@@ -1055,8 +1180,16 @@
       "MemberUpdatePatchResponse": {
         "type": "object",
         "properties": {
-          "loginId": { "type": "string" },
+          "memberId": { "type": "integer", "format": "int64" },
           "password": { "type": "string" }
+        }
+      },
+      "APIResponseObject": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "type": "object" }
         }
       },
       "GetProjectResponse": {
@@ -1064,8 +1197,8 @@
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
-          "customerName": { "type": "string" },
-          "developerName": { "type": "string" },
+          "customerCompanyName": { "type": "string" },
+          "developerCompanyName": { "type": "string" },
           "projectDescription": { "type": "string" },
           "projectTypeName": { "type": "string" },
           "projectStatusCode": {
@@ -1079,7 +1212,7 @@
               "DELETED"
             ]
           },
-          "bnsManagerName": { "type": "string" },
+          "bnsManager": { "type": "string" },
           "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
           "plannedEndDate": { "type": "string", "format": "date" },
@@ -1094,8 +1227,8 @@
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
-          "customerName": { "type": "string" },
-          "developerName": { "type": "string" },
+          "customerCompanyName": { "type": "string" },
+          "developerCompanyName": { "type": "string" },
           "description": { "type": "string" },
           "statusCode": { "type": "string" },
           "typeName": { "type": "string" },
@@ -1119,12 +1252,20 @@
           "data": { "type": "string" }
         }
       },
-      "Pageable": {
+      "GetMemberListRequest": {
         "type": "object",
         "properties": {
-          "page": { "minimum": 0, "type": "integer", "format": "int32" },
-          "size": { "minimum": 1, "type": "integer", "format": "int32" },
-          "sort": { "type": "array", "items": { "type": "string" } }
+          "name": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE", "WITHDRAW", "SUSPENDED"]
+          },
+          "role": { "type": "string", "enum": ["ADMIN", "SUPER", "USER"] },
+          "loginId": { "type": "string" },
+          "page": { "type": "integer", "format": "int32" },
+          "size": { "type": "integer", "format": "int32" },
+          "sort": { "type": "string" },
+          "direction": { "type": "string" }
         }
       },
       "PaginatedResponse": {
@@ -1154,21 +1295,24 @@
           "businessRegistrationNumber": { "type": "string" }
         }
       },
-      "APIResponseSuccessCode": {
+      "GetCompanyMemberCompanyMember": {
         "type": "object",
         "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "message": { "type": "string" },
-          "data": {
-            "type": "string",
-            "enum": [
-              "OK",
-              "UPDATED",
-              "DELETED",
-              "CREATED",
-              "MULTISTATUS",
-              "NO_CONTENT"
-            ]
+          "memberId": { "type": "integer", "format": "int64" },
+          "memberName": { "type": "string" },
+          "department": { "type": "string" },
+          "position": { "type": "string" }
+        }
+      },
+      "GetCompanyMemberResponse": {
+        "type": "object",
+        "properties": {
+          "companyId": { "type": "integer", "format": "int64" },
+          "companyMemberList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetCompanyMemberCompanyMember"
+            }
           }
         }
       },
@@ -1179,21 +1323,6 @@
           "message": { "type": "string" },
           "data": { "type": "object" }
         }
-      },
-      "APIResponseObject": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "message": { "type": "string" },
-          "data": { "type": "object" }
-        }
-      }
-    },
-    "securitySchemes": {
-      "Bearer Token": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
       }
     }
   }
