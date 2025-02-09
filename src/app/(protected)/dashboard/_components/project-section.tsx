@@ -1,24 +1,29 @@
 "use client";
 
-import { ProjectApi } from "@/lib/apis/main/projectApi";
-import ProjectList from "./project-list";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Separator } from "@/components/ui";
+import {
+  getGetMyProjectQueryKey,
+  getMyProject,
+} from "@/lib/api/generated/main/services/project-dashboard-api/project-dashboard-api";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import ProjectList from "./project-list";
 
 export default function ProjectSection() {
   // const projects = await ProjectApi.getList();
-  const { data: projects } = useSuspenseQuery({
-    queryKey: ["projects"],
-    queryFn: () => ProjectApi.getList(),
+  // const { data } = useSuspenseQuery({
+  //   queryKey: ["myProjects"],
+  //   queryFn: () => ProjectApi.getList(),
+  // });
+  const { data } = useSuspenseQuery({
+    queryKey: getGetMyProjectQueryKey(),
+    queryFn: () => getMyProject(),
   });
-
-  const { myProjects, companyProjects } = projects;
 
   return (
     <div className="space-y-6">
-      <ProjectList projects={myProjects} title="내 프로젝트" />
+      <ProjectList projects={data.myProjects || []} title="내 프로젝트" />
       <Separator />
-      <ProjectList projects={companyProjects} title="회사 프로젝트" />
+      {/* <ProjectList projects={companyProjects} title="회사 프로젝트" /> */}
     </div>
   );
 }

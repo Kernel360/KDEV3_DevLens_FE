@@ -1,23 +1,25 @@
 import SectionTitle from "@/components/composites/section-title";
-import { Project } from "@/types/project";
 import { Card, CardHeader, CardTitle } from "@ui";
 import { useMemo } from "react";
-import { Navigation, Pagination } from "swiper/modules";
+import { Navigation, Pagination, Mousewheel } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProjectCard from "./project-card";
+import { GetProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
 
 // Swiper 스타일 import
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
 
-export default function ProjectList({
-  projects,
-  title,
-}: {
-  projects: Project[];
+interface ProjectListProps {
+  projects: GetProjectListGetMyProjectResponseInfo[];
   title: "내 프로젝트" | "회사 프로젝트";
-}) {
+}
+
+export default function ProjectList({
+  projects = [],
+  title,
+}: ProjectListProps) {
   // 6개씩 페이지 나누기
   const projectPages = useMemo(() => {
     const itemsPerPage = 6;
@@ -26,7 +28,7 @@ export default function ProjectList({
       acc[pageIndex] = acc[pageIndex] || [];
       acc[pageIndex].push(curr);
       return acc;
-    }, [] as Project[][]);
+    }, [] as GetProjectListGetMyProjectResponseInfo[][]);
   }, [projects]);
 
   if (!projects?.length) {
@@ -53,11 +55,12 @@ export default function ProjectList({
       <SectionTitle>{title}</SectionTitle>
       <div className="relative">
         <Swiper
-          modules={[Navigation, Pagination]}
+          modules={[Navigation, Pagination, Mousewheel]}
           pagination={{
             el: ".project-pagination",
             clickable: true,
           }}
+          mousewheel={true}
           spaceBetween={16}
           className="project-swiper !pb-8"
         >
