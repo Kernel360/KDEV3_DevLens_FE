@@ -1,3 +1,5 @@
+import { GetCompanyMemberResponse } from "@/lib/api/generated/admin/models";
+import { adminAxios } from "@/lib/axiosClient";
 import {
   CompanyType,
   ExtendedMember,
@@ -12,6 +14,7 @@ const createInitialSection = () => ({
   selectedNormal: [],
   activeRole: "approver" as const,
   isLoading: false,
+  companyId: undefined as number | undefined,
 });
 
 export const useMemberStore = create<
@@ -27,6 +30,7 @@ export const useMemberStore = create<
     setActiveRole: (type: CompanyType, role: MemberRole) => void;
     reset: (type: CompanyType) => void;
     formatMemberLabel: (member: ExtendedMember) => string;
+    fetchMembers: (type: CompanyType, companyId: number) => Promise<void>;
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >((set, get) => ({
@@ -104,6 +108,7 @@ export const useMemberStore = create<
         selectedApprovers: [],
         selectedNormal: [],
         activeRole: "approver",
+        companyId: undefined,
       },
     })),
 
@@ -114,5 +119,38 @@ export const useMemberStore = create<
     return extras.length > 0
       ? `${member.memberName} (${extras.join(" ")})`
       : member.memberName;
+  },
+
+  fetchMembers: async (type, companyId) => {
+    set((state) => ({
+      [type]: { ...state[type], companyId, isLoading: true },
+    }));
+
+    if (!companyId) {
+      set((state) => ({
+        [type]: { ...state[type], members: [], isLoading: false },
+      }));
+      return;
+    }
+
+    try {
+      const response = await adminAxios<GetCompanyMemberResponse>({
+        url: `/api/admin/companies/${companyId}/members`,
+        method: "GET",
+      });
+
+      set((state) => ({
+        [type]: {
+          ...state[type],
+          members: response.companyMemberList || [],
+          isLoading: false,
+        },
+      }));
+    } catch (error) {
+      set((state) => ({
+        [type]: { ...state[type], members: [], isLoading: false },
+      }));
+      console.error(`Failed to fetch ${type} members:`, error);
+    }
   },
 }));

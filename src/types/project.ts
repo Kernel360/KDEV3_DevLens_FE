@@ -99,6 +99,7 @@ export type ExtendedMember = GetMemberByCompanyResponse & {
 
 export interface MemberSection {
   members: ExtendedMember[];
+  companyId?: number;
   selectedApprovers: ExtendedMember[];
   selectedNormal: ExtendedMember[];
   activeRole: MemberRole;

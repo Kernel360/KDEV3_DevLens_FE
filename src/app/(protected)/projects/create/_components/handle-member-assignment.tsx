@@ -97,7 +97,9 @@ export function HandleMemberAssignment({
                 })}
                 {!isLoading && members.length === 0 && (
                   <p className="text-sm text-muted-foreground">
-                    멤버가 없습니다
+                    {section.companyId
+                      ? "멤버가 없습니다"
+                      : "회사를 선택해주세요"}
                   </p>
                 )}
                 {isLoading && (
