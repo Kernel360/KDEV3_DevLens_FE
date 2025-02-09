@@ -13,7 +13,6 @@ export default function MemberListTable() {
   const { data } = useSuspenseQuery({
     queryKey: ["memberList", page],
     queryFn: () => adminMemberApi.getList({ page }),
-    retry: 1,
   });
 
   return (

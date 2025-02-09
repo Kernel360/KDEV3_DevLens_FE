@@ -13,7 +13,6 @@ export default function ProjectListTable() {
   const { data } = useSuspenseQuery({
     queryKey: ["projectList", page],
     queryFn: () => adminProjectApi.getList({ page }),
-    retry: 1,
   });
 
   return (

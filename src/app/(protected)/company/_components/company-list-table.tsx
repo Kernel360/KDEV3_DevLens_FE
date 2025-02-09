@@ -13,7 +13,6 @@ export default function CompanyListTable() {
   const { data } = useSuspenseQuery({
     queryKey: ["companyList", page],
     queryFn: () => adminCompanyApi.getList({ page }),
-    retry: 1,
   });
 
   return (
