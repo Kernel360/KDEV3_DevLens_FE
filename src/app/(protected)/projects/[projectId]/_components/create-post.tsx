@@ -1,19 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 import Heading from "@/components/ui/heading";
+import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 import PostForm from "./post-form";
-import { ProjectStep } from "@/types/project";
 
 interface CreatePostProps {
-  steps: ProjectStep[];
-  currentStepId: number;
+  projectId: number;
+  stepId: number;
+  steps: GetProjectStepProjectStepInfo[];
 }
 
-
-export function CreatePost({ steps, currentStepId }: CreatePostProps) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function CreatePost({ projectId, stepId, steps }: CreatePostProps) {
   const router = useRouter();
 
   return (
@@ -24,7 +25,7 @@ export function CreatePost({ steps, currentStepId }: CreatePostProps) {
         </Button>
         <Heading>새 게시물 작성</Heading>
       </div>
-      <PostForm steps={steps} defaultStepId={currentStepId} />
+      <PostForm steps={steps} defaultStepId={stepId} />
     </div>
   );
 }

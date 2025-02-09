@@ -18,8 +18,8 @@ import {
   Separator,
 } from "@ui";
 import { MoreVertical, Pencil, Trash2, FileIcon, LinkIcon } from "lucide-react";
-import { CommentsSection } from "./comments-section";
 import { toast } from "sonner";
+import { CommentsSection } from "./comments-section";
 
 function PostDetail({ id }: { id: number }) {
   const [{ data: post, refetch }, { data: files }, { data: links }] =
@@ -48,7 +48,6 @@ function PostDetail({ id }: { id: number }) {
       toast.error(`파일 삭제에 실패했습니다 ${error}`);
     }
   };
-
 
   return (
     <>
@@ -131,15 +130,10 @@ function PostDetail({ id }: { id: number }) {
               {files.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-sm">
                   <FileIcon className="h-4 w-4" />
-                  <a
-                    href={file.path}
-                    className="text-primary hover:underline"
-                  >
+                  <a href={file.path} className="text-primary hover:underline">
                     {file.displayTitle}
                   </a>
-                  <span className="text-muted-foreground">
-                    ({file.size})
-                  </span>
+                  <span className="text-muted-foreground">({file.size})</span>
                   <Button
                     variant="ghost"
                     size="icon"

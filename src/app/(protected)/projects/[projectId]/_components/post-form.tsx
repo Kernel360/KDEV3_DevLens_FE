@@ -1,5 +1,6 @@
 "use client";
 
+import { PostApi, uploadFiles } from "@/lib/apis/main/postApi";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -34,14 +35,13 @@ import {
   TrashIcon,
   UploadIcon,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { PostApi, uploadFiles } from "@/lib/apis/main/postApi";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
 import * as z from "zod";
-import { ProjectStep } from "@/types/project";
 
 const formSchema = z.object({
   step: z.string().min(1, { message: "단계를 선택해주세요" }),
@@ -61,7 +61,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface PostFormProps {
-  steps: ProjectStep[];
+  steps: GetProjectStepProjectStepInfo[];
   defaultStepId: number;
 }
 

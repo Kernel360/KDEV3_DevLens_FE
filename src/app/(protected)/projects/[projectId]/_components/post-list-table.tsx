@@ -3,24 +3,24 @@
 import TableWithSheet from "@/components/composites/table/table-with-sheet";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, useQueryState } from "nuqs";
-import PostDetail from "./post-detail";
-import { postListColumns } from "./post-list-columns";
 import { PostApi } from "@/lib/apis/main/postApi";
-import { useParams } from "next/navigation";
 import TableTools from "@/components/composites/table/table-tools";
+import { postListColumns } from "./post-list-columns";
+import PostDetail from "./post-detail";
 
 export default function PostListTable() {
-  const params = useParams();
   const [page] = useQueryState("page", parseAsInteger.withDefault(0));
   const [search] = useQueryState("search");
   const [filter] = useQueryState("filter");
   const [sortType] = useQueryState("sortType");
+  const [step] = useQueryState("step", parseAsInteger);
 
   const { data } = useSuspenseQuery({
-    queryKey: ["projectList", page, search, sortType],
-    queryFn: () =>
-      PostApi.getListByStep(
-        Number(params.stepId),
+    queryKey: ["projectList", step, page, search, sortType],
+    queryFn: () => {
+      if (!step) return null;
+      return PostApi.getListByStep(
+        step,
         page,
         search ?? "",
         filter as "ALL" | "TITLE" | "CONTENT" | "WRITER" | undefined,
@@ -29,9 +29,11 @@ export default function PostListTable() {
           : sortType === "OLDEST"
             ? "OLDEST"
             : undefined,
-      ),
-    retry: 1,
+      );
+    },
   });
+
+  if (!step || !data) return null;
 
   return (
     <>
