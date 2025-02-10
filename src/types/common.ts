@@ -50,10 +50,11 @@ export interface PaginationParams {
 }
 
 export class APIError extends Error {
-  code: number;
-  constructor(code: number, message: string) {
+  status: number;
+
+  constructor(status: number, message: string) {
     super(message);
-    this.code = code;
-    this.name = "APIError";
+    this.status = status;
+    Object.setPrototypeOf(this, APIError.prototype);
   }
 }

@@ -11,12 +11,12 @@ interface RequestOptions {
   queryParams?: Record<string, string>;
 }
 
-// interface NextRequestOptions extends RequestOptions {
-//   next?: {
-//     revalidate?: number | false;
-//     tags?: string[];
-//   };
-// }
+interface NextRequestOptions extends RequestOptions {
+  next?: {
+    revalidate?: number | false;
+    tags?: string[];
+  };
+}
 
 async function handleResponse<T>(response: Response): Promise<T> {
   try {
@@ -39,8 +39,8 @@ async function handleResponse<T>(response: Response): Promise<T> {
     if (error instanceof APIError) throw error;
 
     // 세션 만료 체크
-    if (response.status === 401) {
-      throw new APIError(401, "세션이 만료되었습니다.");
+    if (response.status === 1000) {
+      throw new APIError(1000, "세션이 만료되었습니다.");
     }
 
     throw new APIError(
@@ -66,6 +66,15 @@ function buildUrl(
   return `${baseUrl}?${searchParams.toString()}`;
 }
 
+function getDetailedCallerInfo() {
+  const stack = new Error().stack;
+  return stack
+    ?.split("\n")
+    .slice(1) // 첫 번째 줄(Error 객체 생성) 제외
+    .map((line) => line.trim())
+    .join("\n");
+}
+
 /**
  * GET 요청
  * @param {string} url - 요청을 보낼 URL
@@ -77,31 +86,47 @@ async function get<T>(
   options: {
     queryParams?: Record<string, string | number>;
     headers?: Headers;
-    // next?: NextRequestOptions["next"];
+    next?: NextRequestOptions["next"];
   } = {},
 ): Promise<T> {
-  const {
-    queryParams,
-    headers = {},
-    // , next
-  } = options;
+  const { queryParams, headers = {}, next } = options;
   const fullUrl = buildUrl(url, queryParams);
+  const isServer = typeof window === "undefined";
 
-  console.log("[RestClient] Calling GET:", {
-    url: fullUrl,
-    headers,
-    // next,
-    // 실행 환경 확인
-    isServer: typeof window === "undefined",
-  });
-
-  const response = await fetch(fullUrl, {
+  console.log("[RestClient] API Call:", {
     method: "GET",
-    credentials: "include",
-    headers: { ...defaultHeaders, ...headers },
-    // next,
+    url: fullUrl,
+    environment: isServer ? "server" : "client",
+    stack: getDetailedCallerInfo(),
+    timestamp: new Date().toISOString(),
+    // React 렌더링 단계 확인을 위한 정보
+    // reactInfo: {
+    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //   isHydrating: !!(globalThis as any).__NEXT_DATA__?.props,
+    //   hasWindow: typeof window !== "undefined",
+    //   documentReadyState:
+    //     typeof document !== "undefined" ? document.readyState : "server",
+    // },
   });
-  return handleResponse<T>(response);
+
+  try {
+    const response = await fetch(fullUrl, {
+      method: "GET",
+      credentials: "include",
+      headers: { ...defaultHeaders, ...headers },
+      next,
+    });
+    return handleResponse<T>(response);
+  } catch (error) {
+    console.error("[RestClient] Error:", {
+      url: fullUrl,
+      error,
+      environment: isServer ? "server" : "client",
+      stack: getDetailedCallerInfo(),
+      timestamp: new Date().toISOString(),
+    });
+    throw new APIError(0, "Fetch failed");
+  }
 }
 
 /**
