@@ -347,7 +347,7 @@ export const getReadCompanyListQueryKey = (params: ReadCompanyListParams,) => {
     }
 
     
-export const getReadCompanyListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>, ReadCompanyListParams['page']>, TError = unknown>(params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData, Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']>>, }
+export const getReadCompanyListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>>, TError = unknown>(params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -356,49 +356,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']> = ({ signal, pageParam }) => readCompanyList({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readCompanyList>>> = ({ signal }) => readCompanyList(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData, Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ReadCompanyListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof readCompanyList>>>
 export type ReadCompanyListInfiniteQueryError = unknown
 
 
-export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>, ReadCompanyListParams['page']>, TError = unknown>(
- params: ReadCompanyListParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData, Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']>> & Pick<
+export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>>, TError = unknown>(
+ params: ReadCompanyListParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof readCompanyList>>,
           TError,
-          Awaited<ReturnType<typeof readCompanyList>>, QueryKey
+          Awaited<ReturnType<typeof readCompanyList>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>, ReadCompanyListParams['page']>, TError = unknown>(
- params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData, Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']>> & Pick<
+export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>>, TError = unknown>(
+ params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof readCompanyList>>,
           TError,
-          Awaited<ReturnType<typeof readCompanyList>>, QueryKey
+          Awaited<ReturnType<typeof readCompanyList>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>, ReadCompanyListParams['page']>, TError = unknown>(
- params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData, Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']>>, }
+export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>>, TError = unknown>(
+ params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 회사 목록 조회
  */
 
-export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>, ReadCompanyListParams['page']>, TError = unknown>(
- params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData, Awaited<ReturnType<typeof readCompanyList>>, QueryKey, ReadCompanyListParams['page']>>, }
+export function useReadCompanyListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyList>>>, TError = unknown>(
+ params: ReadCompanyListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyList>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -569,8 +569,8 @@ export const getReadCompanyProjectQueryKey = (id: number,
     }
 
     
-export const getReadCompanyProjectInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>, ReadCompanyProjectParams['page']>, TError = unknown>(id: number,
-    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData, Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']>>, }
+export const getReadCompanyProjectInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>>, TError = unknown>(id: number,
+    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -579,53 +579,53 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']> = ({ signal, pageParam }) => readCompanyProject(id,{...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof readCompanyProject>>> = ({ signal }) => readCompanyProject(id,params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData, Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(id), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type ReadCompanyProjectInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof readCompanyProject>>>
 export type ReadCompanyProjectInfiniteQueryError = unknown
 
 
-export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>, ReadCompanyProjectParams['page']>, TError = unknown>(
+export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>>, TError = unknown>(
  id: number,
-    params: ReadCompanyProjectParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData, Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']>> & Pick<
+    params: ReadCompanyProjectParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof readCompanyProject>>,
           TError,
-          Awaited<ReturnType<typeof readCompanyProject>>, QueryKey
+          Awaited<ReturnType<typeof readCompanyProject>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>, ReadCompanyProjectParams['page']>, TError = unknown>(
+export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>>, TError = unknown>(
  id: number,
-    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData, Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']>> & Pick<
+    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof readCompanyProject>>,
           TError,
-          Awaited<ReturnType<typeof readCompanyProject>>, QueryKey
+          Awaited<ReturnType<typeof readCompanyProject>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>, ReadCompanyProjectParams['page']>, TError = unknown>(
+export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>>, TError = unknown>(
  id: number,
-    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData, Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']>>, }
+    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 회사 참여 프로젝트
  */
 
-export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>, ReadCompanyProjectParams['page']>, TError = unknown>(
+export function useReadCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof readCompanyProject>>>, TError = unknown>(
  id: number,
-    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData, Awaited<ReturnType<typeof readCompanyProject>>, QueryKey, ReadCompanyProjectParams['page']>>, }
+    params: ReadCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof readCompanyProject>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -888,7 +888,7 @@ export const getSearchCompaniesByNameQueryKey = (params: SearchCompaniesByNamePa
     }
 
     
-export const getSearchCompaniesByNameInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>, SearchCompaniesByNameParams['page']>, TError = unknown>(params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData, Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']>>, }
+export const getSearchCompaniesByNameInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>>, TError = unknown>(params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -897,49 +897,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']> = ({ signal, pageParam }) => searchCompaniesByName({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchCompaniesByName>>> = ({ signal }) => searchCompaniesByName(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData, Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type SearchCompaniesByNameInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof searchCompaniesByName>>>
 export type SearchCompaniesByNameInfiniteQueryError = unknown
 
 
-export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>, SearchCompaniesByNameParams['page']>, TError = unknown>(
- params: SearchCompaniesByNameParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData, Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']>> & Pick<
+export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>>, TError = unknown>(
+ params: SearchCompaniesByNameParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof searchCompaniesByName>>,
           TError,
-          Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey
+          Awaited<ReturnType<typeof searchCompaniesByName>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>, SearchCompaniesByNameParams['page']>, TError = unknown>(
- params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData, Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']>> & Pick<
+export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>>, TError = unknown>(
+ params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof searchCompaniesByName>>,
           TError,
-          Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey
+          Awaited<ReturnType<typeof searchCompaniesByName>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>, SearchCompaniesByNameParams['page']>, TError = unknown>(
- params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData, Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']>>, }
+export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>>, TError = unknown>(
+ params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 회사 검색
  */
 
-export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>, SearchCompaniesByNameParams['page']>, TError = unknown>(
- params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData, Awaited<ReturnType<typeof searchCompaniesByName>>, QueryKey, SearchCompaniesByNameParams['page']>>, }
+export function useSearchCompaniesByNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchCompaniesByName>>>, TError = unknown>(
+ params: SearchCompaniesByNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchCompaniesByName>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

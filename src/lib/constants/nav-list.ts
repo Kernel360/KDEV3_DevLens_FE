@@ -2,17 +2,17 @@ import { Building2, FolderCode, User } from "lucide-react";
 
 export const NAV_LIST = [
   {
-    title: "계정관리",
+    title: "프로젝트 관리",
     url: "#",
-    icon: User,
+    icon: FolderCode,
     items: [
       {
-        title: "계정 목록",
-        url: "/members",
+        title: "프로젝트 목록",
+        url: "/projects",
       },
       {
-        title: "계정 생성",
-        url: "/members/create",
+        title: "프로젝트 생성",
+        url: "/projects/create",
       },
     ],
   },
@@ -32,17 +32,17 @@ export const NAV_LIST = [
     ],
   },
   {
-    title: "프로젝트 관리",
+    title: "계정관리",
     url: "#",
-    icon: FolderCode,
+    icon: User,
     items: [
       {
-        title: "프로젝트 목록",
-        url: "/projects",
+        title: "계정 목록",
+        url: "/members",
       },
       {
-        title: "프로젝트 생성",
-        url: "/projects/create",
+        title: "계정 생성",
+        url: "/members/create",
       },
     ],
   },

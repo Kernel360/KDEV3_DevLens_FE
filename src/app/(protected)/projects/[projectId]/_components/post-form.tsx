@@ -226,9 +226,8 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full line-through"
+                      className="w-full"
                       onClick={() => fileInputRef.current?.click()}
-                      disabled={true}
                     >
                       <UploadIcon className="mr-2 h-4 w-4" />
                       파일 선택
@@ -325,7 +324,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                   control={form.control}
                   name="status"
                   render={({ field }) => (
-                    <FormItem className="w-full min-w-[200px]">
+                    <FormItem className="w-full">
                       <FormLabel>상태</FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -352,7 +351,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                   control={form.control}
                   name="priority"
                   render={({ field }) => (
-                    <FormItem className="w-full min-w-[200px]">
+                    <FormItem className="w-full">
                       <FormLabel>우선순위</FormLabel>
                       <Select
                         onValueChange={field.onChange}
@@ -380,7 +379,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                   control={form.control}
                   name="dueDate"
                   render={({ field }) => (
-                    <FormItem className="w-full min-w-[200px]">
+                    <FormItem className="w-full">
                       <FormLabel>마감일</FormLabel>
                       <Popover>
                         <PopoverTrigger asChild>

@@ -1,30 +1,33 @@
-import { Project } from "@/types/project";
+import { GetProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
 import {
-  Badge,
   // Badge,
   Card,
   CardContent,
-  CardDescription,
+  // CardDescription,
   CardHeader,
   CardTitle,
 } from "@ui";
 import { Calendar } from "lucide-react";
 import Link from "next/link";
 
-export default function ProjectCard(props: Project) {
+export default function ProjectCard(
+  props: GetProjectListGetMyProjectResponseInfo,
+) {
   const {
     id,
     projectName,
-    name,
-    projectDescription,
-    projectStatusCode,
+    // name,
+    // projectDescription,
+    // projectStatusCode,
     startDate,
     endDate,
     customerName,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatusColor = (status: Project["projectStatusCode"]) => {
+  const getStatusColor = (
+    // status: GetProjectListGetMyProjectResponseInfo["projectStatusCode"],
+  ) => {
     // switch (status) {
     //   case "진행중":
     //     return "bg-blue-500/15 text-blue-500 hover:bg-blue-500/25";
@@ -47,24 +50,24 @@ export default function ProjectCard(props: Project) {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <h3 className="truncate font-semibold leading-normal">
-                  {projectName || name}
+                  {projectName}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {customerName}
                 </p>
               </div>
-              <Badge
+              {/* <Badge
                 variant="secondary"
                 className={`${getStatusColor(projectStatusCode)} shrink-0`}
               >
                 {projectStatusCode}
                 상태
-              </Badge>
+              </Badge> */}
             </div>
           </CardTitle>
-          <CardDescription className="truncate">
+          {/* <CardDescription className="truncate">
             {projectDescription}
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
         <CardContent className="flex justify-between text-sm">
           <div className="flex items-center gap-4 text-sm text-muted-foreground">

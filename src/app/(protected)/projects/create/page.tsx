@@ -2,6 +2,8 @@ import Header from "@/components/layout/Header";
 import SectionTitle from "@/components/composites/section-title";
 import ProjectForm from "./_components/project-form";
 
+export const dynamic = "force-dynamic";
+
 export default function CreateProjectPage() {
   return (
     <>

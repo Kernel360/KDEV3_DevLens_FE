@@ -822,8 +822,8 @@ export const getSelectListQueryKey = (projectStepId: number,
     }
 
     
-export const getSelectListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof selectList>>, SelectListParams['page']>, TError = unknown>(projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData, Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']>>, }
+export const getSelectListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(projectStepId: number,
+    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -832,53 +832,53 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']> = ({ signal, pageParam }) => selectList(projectStepId,{...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectList>>> = ({ signal }) => selectList(projectStepId,params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(projectStepId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData, Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(projectStepId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type SelectListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof selectList>>>
 export type SelectListInfiniteQueryError = unknown
 
 
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>, SelectListParams['page']>, TError = unknown>(
+export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
  projectStepId: number,
-    params: SelectListParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData, Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']>> & Pick<
+    params: SelectListParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof selectList>>,
           TError,
-          Awaited<ReturnType<typeof selectList>>, QueryKey
+          Awaited<ReturnType<typeof selectList>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>, SelectListParams['page']>, TError = unknown>(
+export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
  projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData, Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']>> & Pick<
+    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof selectList>>,
           TError,
-          Awaited<ReturnType<typeof selectList>>, QueryKey
+          Awaited<ReturnType<typeof selectList>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>, SelectListParams['page']>, TError = unknown>(
+export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
  projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData, Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']>>, }
+    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 게시글 목록 조회
  */
 
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>, SelectListParams['page']>, TError = unknown>(
+export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
  projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData, Awaited<ReturnType<typeof selectList>>, QueryKey, SelectListParams['page']>>, }
+    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

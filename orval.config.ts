@@ -13,7 +13,7 @@ module.exports = {
         query: {
           useQuery: true,
           useInfinite: true,
-          useInfiniteQueryParam: "page",
+          // useInfiniteQueryParam: "page",
         },
       },
     },
@@ -35,7 +35,7 @@ module.exports = {
         query: {
           useQuery: true,
           useInfinite: true,
-          useInfiniteQueryParam: "page",
+          // useInfiniteQueryParam: "page",
         },
       },
     },

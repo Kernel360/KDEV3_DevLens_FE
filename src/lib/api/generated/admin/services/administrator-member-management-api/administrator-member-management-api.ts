@@ -122,7 +122,7 @@ export const getGetFilteredMembersQueryKey = (params: GetFilteredMembersParams,)
     }
 
     
-export const getGetFilteredMembersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>, GetFilteredMembersParams['page']>, TError = unknown>(params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData, Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']>>, }
+export const getGetFilteredMembersInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>>, TError = unknown>(params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -131,49 +131,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']> = ({ signal, pageParam }) => getFilteredMembers({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getFilteredMembers>>> = ({ signal }) => getFilteredMembers(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData, Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetFilteredMembersInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getFilteredMembers>>>
 export type GetFilteredMembersInfiniteQueryError = unknown
 
 
-export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>, GetFilteredMembersParams['page']>, TError = unknown>(
- params: GetFilteredMembersParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData, Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']>> & Pick<
+export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>>, TError = unknown>(
+ params: GetFilteredMembersParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getFilteredMembers>>,
           TError,
-          Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey
+          Awaited<ReturnType<typeof getFilteredMembers>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>, GetFilteredMembersParams['page']>, TError = unknown>(
- params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData, Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']>> & Pick<
+export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>>, TError = unknown>(
+ params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getFilteredMembers>>,
           TError,
-          Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey
+          Awaited<ReturnType<typeof getFilteredMembers>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>, GetFilteredMembersParams['page']>, TError = unknown>(
- params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData, Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']>>, }
+export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>>, TError = unknown>(
+ params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 회원 목록 조회
  */
 
-export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>, GetFilteredMembersParams['page']>, TError = unknown>(
- params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData, Awaited<ReturnType<typeof getFilteredMembers>>, QueryKey, GetFilteredMembersParams['page']>>, }
+export function useGetFilteredMembersInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getFilteredMembers>>>, TError = unknown>(
+ params: GetFilteredMembersParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getFilteredMembers>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 

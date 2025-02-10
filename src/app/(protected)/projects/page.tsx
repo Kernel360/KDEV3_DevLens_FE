@@ -5,6 +5,8 @@ import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Suspense } from "react";
 import ProjectListTable from "./_components/project-list-table";
 
+export const dynamic = "force-dynamic";
+
 export default function ProjectsPage() {
   return (
     <>

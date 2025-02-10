@@ -5,6 +5,8 @@ import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Suspense } from "react";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 
+export const dynamic = "force-dynamic";
+
 export default function CompanyPage() {
   return (
     <>

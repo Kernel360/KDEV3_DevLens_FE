@@ -1,17 +1,26 @@
 import Header from "@/components/layout/Header";
 import { getProjectStepAndChecklist } from "@/lib/api/generated/main/services/project-step-api/project-step-api";
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import ProjectDetailContent from "./_components/project-detail-content";
+
+export const dynamic = "force-dynamic";
+
+type PageProps = {
+  params: Promise<{ projectId: string }>;
+  searchParams: Promise<{ step: string }>;
+};
 
 export default async function ProjectDetailPage({
   params,
   searchParams,
-}: {
-  params: { projectId: string };
-  searchParams: { step?: string };
-}) {
+}: PageProps) {
   const queryClient = new QueryClient();
-  const projectId = Number(params.projectId);
+  const projectId = Number((await params).projectId);
+  const stepParam = (await searchParams).step;
 
   // 서버에서 데이터 미리 가져오기
   await queryClient.prefetchQuery({
@@ -30,11 +39,8 @@ export default async function ProjectDetailPage({
           { label: "프로젝트 이름" },
         ]}
       />
-      <HydrationBoundary  state={dehydratedState}>
-        <ProjectDetailContent
-          projectId={projectId}
-          currentStepId={searchParams.step}
-        />
+      <HydrationBoundary state={dehydratedState}>
+        <ProjectDetailContent projectId={projectId} currentStepId={stepParam} />
       </HydrationBoundary>
       {/* <div className="flex h-full flex-col overflow-hidden">
         <SectionTitle>진행 단계</SectionTitle>

@@ -348,7 +348,7 @@ export const getGetListOfProjectsQueryKey = (params: GetListOfProjectsParams,) =
     }
 
     
-export const getGetListOfProjectsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>, GetListOfProjectsParams['page']>, TError = unknown>(params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData, Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']>>, }
+export const getGetListOfProjectsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>>, TError = unknown>(params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -357,49 +357,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']> = ({ signal, pageParam }) => getListOfProjects({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getListOfProjects>>> = ({ signal }) => getListOfProjects(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData, Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetListOfProjectsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getListOfProjects>>>
 export type GetListOfProjectsInfiniteQueryError = unknown
 
 
-export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>, GetListOfProjectsParams['page']>, TError = unknown>(
- params: GetListOfProjectsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData, Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']>> & Pick<
+export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>>, TError = unknown>(
+ params: GetListOfProjectsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getListOfProjects>>,
           TError,
-          Awaited<ReturnType<typeof getListOfProjects>>, QueryKey
+          Awaited<ReturnType<typeof getListOfProjects>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>, GetListOfProjectsParams['page']>, TError = unknown>(
- params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData, Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']>> & Pick<
+export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>>, TError = unknown>(
+ params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getListOfProjects>>,
           TError,
-          Awaited<ReturnType<typeof getListOfProjects>>, QueryKey
+          Awaited<ReturnType<typeof getListOfProjects>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>, GetListOfProjectsParams['page']>, TError = unknown>(
- params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData, Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']>>, }
+export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>>, TError = unknown>(
+ params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 프로젝트 페이지 조회
  */
 
-export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>, GetListOfProjectsParams['page']>, TError = unknown>(
- params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData, Awaited<ReturnType<typeof getListOfProjects>>, QueryKey, GetListOfProjectsParams['page']>>, }
+export function useGetListOfProjectsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjects>>>, TError = unknown>(
+ params: GetListOfProjectsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjects>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -722,7 +722,7 @@ export const getGetListOfProjectHistoryQueryKey = (params: GetListOfProjectHisto
     }
 
     
-export const getGetListOfProjectHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>, GetListOfProjectHistoryParams['page']>, TError = unknown>(params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData, Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']>>, }
+export const getGetListOfProjectHistoryInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>>, TError = unknown>(params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -731,49 +731,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']> = ({ signal, pageParam }) => getListOfProjectHistory({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getListOfProjectHistory>>> = ({ signal }) => getListOfProjectHistory(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData, Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type GetListOfProjectHistoryInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getListOfProjectHistory>>>
 export type GetListOfProjectHistoryInfiniteQueryError = unknown
 
 
-export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>, GetListOfProjectHistoryParams['page']>, TError = unknown>(
- params: GetListOfProjectHistoryParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData, Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']>> & Pick<
+export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>>, TError = unknown>(
+ params: GetListOfProjectHistoryParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getListOfProjectHistory>>,
           TError,
-          Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey
+          Awaited<ReturnType<typeof getListOfProjectHistory>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>, GetListOfProjectHistoryParams['page']>, TError = unknown>(
- params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData, Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']>> & Pick<
+export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>>, TError = unknown>(
+ params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getListOfProjectHistory>>,
           TError,
-          Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey
+          Awaited<ReturnType<typeof getListOfProjectHistory>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>, GetListOfProjectHistoryParams['page']>, TError = unknown>(
- params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData, Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']>>, }
+export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>>, TError = unknown>(
+ params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 프로젝트 이력 페이지 조회
  */
 
-export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>, GetListOfProjectHistoryParams['page']>, TError = unknown>(
- params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData, Awaited<ReturnType<typeof getListOfProjectHistory>>, QueryKey, GetListOfProjectHistoryParams['page']>>, }
+export function useGetListOfProjectHistoryInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getListOfProjectHistory>>>, TError = unknown>(
+ params: GetListOfProjectHistoryParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getListOfProjectHistory>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -877,7 +877,7 @@ export const getSearchHistoriesQueryKey = (params: SearchHistoriesParams,) => {
     }
 
     
-export const getSearchHistoriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>, SearchHistoriesParams['page']>, TError = unknown>(params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData, Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']>>, }
+export const getSearchHistoriesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>>, TError = unknown>(params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -886,49 +886,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']> = ({ signal, pageParam }) => searchHistories({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchHistories>>> = ({ signal }) => searchHistories(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData, Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type SearchHistoriesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof searchHistories>>>
 export type SearchHistoriesInfiniteQueryError = unknown
 
 
-export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>, SearchHistoriesParams['page']>, TError = unknown>(
- params: SearchHistoriesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData, Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']>> & Pick<
+export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>>, TError = unknown>(
+ params: SearchHistoriesParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof searchHistories>>,
           TError,
-          Awaited<ReturnType<typeof searchHistories>>, QueryKey
+          Awaited<ReturnType<typeof searchHistories>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>, SearchHistoriesParams['page']>, TError = unknown>(
- params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData, Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']>> & Pick<
+export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>>, TError = unknown>(
+ params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof searchHistories>>,
           TError,
-          Awaited<ReturnType<typeof searchHistories>>, QueryKey
+          Awaited<ReturnType<typeof searchHistories>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>, SearchHistoriesParams['page']>, TError = unknown>(
- params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData, Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']>>, }
+export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>>, TError = unknown>(
+ params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 프로젝트 이력 검색
  */
 
-export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>, SearchHistoriesParams['page']>, TError = unknown>(
- params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData, Awaited<ReturnType<typeof searchHistories>>, QueryKey, SearchHistoriesParams['page']>>, }
+export function useSearchHistoriesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof searchHistories>>>, TError = unknown>(
+ params: SearchHistoriesParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof searchHistories>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
@@ -1032,7 +1032,7 @@ export const getCheckProjectNameQueryKey = (params: CheckProjectNameParams,) => 
     }
 
     
-export const getCheckProjectNameInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>, CheckProjectNameParams['page']>, TError = unknown>(params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData, Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']>>, }
+export const getCheckProjectNameInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>>, TError = unknown>(params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
@@ -1041,49 +1041,49 @@ const {query: queryOptions} = options ?? {};
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']> = ({ signal, pageParam }) => checkProjectName({...params, page: pageParam || params?.['page']}, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof checkProjectName>>> = ({ signal }) => checkProjectName(params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData, Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
 export type CheckProjectNameInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof checkProjectName>>>
 export type CheckProjectNameInfiniteQueryError = unknown
 
 
-export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>, CheckProjectNameParams['page']>, TError = unknown>(
- params: CheckProjectNameParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData, Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']>> & Pick<
+export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>>, TError = unknown>(
+ params: CheckProjectNameParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof checkProjectName>>,
           TError,
-          Awaited<ReturnType<typeof checkProjectName>>, QueryKey
+          Awaited<ReturnType<typeof checkProjectName>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>, CheckProjectNameParams['page']>, TError = unknown>(
- params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData, Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']>> & Pick<
+export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>>, TError = unknown>(
+ params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof checkProjectName>>,
           TError,
-          Awaited<ReturnType<typeof checkProjectName>>, QueryKey
+          Awaited<ReturnType<typeof checkProjectName>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>, CheckProjectNameParams['page']>, TError = unknown>(
- params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData, Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']>>, }
+export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>>, TError = unknown>(
+ params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
  * @summary 프로젝트 중복 체크
  */
 
-export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>, CheckProjectNameParams['page']>, TError = unknown>(
- params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData, Awaited<ReturnType<typeof checkProjectName>>, QueryKey, CheckProjectNameParams['page']>>, }
+export function useCheckProjectNameInfinite<TData = InfiniteData<Awaited<ReturnType<typeof checkProjectName>>>, TError = unknown>(
+ params: CheckProjectNameParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof checkProjectName>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
