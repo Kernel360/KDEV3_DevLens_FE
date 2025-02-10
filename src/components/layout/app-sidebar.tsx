@@ -17,23 +17,23 @@ import Link from "next/link";
 import { useAuthStore } from "@/store/useAuthStore";
 import { NAV_LIST } from "@/lib/constants/nav-list";
 import { ProjectApi } from "@/lib/apis/main/projectApi";
-import { useQuery } from "@tanstack/react-query";
-import { projectKeys } from "@/lib/queries/project";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const user = useAuthStore((state) => state.user);
   const pathname = usePathname();
   const hideSidebarRoutes = ["/login", "/forgot"];
 
-  const { data: projects } = useQuery({
-    queryKey: projectKeys.list(),
+  const { role } = user;
+
+  const { data: projects } = useSuspenseQuery({
+    queryKey: ["projects"],
     queryFn: () => ProjectApi.getList(),
   });
 
   if (hideSidebarRoutes.includes(pathname)) {
     return null;
   }
-  const { role } = user;
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -52,10 +52,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavUser user={user} />
       </SidebarHeader>
       <SidebarContent>
-        {role === "ADMIN" ? (
-          <NavMain items={NAV_LIST} />
-        ) : (
-          <NavProjects projects={projects?.myProjects || []} />
+        {role === "ADMIN" && <NavMain items={NAV_LIST} />}
+        {role === "USER" && projects && (
+          <NavProjects projects={projects.myProjects || []} />
         )}
       </SidebarContent>
       <SidebarRail />

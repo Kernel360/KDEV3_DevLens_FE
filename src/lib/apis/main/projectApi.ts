@@ -35,6 +35,11 @@ export const ProjectApi = {
     getSteps: (projectId: number) =>
       restClient.get<ProjectStepResponse>(
         `${API_PATH.MAIN}${MAIN_ENDPOINTS.PROJECT.STEPS.LIST(projectId)}`,
+        {
+          next: {
+            tags: [`project-${projectId}-steps`],
+          },
+        },
       ),
 
     // POST {BASE_URL}/main/api/projects/steps

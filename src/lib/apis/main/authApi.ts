@@ -6,7 +6,6 @@ import {
   LoginResponse,
   ResetPasswordRequest,
   EmailVerificationRequest,
-  LogoutResponse,
 } from "@/types/auth";
 
 export const AuthApi = {
@@ -20,9 +19,10 @@ export const AuthApi = {
 
   // POST /api/logout
   logout: () =>
-    restClient.post<void, LogoutResponse>(
+    restClient.post<void, Response>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.LOGOUT}`,
       undefined,
+      { rawResponse: true },
     ),
 
   // POST /api/send-mail
@@ -44,8 +44,9 @@ export const AuthApi = {
 
   // POST /api/auth/refresh
   refreshToken: () =>
-    restClient.post<void, void>(
+    restClient.post<void, Response>(
       `${API_PATH.MAIN}${MAIN_ENDPOINTS.AUTH.REFRESH}`,
       undefined,
+      { rawResponse: true },
     ),
 };

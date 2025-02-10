@@ -30,10 +30,14 @@ export async function loginAction(data: LoginRequest) {
         ) {
           cookieStore.set(cookieName.trim(), cookieValue, {
             path: "/",
-            maxAge: cookieName.trim() === "X-Access-Token" ? 86400 : 3600,
+            // access token 1시간, refresh token 24시간
+            maxAge:
+              cookieName.trim() === "X-Access-Token" ? 60 * 60 : 60 * 60 * 24,
             expires: new Date(
               Date.now() +
-                (cookieName.trim() === "X-Access-Token" ? 86400000 : 3600000),
+                (cookieName.trim() === "X-Access-Token"
+                  ? 60 * 60
+                  : 60 * 60 * 24),
             ),
             domain: ".devlens.work",
             secure: true,
@@ -60,37 +64,13 @@ export async function loginAction(data: LoginRequest) {
       },
     };
   } catch (error) {
+    console.error(error);
     return {
       success: false,
       message:
         error instanceof APIError
           ? error.message
           : "로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-    };
-  }
-}
-
-export async function logoutAction() {
-  const cookieStore = await cookies();
-  cookieStore.delete("X-Access-Token");
-  cookieStore.delete("X-Refresh-Token");
-  try {
-    // 서버에 로그아웃 요청
-    const response = await AuthApi.logout();
-
-    if (response) {
-      return {
-        success: true,
-        message: response.message,
-      };
-    }
-  } catch (error) {
-    return {
-      success: false,
-      message:
-        error instanceof APIError
-          ? error.message
-          : "로그아웃 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
     };
   }
 }

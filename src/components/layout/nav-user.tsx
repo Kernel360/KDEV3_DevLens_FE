@@ -17,9 +17,10 @@ import {
 } from "@ui";
 import Link from "next/link";
 import { UserAvatar } from "../composites/user-avatar";
-import { logoutAction } from "@/lib/actions/authAction";
+import { logoutAction } from "@/lib/actions/logoutAction";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
+// import { AuthApi } from "@/lib/apis/main/authApi";
 
 export function NavUser({ user }: { user: LoginResponse | null }) {
   const { isMobile } = useSidebar();
@@ -27,13 +28,12 @@ export function NavUser({ user }: { user: LoginResponse | null }) {
 
   const handleLogout = async () => {
     const res = await logoutAction();
-
-    if (res?.success && res?.message) {
+    if (res.message) {
       toast.info(res.message);
+      redirect("/login");
     } else {
-      toast.error(res?.message);
+      toast.error(res.message);
     }
-    redirect("/login");
   };
 
   return (
@@ -90,7 +90,7 @@ export function NavUser({ user }: { user: LoginResponse | null }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} className="line-through">
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               로그아웃
             </DropdownMenuItem>
