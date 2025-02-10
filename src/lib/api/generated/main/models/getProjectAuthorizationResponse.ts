@@ -7,6 +7,6 @@
 import type { GetProjectAuthorizationMemberAuthorization } from './getProjectAuthorizationMemberAuthorization';
 
 export interface GetProjectAuthorizationResponse {
-  stepId?: number;
+  projectId?: number;
   memberAuthorization?: GetProjectAuthorizationMemberAuthorization[];
 }
