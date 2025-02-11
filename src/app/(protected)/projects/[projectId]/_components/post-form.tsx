@@ -1,6 +1,5 @@
 "use client";
 
-import { PostApi, uploadFiles } from "@/lib/apis/main/postApi";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -41,19 +40,27 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
+import {
+  useCreatePost,
+  useUploadPostFiles,
+} from "@/lib/api/generated/main/services/post-api/post-api";
+import { ko } from "date-fns/locale";
 import * as z from "zod";
 
 const formSchema = z.object({
   step: z.string().min(1, { message: "단계를 선택해주세요" }),
-  title: z.string().min(2, { message: "제목은 필수 입력 항목입니다" }),
+  title: z.string().trim().min(2, { message: "제목은 필수 입력 항목입니다" }),
   status: z.enum(["DEFAULT", "IN_PROGRESS", "COMPLETED"]),
   priority: z.enum(["DEFAULT", "LOW", "MEDIUM", "HIGH"]),
   dueDate: z.date().optional(),
-  content: z.string().min(10, { message: "본문을 10자 이상 입력해주세요" }),
+  content: z
+    .string()
+    .trim()
+    .min(10, { message: "본문을 10자 이상 입력해주세요" }),
   links: z.array(
     z.object({
-      linkTitle: z.string(),
-      link: z.string().url({ message: "올바른 URL을 입력해주세요" }),
+      linkTitle: z.string().trim(),
+      link: z.string().trim().url({ message: "올바른 URL을 입력해주세요" }),
     }),
   ),
 });
@@ -89,30 +96,37 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
     control: form.control,
   });
 
+  const { mutateAsync: createPost } = useCreatePost();
+  const { mutateAsync: uploadFiles } = useUploadPostFiles();
+
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB in bytes
+
   const onSubmit = async (data: FormValues) => {
     try {
       // 1. 게시글 생성
-      const response = await PostApi.create({
-        projectStepId: Number(data.step),
-        priority: data.priority,
-        status: data.status,
-        title: data.title,
-        content: data.content,
-        deadline: data.dueDate ? format(data.dueDate, "yyyy-MM-dd") : "",
-        linkInputList: data.links.map((link) => ({
-          linkTitle: link.linkTitle,
-          link: link.link,
-        })),
-      });
+      const response = (await createPost({
+        data: {
+          projectStepId: Number(data.step),
+          priority: data.priority,
+          status: data.status,
+          title: data.title,
+          content: data.content,
+          deadline: data.dueDate ? format(data.dueDate, "yyyy-MM-dd") : "",
+          linkInputList: data.links.map((link) => ({
+            linkTitle: link.linkTitle,
+            link: link.link,
+          })),
+        },
+      })) as { data: { postId: number } };
 
       // 2. 파일이 있다면 업로드
-      if (files.length > 0) {
-        const formData = new FormData();
-        files.forEach((file) => {
-          formData.append("files", file);
+      if (response.data && files.length > 0) {
+        await uploadFiles({
+          postId: response.data.postId,
+          data: {
+            files,
+          },
         });
-
-        await uploadFiles(response.data.postId, formData);
       }
 
       toast.success("게시물이 작성되었습니다");
@@ -127,6 +141,16 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
+
+      // 파일 크기 검증
+      const oversizedFiles = newFiles.filter(
+        (file) => file.size > MAX_FILE_SIZE,
+      );
+      if (oversizedFiles.length > 0) {
+        toast.error("파일 크기는 50MB를 초과할 수 없습니다");
+        return;
+      }
+
       setFiles((prev) => [...prev, ...newFiles]);
     }
   };
@@ -233,7 +257,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                       파일 선택
                     </Button>
                   </div>
-                  <div className="grid grid-cols-5 gap-2">
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                     {files.map((file, index) => (
                       <div
                         key={index}
@@ -315,7 +339,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
               ))}
             </div>
           </div>
-          <Card className="h-fit lg:w-72">
+          <Card className="h-fit min-w-24 lg:w-72">
             <CardHeader>옵션</CardHeader>
             <CardContent className="flex flex-col gap-6 lg:flex-row">
               <div className="grid w-full grid-cols-2 gap-6 lg:grid-cols-1">
@@ -392,7 +416,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
                               )}
                             >
                               {field.value ? (
-                                format(field.value, "PPP")
+                                format(field.value, "PPP", { locale: ko })
                               ) : (
                                 <span>날짜를 선택하세요</span>
                               )}
