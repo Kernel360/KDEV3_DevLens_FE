@@ -3,21 +3,30 @@
 import { InfoRow } from "@/components/composites/info-row";
 import { UserAvatar } from "@/components/composites/user-avatar";
 import Heading from "@/components/ui/heading";
-import { Button, Card } from "@ui";
+import { Button, Card, Skeleton } from "@ui";
 import { useState } from "react";
 import EditAccountInfoDialog from "./edit-account-info-dialog";
 import EditAvatarButton from "./edit-avatar-button";
 import WithdrawAlert from "./withdraw-alert";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { UserApi } from "@/lib/apis/main/userApi";
+import { useMemberDetail } from "@/lib/api/generated/main/services/my-page-api/my-page-api";
 
 export default function AccountInfo() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const { data: userInfo } = useSuspenseQuery({
-    queryKey: ["user"],
-    queryFn: () => UserApi.getDetail(),
-  });
+  const { data: userInfo, isLoading } = useMemberDetail();
+
+  if (isLoading || !userInfo) {
+    return (
+      <>
+        <Skeleton className="mb-5 h-32 w-full" />
+        <div className="flex flex-col gap-2">
+          <Skeleton className="h-6 w-1/5" />
+          <Skeleton className="h-6 w-1/4" />
+          <Skeleton className="h-6 w-1/4" />
+        </div>
+      </>
+    );
+  }
 
   const {
     name,
@@ -27,7 +36,7 @@ export default function AccountInfo() {
     company,
     department,
     position,
-    avatar,
+    imageUrl,
   } = userInfo;
 
   return (
@@ -35,7 +44,11 @@ export default function AccountInfo() {
       {/* 프로필 사진 */}
       <Card className="mb-5 flex w-full items-center gap-4 p-6">
         <div className="group relative self-start">
-          <UserAvatar name={name} imageSrc={avatar} className="size-20" />
+          <UserAvatar
+            name={name || ""}
+            imageSrc={imageUrl}
+            className="size-20 cursor-auto"
+          />
           <EditAvatarButton />
         </div>
         <div className="flex grow flex-col gap-3">

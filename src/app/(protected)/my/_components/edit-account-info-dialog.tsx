@@ -13,14 +13,16 @@ import {
 } from "@ui";
 // import { EmailVerification } from "@/app/(protected)/my/_components/email-verification";
 import { useState } from "react";
-import { User } from "@/types/user";
-import { CompanySelect } from "./company-select";
 import { toast } from "sonner";
+import { useUpdateMember } from "@/lib/api/generated/main/services/my-page-api/my-page-api";
+import { MyPageGetMember } from "@/lib/api/generated/main/models";
+import { useQueryClient } from "@tanstack/react-query";
+import { getMemberDetailQueryKey } from "@/lib/api/generated/main/services/my-page-api/my-page-api";
 
 interface EditAccountInfoDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  userInfo: User;
+  userInfo: MyPageGetMember;
 }
 
 export default function EditAccountInfoDialog({
@@ -28,15 +30,34 @@ export default function EditAccountInfoDialog({
   onOpenChange,
   userInfo,
 }: EditAccountInfoDialogProps) {
-  const [editingInfo, setEditingInfo] = useState<User>(userInfo);
-  const { name, loginId, email, phoneNumber, department, position } =
+  const [editingInfo, setEditingInfo] = useState<MyPageGetMember>(userInfo);
+  const { name, loginId, email, phoneNumber, department, position, company } =
     editingInfo;
 
+  const queryClient = useQueryClient();
+
+  const { mutate: updateMember } = useUpdateMember({
+    mutation: {
+      onSuccess: () => {
+        toast.success("회원 정보가 수정되었습니다.");
+        queryClient.invalidateQueries({ queryKey: getMemberDetailQueryKey() });
+        onOpenChange(false);
+      },
+      onError: (error: Error) => {
+        toast.error(error.message || "회원 정보 수정에 실패했습니다.");
+      },
+    },
+  });
+
   const handleSave = () => {
-    // TODO: API 호출하여 사용자 정보 업데이트
-    // setUserInfo(editingInfo);
-    toast.error("기능 업데이트 예정입니다.");
-    // onOpenChange(false);
+    updateMember({
+      data: {
+        email,
+        phoneNumber,
+        department,
+        position,
+      },
+    });
   };
 
   return (
@@ -69,15 +90,7 @@ export default function EditAccountInfoDialog({
           </div>
           <div className="space-y-2">
             <Label htmlFor="company">소속 회사</Label>
-            <CompanySelect
-              value={editingInfo.company ? Number(editingInfo.company) : null}
-              onChange={(value) =>
-                setEditingInfo({
-                  ...editingInfo,
-                  company: value ? String(value) : "",
-                })
-              }
-            />
+            <Input id="company" value={company} disabled className="bg-muted" />
           </div>
           <div className="space-y-2">
             <Label htmlFor=" phoneNumber">전화번호</Label>
