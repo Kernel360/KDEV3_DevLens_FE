@@ -2,10 +2,12 @@
 
 import { CompanySelect } from "@/components/composites/company-select";
 import DatePickerInput from "@/components/composites/date-picker-input";
-import { adminProjectApi } from "@/lib/apis/admin/adminProjectApi";
+import { useNewProject } from "@/lib/api/generated/admin/services/administrator-project-management-api/administrator-project-management-api";
+import { usePostProjectAuthorization } from "@/lib/api/generated/main/services/project-authorization-controller/project-authorization-controller";
 import { PROJECT_TYPES } from "@/lib/constants/selects";
 import { createProjectSchema, type ProjectFormData } from "@/schemas/project";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMemberStore } from "@/store/useMemberAssignStore";
 import {
   Button,
   Form,
@@ -26,6 +28,8 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { MemberAssignment } from "./member-assignment";
+import { PostProjectAuthorizationMemberAuthorization } from "@/lib/api/generated/main/models/postProjectAuthorizationMemberAuthorization";
+
 export default function ProjectForm() {
   const form = useForm<ProjectFormData>({
     resolver: zodResolver(createProjectSchema),
@@ -35,7 +39,6 @@ export default function ProjectForm() {
       developerId: undefined,
       projectDescription: "",
       projectTypeId: 1,
-      // projectStatusCode: "PREPARED",
       bnsManager: "",
       contractNumber: "",
       plannedStartDate: "",
@@ -43,10 +46,61 @@ export default function ProjectForm() {
     },
   });
   const router = useRouter();
+  const { mutateAsync: createProject } = useNewProject();
+  const { mutateAsync: assignMembers } = usePostProjectAuthorization();
+  const { customer, developer } = useMemberStore();
 
   const onSubmit = async (data: ProjectFormData) => {
     try {
-      await adminProjectApi.create(data);
+      // 1. 프로젝트 생성
+      const newProject = await createProject({
+        data: {
+          projectName: data.projectName,
+          customerId: data.customerId!,
+          developerId: data.developerId!,
+          projectDescription: data.projectDescription,
+          projectTypeId: data.projectTypeId,
+          bnsManager: data.bnsManager,
+          contractNumber: data.contractNumber,
+          plannedStartDate: data.plannedStartDate,
+          plannedEndDate: data.plannedEndDate,
+        },
+      });
+
+      // 2. 프로젝트 ID가 있을 때만 멤버 할당
+      if (newProject?.id) {
+        const authorizations = [
+          ...customer.selectedApprovers.map((member) => ({
+            memberId: Number(member.memberId),
+            projectAuthorization: "APPROVER",
+            memberDivision: "CLIENT",
+          })),
+          ...customer.selectedNormal.map((member) => ({
+            memberId: member.memberId,
+            projectAuthorization: "MEMBER",
+            memberDivision: "CLIENT",
+          })),
+          ...developer.selectedApprovers.map((member) => ({
+            memberId: member.memberId,
+            projectAuthorization: "APPROVER",
+            memberDivision: "DEVELOPER",
+          })),
+          ...developer.selectedNormal.map((member) => ({
+            memberId: member.memberId,
+            projectAuthorization: "MEMBER",
+            memberDivision: "DEVELOPER",
+          })),
+        ];
+
+        await assignMembers({
+          projectId: newProject.id,
+          data: {
+            authorizations:
+              authorizations as PostProjectAuthorizationMemberAuthorization[],
+          },
+        });
+      }
+
       toast.success("프로젝트가 생성되었습니다.", {
         action: {
           label: "프로젝트 목록으로 이동",
@@ -141,34 +195,6 @@ export default function ProjectForm() {
                 </FormItem>
               )}
             />
-
-            {/* <FormField
-              control={form.control}
-              name="projectStatusCode"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>프로젝트 상태</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="프로젝트 상태를 선택하세요" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectItem value="PREPARED">준비중</SelectItem>
-                      <SelectItem value="IN_PROGRESS">진행중</SelectItem>
-                      <SelectItem value="COMPLETED">완료</SelectItem>
-                      <SelectItem value="CLOSED">종료</SelectItem>
-                      <SelectItem value="CANCELLED">취소</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
 
             <FormField
               control={form.control}

@@ -11,7 +11,6 @@ import { useQuery } from "@tanstack/react-query";
 import ProjectList from "./project-list";
 
 export default function ProjectSection() {
-
   const { data, isLoading } = useQuery({
     queryKey: getGetMyProjectQueryKey(),
     queryFn: () => getMyProject(),

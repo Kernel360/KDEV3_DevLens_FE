@@ -20,7 +20,7 @@ export default function MembersPage() {
         </Link>
       </div>
       <ErrorBoundary>
-        <MemberListTable />
+      <MemberListTable />
       </ErrorBoundary>
     </>
   );

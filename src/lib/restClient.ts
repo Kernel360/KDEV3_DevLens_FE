@@ -88,16 +88,16 @@ async function get<T>(
   //   method: "GET",
   //   url: fullUrl,
   //   environment: isServer ? "server" : "client",
-  //   stack: getDetailedCallerInfo(),
+  //   // stack: getDetailedCallerInfo(),
   //   timestamp: new Date().toISOString(),
   //   // React 렌더링 단계 확인을 위한 정보
-  //   // reactInfo: {
-  //   //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   //   isHydrating: !!(globalThis as any).__NEXT_DATA__?.props,
-  //   //   hasWindow: typeof window !== "undefined",
-  //   //   documentReadyState:
-  //   //     typeof document !== "undefined" ? document.readyState : "server",
-  //   // },
+  //   reactInfo: {
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //     isHydrating: !!(globalThis as any).__NEXT_DATA__?.props,
+  //     hasWindow: typeof window !== "undefined",
+  //     documentReadyState:
+  //       typeof document !== "undefined" ? document.readyState : "server",
+  //   },
   // });
 
   try {
