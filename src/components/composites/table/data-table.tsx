@@ -33,7 +33,7 @@ export function DataTable<T extends { id: number | string }>({
 
   return (
     <>
-      <Table className={className}>
+      <Table className={cn(className, "mb-8")}>
         <TableHeader>
           <TableRow>
             {columns.map((column) => (
@@ -54,23 +54,36 @@ export function DataTable<T extends { id: number | string }>({
               </TableCell>
             </TableRow>
           ) : (
-            data.map((row) => (
-              <TableRow
-                key={row.id}
-                onClick={() => onRowClick?.(row)}
-                className="cursor-pointer"
-              >
-                {columns.map((column) => (
-                  <TableCell key={column.id} className="max-w-[180px]">
-                    <div className="truncate">
-                      {column.cell
-                        ? column.cell({ row: { original: row } })
-                        : String(row[column.id as keyof T])}
-                    </div>
+            <>
+              {data.map((row) => (
+                <TableRow
+                  key={row.id}
+                  onClick={() => onRowClick?.(row)}
+                  className="cursor-pointer"
+                >
+                  {columns.map((column) => (
+                    <TableCell key={column.id} className="max-w-[180px]">
+                      <div className="truncate">
+                        {column.cell
+                          ? column.cell({ row: { original: row } })
+                          : String(row[column.id as keyof T])}
+                      </div>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+
+              {page === totalPages && (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="border-t py-4 text-center text-sm text-muted-foreground"
+                  >
+                    마지막 데이터입니다
                   </TableCell>
-                ))}
-              </TableRow>
-            ))
+                </TableRow>
+              )}
+            </>
           )}
         </TableBody>
       </Table>
