@@ -46,7 +46,7 @@ export default function ProjectDetailContent({
   }, [steps, currentStepId, pathname, router]);
 
   const addNewParam = () => {
-    setNewPost(true, { scroll: false });
+    setNewPost(true, { scroll: false, history: "push" });
   };
 
   // steps가 없거나 로딩 중일 때는 렌더링하지 않음
@@ -72,6 +72,8 @@ export default function ProjectDetailContent({
           </Suspense>
         </ErrorBoundary>
       </div>
+
+      {/* 게시판 영역 */}
       <SectionTitle>게시판</SectionTitle>
       <div className="flex items-center gap-4">
         <div className="min-w-0 flex-1">
