@@ -17,6 +17,12 @@ export const postListColumns: ColumnDef<Post>[] = [
     cell: ({ row }) => <span className="font-mono">{row.original.postId}</span>,
   },
   {
+    id: "priority",
+    header: "우선순위",
+    className: "w-20",
+    cell: ({ row }) => <Badge>{row.original.priority}</Badge>,
+  },
+  {
     id: "status",
     header: "상태",
     className: "w-20",

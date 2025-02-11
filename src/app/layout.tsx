@@ -32,7 +32,7 @@ export default function RootLayout({
             </section>
           </NuqsAdapter>
         </QueryProvider>
-      </body>
+      </body> 
     </html>
   );
 }

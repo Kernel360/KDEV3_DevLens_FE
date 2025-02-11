@@ -5,6 +5,7 @@ import { ColumnDef } from "@/types/table";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@ui";
 import { DataTable } from "./data-table";
 import { Suspense } from "react";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
 
 interface TableWithSheetProps<T extends { id: number }> {
   columns: ColumnDef<T>[];
@@ -12,6 +13,7 @@ interface TableWithSheetProps<T extends { id: number }> {
   title?: string;
   content: React.ComponentType<{ id: number }>;
   totalPages: number;
+  isLoading?: boolean;
 }
 
 export default function TableWithSheet<T extends { id: number }>({
@@ -19,9 +21,14 @@ export default function TableWithSheet<T extends { id: number }>({
   data,
   content: Content,
   totalPages,
+  isLoading,
 }: TableWithSheetProps<T>) {
   const [postId, setPostId] = useQueryState("post");
   const id = postId ? Number(postId) : null;
+
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
   return (
     <>
       <DataTable

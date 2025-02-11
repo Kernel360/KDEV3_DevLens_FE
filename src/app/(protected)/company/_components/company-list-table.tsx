@@ -2,7 +2,7 @@
 
 import TableWithSheet from "@/components/composites/table/table-with-sheet";
 import { adminCompanyApi } from "@/lib/apis/admin/adminCompanyApi";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { parseAsInteger, useQueryState } from "nuqs";
 import { companyColumns } from "./company-columns";
 import CompanyDetail from "./company-detail";
@@ -10,7 +10,7 @@ import CompanyDetail from "./company-detail";
 export default function CompanyListTable() {
   const [page] = useQueryState("page", parseAsInteger.withDefault(1));
 
-  const { data } = useSuspenseQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["companyList", page],
     queryFn: () => adminCompanyApi.getList({ page }),
   });
@@ -18,9 +18,10 @@ export default function CompanyListTable() {
   return (
     <TableWithSheet
       columns={companyColumns}
-      data={data.content || []}
+      data={data?.content || []}
       content={CompanyDetail}
-      totalPages={data.totalPages}
+      totalPages={data?.totalPages || 0}
+      isLoading={isLoading}
     />
   );
 }

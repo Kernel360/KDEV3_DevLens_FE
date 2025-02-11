@@ -1,6 +1,8 @@
 import { AppSidebar } from "@/components/layout/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@ui";
 
+export const dynamic = "force-dynamic";
+
 export default function ProtectedLayout({
   children,
 }: Readonly<{

@@ -1,21 +1,26 @@
 import SectionTitle from "@/components/composites/section-title";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 import Header from "@/components/layout/Header";
-import TableSkeleton from "@/components/skeleton/table-skeleton";
-import { Suspense } from "react";
 import ProjectListTable from "./_components/project-list-table";
-
-export const dynamic = "force-dynamic";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function ProjectsPage() {
   return (
     <>
       <Header />
-      <SectionTitle>프로젝트 목록</SectionTitle>
+      <div className="flex justify-between">
+        <SectionTitle>프로젝트 목록</SectionTitle>
+        <Link href="/projects/create">
+          <Button>
+            <Plus size={12} />
+            프로젝트 생성
+          </Button>
+        </Link>
+      </div>
       <ErrorBoundary>
-        <Suspense fallback={<TableSkeleton />}>
-          <ProjectListTable />
-        </Suspense>
+        <ProjectListTable />
       </ErrorBoundary>
     </>
   );

@@ -99,7 +99,7 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
                       onClick={() => setIsExpanded(!isExpanded)}
                     >
                       <span>{step.stepName}</span>
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-yellow-100 text-xs">
+                      <span className="border-primary bg-background flex h-5 w-5 items-center justify-center rounded-full border  text-xs">
                         {step.projectChecklist.length}
                       </span>
                     </CardTitle>

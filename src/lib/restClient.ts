@@ -66,15 +66,6 @@ function buildUrl(
   return `${baseUrl}?${searchParams.toString()}`;
 }
 
-function getDetailedCallerInfo() {
-  const stack = new Error().stack;
-  return stack
-    ?.split("\n")
-    .slice(1) // 첫 번째 줄(Error 객체 생성) 제외
-    .map((line) => line.trim())
-    .join("\n");
-}
-
 /**
  * GET 요청
  * @param {string} url - 요청을 보낼 URL
@@ -91,23 +82,23 @@ async function get<T>(
 ): Promise<T> {
   const { queryParams, headers = {}, next } = options;
   const fullUrl = buildUrl(url, queryParams);
-  const isServer = typeof window === "undefined";
+  // const isServer = typeof window === "undefined";
 
-  console.log("[RestClient] API Call:", {
-    method: "GET",
-    url: fullUrl,
-    environment: isServer ? "server" : "client",
-    stack: getDetailedCallerInfo(),
-    timestamp: new Date().toISOString(),
-    // React 렌더링 단계 확인을 위한 정보
-    // reactInfo: {
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //   isHydrating: !!(globalThis as any).__NEXT_DATA__?.props,
-    //   hasWindow: typeof window !== "undefined",
-    //   documentReadyState:
-    //     typeof document !== "undefined" ? document.readyState : "server",
-    // },
-  });
+  // console.log("[RestClient] API Call:", {
+  //   method: "GET",
+  //   url: fullUrl,
+  //   environment: isServer ? "server" : "client",
+  //   stack: getDetailedCallerInfo(),
+  //   timestamp: new Date().toISOString(),
+  //   // React 렌더링 단계 확인을 위한 정보
+  //   // reactInfo: {
+  //   //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   //   isHydrating: !!(globalThis as any).__NEXT_DATA__?.props,
+  //   //   hasWindow: typeof window !== "undefined",
+  //   //   documentReadyState:
+  //   //     typeof document !== "undefined" ? document.readyState : "server",
+  //   // },
+  // });
 
   try {
     const response = await fetch(fullUrl, {
@@ -118,13 +109,14 @@ async function get<T>(
     });
     return handleResponse<T>(response);
   } catch (error) {
-    console.error("[RestClient] Error:", {
-      url: fullUrl,
-      error,
-      environment: isServer ? "server" : "client",
-      stack: getDetailedCallerInfo(),
-      timestamp: new Date().toISOString(),
-    });
+    console.log("error", error);
+    // console.error("[RestClient] Error:", {
+    //   url: fullUrl,
+    //   error,
+    //   environment: isServer ? "server" : "client",
+    //   stack: getDetailedCallerInfo(),
+    //   timestamp: new Date().toISOString(),
+    // });
     throw new APIError(0, "Fetch failed");
   }
 }

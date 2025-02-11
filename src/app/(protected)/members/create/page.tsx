@@ -3,8 +3,6 @@ import SectionTitle from "@/components/composites/section-title";
 import Header from "@/components/layout/Header";
 import BatchMembersButton from "./_components/batch-members-button";
 
-export const dynamic = "force-dynamic";
-
 export default function CreateMemberPage() {
   return (
     <>

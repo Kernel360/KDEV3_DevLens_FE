@@ -7,8 +7,6 @@ import {
 } from "@tanstack/react-query";
 import ProjectDetailContent from "./_components/project-detail-content";
 
-export const dynamic = "force-dynamic";
-
 type PageProps = {
   params: Promise<{ projectId: string }>;
   searchParams: Promise<{ step: string }>;
@@ -42,17 +40,6 @@ export default async function ProjectDetailPage({
       <HydrationBoundary state={dehydratedState}>
         <ProjectDetailContent projectId={projectId} currentStepId={stepParam} />
       </HydrationBoundary>
-      {/* <div className="flex h-full flex-col overflow-hidden">
-        <SectionTitle>진행 단계</SectionTitle>
-        <div className="mb-4 overflow-hidden">
-          <ErrorBoundary>
-            <Suspense fallback={<div>Loading...</div>}>
-              <KanbanBoard projectId={projectId} />
-            </Suspense>
-          </ErrorBoundary>
-        </div>
-        <SectionTitle>게시판</SectionTitle>
-      </div> */}
     </>
   );
 }

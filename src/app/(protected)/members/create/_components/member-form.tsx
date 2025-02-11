@@ -1,6 +1,6 @@
 "use client";
 
-import { CompanySelect } from "@/app/(protected)/my/_components/company-select";
+import { CompanySelect } from "@/components/composites/company-select";
 import DatePickerInput from "@/components/composites/date-picker-input";
 import { adminMemberApi } from "@/lib/apis/admin/adminMemberApi";
 import { MEMBER_ROLE_OPTIONS } from "@/lib/constants/member";
