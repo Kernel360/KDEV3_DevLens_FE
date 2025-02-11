@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface CheckMailPostRequest {
-  inputKey?: string;
-  key?: string;
+export interface PatchProjectCurrentStepResponse {
+  projectId?: number;
+  stepName?: string;
 }

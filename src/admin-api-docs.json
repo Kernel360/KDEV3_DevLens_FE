@@ -1,6 +1,10 @@
 {
   "openapi": "3.0.1",
-  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "info": {
+    "title": "Devlens Admin API 문서",
+    "description": "Devlens Admin API 문서",
+    "version": "1.0"
+  },
   "servers": [
     { "url": "http://localhost:8443", "description": "local Port Admin" },
     { "url": "https://api.devlens.work/admin", "description": "server Admin" }

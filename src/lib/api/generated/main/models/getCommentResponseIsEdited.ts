@@ -6,12 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export type MemberDtoRequestRole = typeof MemberDtoRequestRole[keyof typeof MemberDtoRequestRole];
+export type GetCommentResponseIsEdited = typeof GetCommentResponseIsEdited[keyof typeof GetCommentResponseIsEdited];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const MemberDtoRequestRole = {
-  ADMIN: 'ADMIN',
-  SUPER: 'SUPER',
-  USER: 'USER',
+export const GetCommentResponseIsEdited = {
+  YES: 'YES',
+  NO: 'NO',
 } as const;
