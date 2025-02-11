@@ -1,6 +1,5 @@
 "use client";
 
-import { ErrorBoundary } from "@/components/error/error-boundary";
 import { ProjectListSkeleton } from "@/components/skeleton/project-list-skeleton";
 import { Separator } from "@/components/ui";
 import {
@@ -20,12 +19,13 @@ export default function ProjectSection() {
     return <ProjectListSkeleton />;
   }
 
+  if (!data?.myProjects) {
+    throw new Error("프로젝트 목록을 불러오는데 실패했습니다.");
+  }
+
   return (
     <div className="space-y-6">
-      <ErrorBoundary>
-        <ProjectList projects={data?.myProjects || []} title="내 프로젝트" />
-      </ErrorBoundary>
-
+      <ProjectList projects={data?.myProjects} title="내 프로젝트" />
       <Separator />
       {/* <ProjectList projects={companyProjects} title="회사 프로젝트" /> */}
     </div>
