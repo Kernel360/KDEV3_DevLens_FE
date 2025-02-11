@@ -7,5 +7,5 @@
  */
 
 export type GetMyProjectParams = {
-status?: string;
+filter?: string;
 };

@@ -912,9 +912,97 @@
   },
   "components": {
     "schemas": {
+      "Company": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "companyName": { "type": "string" },
+          "representativeName": { "type": "string" },
+          "representativeContact": { "type": "string" },
+          "representativeEmail": { "type": "string" },
+          "address": { "type": "string" },
+          "businessType": {
+            "type": "string",
+            "enum": ["INDIVIDUAL", "CORPORATION"]
+          },
+          "businessRegistrationNumber": { "type": "string" },
+          "isActive": { "type": "string", "enum": ["Y", "N"] }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "projectName": { "type": "string" },
+          "customer": { "$ref": "#/components/schemas/Company" },
+          "developer": { "$ref": "#/components/schemas/Company" },
+          "projectDescription": { "type": "string" },
+          "projectType": { "$ref": "#/components/schemas/ProjectType" },
+          "projectStatusCode": {
+            "type": "string",
+            "enum": [
+              "PREPARED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CLOSED",
+              "CANCELLED",
+              "DELETED"
+            ]
+          },
+          "currentProjectStep": { "type": "string" },
+          "bnsManager": { "type": "string" },
+          "contractNumber": { "type": "string" },
+          "plannedStartDate": { "type": "string", "format": "date" },
+          "plannedEndDate": { "type": "string", "format": "date" },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "finalApproverId": { "type": "integer", "format": "int64" },
+          "finalApprovalDate": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProjectTag": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "project": { "$ref": "#/components/schemas/Project" },
+          "tag": { "type": "string" },
+          "isActive": { "type": "string", "enum": ["YES", "NO"] }
+        }
+      },
+      "ProjectType": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "projectTypeName": { "type": "string" },
+          "projectTypeDescription": { "type": "string" },
+          "useStatus": { "type": "string", "enum": ["YES", "NO"] }
+        }
+      },
       "PutProjectResponse": {
         "type": "object",
         "properties": {
+          "project": { "$ref": "#/components/schemas/Project" },
+          "tags": {
+            "type": "array",
+            "writeOnly": true,
+            "items": { "$ref": "#/components/schemas/ProjectTag" }
+          },
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
           "customerId": { "type": "string" },
@@ -938,7 +1026,8 @@
           "plannedEndDate": { "type": "string", "format": "date" },
           "startDate": { "type": "string", "format": "date" },
           "endDate": { "type": "string", "format": "date" },
-          "finalApprovalDate": { "type": "string", "format": "date-time" }
+          "finalApprovalDate": { "type": "string", "format": "date-time" },
+          "projectTags": { "type": "array", "items": { "type": "string" } }
         }
       },
       "PutProjectRequest": {
@@ -967,7 +1056,8 @@
           "plannedEndDate": { "type": "string", "format": "date" },
           "startDate": { "type": "string", "format": "date" },
           "endDate": { "type": "string", "format": "date" },
-          "finalApprovalDate": { "type": "string", "format": "date-time" }
+          "finalApprovalDate": { "type": "string", "format": "date-time" },
+          "projectTags": { "type": "array", "items": { "type": "string" } }
         }
       },
       "PutCompanyResponse": {
@@ -1061,6 +1151,12 @@
       "PostProjectResponse": {
         "type": "object",
         "properties": {
+          "project": { "$ref": "#/components/schemas/Project" },
+          "tags": {
+            "type": "array",
+            "writeOnly": true,
+            "items": { "$ref": "#/components/schemas/ProjectTag" }
+          },
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
           "customerCompanyName": { "type": "string" },
@@ -1081,7 +1177,8 @@
           "bnsManager": { "type": "string" },
           "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
-          "plannedEndDate": { "type": "string", "format": "date" }
+          "plannedEndDate": { "type": "string", "format": "date" },
+          "projectTags": { "type": "array", "items": { "type": "string" } }
         }
       },
       "PostProjectRequest": {
@@ -1096,7 +1193,8 @@
           "bnsManager": { "type": "string" },
           "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
-          "plannedEndDate": { "type": "string", "format": "date" }
+          "plannedEndDate": { "type": "string", "format": "date" },
+          "projectTags": { "type": "array", "items": { "type": "string" } }
         }
       },
       "MemberDtoResponse": {

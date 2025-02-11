@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GetCompanyProjectCompanyProject {
+export interface GetMyProjectListGetMyProjectResponseInfo {
   id?: number;
   projectName?: string;
   startDate?: string;

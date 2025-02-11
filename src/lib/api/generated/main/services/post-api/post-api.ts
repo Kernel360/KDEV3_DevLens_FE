@@ -29,7 +29,7 @@ import type {
 } from '@tanstack/react-query'
 import type {
   APIResponse,
-  APIResponseListFileMetadataDto,
+  APIResponseListFileMetadataResponse,
   APIResponseListLinkResponse,
   APIResponseSuccessCode,
   LinkInput,
@@ -599,7 +599,7 @@ const {mutation: mutationOptions} = options ?
 ) => {
       
       
-      return mainAxios<APIResponseListFileMetadataDto>(
+      return mainAxios<APIResponseListFileMetadataResponse>(
       {url: `/api/posts/${postId}/files`, method: 'GET', signal
     },
       );

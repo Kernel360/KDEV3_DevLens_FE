@@ -21,4 +21,5 @@ export interface PutProjectRequest {
   startDate?: string;
   endDate?: string;
   finalApprovalDate?: string;
+  projectTags?: string[];
 }

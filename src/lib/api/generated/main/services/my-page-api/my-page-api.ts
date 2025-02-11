@@ -28,7 +28,7 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query'
 import type {
-  APIResponseFileMetadataDto,
+  APIResponseFileMetadataResponse,
   APIResponseSuccessCode,
   DeleteMember200,
   MyPageGetMember,
@@ -46,7 +46,7 @@ export const getProfileImage = (
 ) => {
       
       
-      return mainAxios<APIResponseFileMetadataDto>(
+      return mainAxios<APIResponseFileMetadataResponse>(
       {url: `/api/members/${memberId}/profile-image`, method: 'GET', signal
     },
       );

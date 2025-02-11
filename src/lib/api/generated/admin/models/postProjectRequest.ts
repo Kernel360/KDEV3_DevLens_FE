@@ -16,4 +16,5 @@ export interface PostProjectRequest {
   contractNumber?: string;
   plannedStartDate?: string;
   plannedEndDate?: string;
+  projectTags?: string[];
 }

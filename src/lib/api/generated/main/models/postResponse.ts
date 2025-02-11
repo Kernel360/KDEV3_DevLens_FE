@@ -8,6 +8,8 @@
 import type { PostResponsePriority } from './postResponsePriority';
 import type { PostResponseStatus } from './postResponseStatus';
 import type { GetCommentResponse } from './getCommentResponse';
+import type { LinkResponse } from './linkResponse';
+import type { FileMetadataResponse } from './fileMetadataResponse';
 
 export interface PostResponse {
   postId?: number;
@@ -22,4 +24,6 @@ export interface PostResponse {
   createDate?: string;
   updateDate?: string;
   comments?: GetCommentResponse[];
+  links?: LinkResponse[];
+  files?: FileMetadataResponse[];
 }

@@ -25,8 +25,9 @@ import type {
 } from '@tanstack/react-query'
 import type {
   GetCompanyProjectResponse,
-  GetMyProjectParams,
-  GetProjectListResponse
+  GetMyCompanyProjectParams,
+  GetMyProjectListResponse,
+  GetMyProjectParams
 } from '../../models'
 import { mainAxios } from '../../../../../axiosClient';
 
@@ -42,7 +43,7 @@ export const getMyProject = (
 ) => {
       
       
-      return mainAxios<GetProjectListResponse>(
+      return mainAxios<GetMyProjectListResponse>(
       {url: `/api/projects`, method: 'GET',
         params, signal
     },
@@ -193,32 +194,36 @@ export function useGetMyProject<TData = Awaited<ReturnType<typeof getMyProject>>
  */
 export const getMyCompanyProject = (
     companyId: number,
+    params?: GetMyCompanyProjectParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainAxios<GetCompanyProjectResponse>(
-      {url: `/api/companies/${companyId}/projects`, method: 'GET', signal
+      {url: `/api/companies/${companyId}/projects`, method: 'GET',
+        params, signal
     },
       );
     }
   
 
-export const getGetMyCompanyProjectQueryKey = (companyId: number,) => {
-    return [`/api/companies/${companyId}/projects`] as const;
+export const getGetMyCompanyProjectQueryKey = (companyId: number,
+    params?: GetMyCompanyProjectParams,) => {
+    return [`/api/companies/${companyId}/projects`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getGetMyCompanyProjectInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getMyCompanyProject>>>, TError = unknown>(companyId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
+export const getGetMyCompanyProjectInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getMyCompanyProject>>>, TError = unknown>(companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMyCompanyProjectQueryKey(companyId);
+  const queryKey =  queryOptions?.queryKey ?? getGetMyCompanyProjectQueryKey(companyId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyCompanyProject>>> = ({ signal }) => getMyCompanyProject(companyId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyCompanyProject>>> = ({ signal }) => getMyCompanyProject(companyId,params, signal);
 
       
 
@@ -232,7 +237,8 @@ export type GetMyCompanyProjectInfiniteQueryError = unknown
 
 
 export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getMyCompanyProject>>>, TError = unknown>(
- companyId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
+ companyId: number,
+    params: undefined |  GetMyCompanyProjectParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyCompanyProject>>,
           TError,
@@ -242,7 +248,8 @@ export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<Retu
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getMyCompanyProject>>>, TError = unknown>(
- companyId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
+ companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyCompanyProject>>,
           TError,
@@ -252,7 +259,8 @@ export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<Retu
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getMyCompanyProject>>>, TError = unknown>(
- companyId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
+ companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -260,11 +268,12 @@ export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<Retu
  */
 
 export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getMyCompanyProject>>>, TError = unknown>(
- companyId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
+ companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetMyCompanyProjectInfiniteQueryOptions(companyId,options)
+  const queryOptions = getGetMyCompanyProjectInfiniteQueryOptions(companyId,params,options)
 
   const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -275,16 +284,17 @@ export function useGetMyCompanyProjectInfinite<TData = InfiniteData<Awaited<Retu
 
 
 
-export const getGetMyCompanyProjectQueryOptions = <TData = Awaited<ReturnType<typeof getMyCompanyProject>>, TError = unknown>(companyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
+export const getGetMyCompanyProjectQueryOptions = <TData = Awaited<ReturnType<typeof getMyCompanyProject>>, TError = unknown>(companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetMyCompanyProjectQueryKey(companyId);
+  const queryKey =  queryOptions?.queryKey ?? getGetMyCompanyProjectQueryKey(companyId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyCompanyProject>>> = ({ signal }) => getMyCompanyProject(companyId, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getMyCompanyProject>>> = ({ signal }) => getMyCompanyProject(companyId,params, signal);
 
       
 
@@ -298,7 +308,8 @@ export type GetMyCompanyProjectQueryError = unknown
 
 
 export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCompanyProject>>, TError = unknown>(
- companyId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
+ companyId: number,
+    params: undefined |  GetMyCompanyProjectParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyCompanyProject>>,
           TError,
@@ -308,7 +319,8 @@ export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCo
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCompanyProject>>, TError = unknown>(
- companyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
+ companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getMyCompanyProject>>,
           TError,
@@ -318,7 +330,8 @@ export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCo
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCompanyProject>>, TError = unknown>(
- companyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
+ companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
@@ -326,11 +339,12 @@ export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCo
  */
 
 export function useGetMyCompanyProject<TData = Awaited<ReturnType<typeof getMyCompanyProject>>, TError = unknown>(
- companyId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
+ companyId: number,
+    params?: GetMyCompanyProjectParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getMyCompanyProject>>, TError, TData>>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetMyCompanyProjectQueryOptions(companyId,options)
+  const queryOptions = getGetMyCompanyProjectQueryOptions(companyId,params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

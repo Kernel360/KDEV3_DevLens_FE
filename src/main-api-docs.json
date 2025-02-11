@@ -444,7 +444,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponseListFileMetadataDto"
+                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
                 }
               }
             }
@@ -460,17 +460,24 @@
             "in": "path",
             "required": true,
             "schema": { "type": "integer", "format": "int64" }
-          },
-          {
-            "name": "files",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "array",
-              "items": { "type": "string", "format": "binary" }
-            }
           }
         ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["files"],
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -746,7 +753,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponseListFileMetadataDto"
+                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
                 }
               }
             }
@@ -848,7 +855,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponseFileMetadataDto"
+                  "$ref": "#/components/schemas/APIResponseFileMetadataResponse"
                 }
               }
             }
@@ -1264,7 +1271,7 @@
         "operationId": "getMyProject",
         "parameters": [
           {
-            "name": "status",
+            "name": "filter",
             "in": "query",
             "required": false,
             "schema": { "type": "string" }
@@ -1276,7 +1283,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetProjectListResponse"
+                  "$ref": "#/components/schemas/GetMyProjectListResponse"
                 }
               }
             }
@@ -1436,7 +1443,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/APIResponseListFileMetadataDto"
+                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
                 }
               }
             }
@@ -1554,6 +1561,12 @@
             "in": "path",
             "required": true,
             "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string" }
           }
         ],
         "responses": {
@@ -1953,7 +1966,7 @@
         "type": "object",
         "properties": {
           "linkTitle": { "type": "string" },
-          "link": { "maxLength": 1000, "minLength": 0, "type": "string" }
+          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
         }
       },
       "PostProjectChecklistApplicationRequest": {
@@ -2116,25 +2129,28 @@
           "newPassword": { "type": "string" }
         }
       },
-      "GetProjectListGetMyProjectResponseInfo": {
+      "GetMyProjectListGetMyProjectResponseInfo": {
         "type": "object",
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
-          "startDate": { "type": "string", "format": "date" },
-          "endDate": { "type": "string", "format": "date" },
+          "startDate": { "type": "string" },
+          "endDate": { "type": "string" },
           "customerId": { "type": "integer", "format": "int64" },
           "customerCompanyName": { "type": "string" },
-          "currentStepName": { "type": "string" }
+          "developerId": { "type": "integer", "format": "int64" },
+          "developerCompanyName": { "type": "string" },
+          "currentStepName": { "type": "string" },
+          "projectTags": { "type": "array", "items": { "type": "string" } }
         }
       },
-      "GetProjectListResponse": {
+      "GetMyProjectListResponse": {
         "type": "object",
         "properties": {
           "myProjects": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/GetProjectListGetMyProjectResponseInfo"
+              "$ref": "#/components/schemas/GetMyProjectListGetMyProjectResponseInfo"
             }
           }
         }
@@ -2277,18 +2293,18 @@
           "createdAt": { "type": "string", "format": "date-time" }
         }
       },
-      "APIResponseListFileMetadataDto": {
+      "APIResponseListFileMetadataResponse": {
         "type": "object",
         "properties": {
           "code": { "type": "integer", "format": "int32" },
           "message": { "type": "string" },
           "data": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/FileMetadataDto" }
+            "items": { "$ref": "#/components/schemas/FileMetadataResponse" }
           }
         }
       },
-      "FileMetadataDto": {
+      "FileMetadataResponse": {
         "type": "object",
         "properties": {
           "id": { "type": "integer", "format": "int64" },
@@ -2425,6 +2441,14 @@
           "comments": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/GetCommentResponse" }
+          },
+          "links": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LinkResponse" }
+          },
+          "files": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FileMetadataResponse" }
           }
         }
       },
@@ -2470,12 +2494,12 @@
           "imageUrl": { "type": "string" }
         }
       },
-      "APIResponseFileMetadataDto": {
+      "APIResponseFileMetadataResponse": {
         "type": "object",
         "properties": {
           "code": { "type": "integer", "format": "int32" },
           "message": { "type": "string" },
-          "data": { "$ref": "#/components/schemas/FileMetadataDto" }
+          "data": { "$ref": "#/components/schemas/FileMetadataResponse" }
         }
       },
       "GetCompanyProjectCompanyProject": {
@@ -2483,11 +2507,14 @@
         "properties": {
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
-          "startDate": { "type": "string", "format": "date" },
-          "endDate": { "type": "string", "format": "date" },
+          "startDate": { "type": "string" },
+          "endDate": { "type": "string" },
           "customerId": { "type": "integer", "format": "int64" },
           "customerCompanyName": { "type": "string" },
-          "currentStepName": { "type": "string" }
+          "developerId": { "type": "integer", "format": "int64" },
+          "developerCompanyName": { "type": "string" },
+          "currentStepName": { "type": "string" },
+          "projectTags": { "type": "array", "items": { "type": "string" } }
         }
       },
       "GetCompanyProjectResponse": {

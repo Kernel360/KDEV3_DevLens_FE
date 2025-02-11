@@ -5,9 +5,13 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
+import type { Project } from './project';
+import type { ProjectTag } from './projectTag';
 import type { PostProjectResponseProjectStatusCode } from './postProjectResponseProjectStatusCode';
 
 export interface PostProjectResponse {
+  project?: Project;
+  tags?: ProjectTag[];
   id?: number;
   projectName?: string;
   customerCompanyName?: string;
@@ -19,4 +23,5 @@ export interface PostProjectResponse {
   contractNumber?: string;
   plannedStartDate?: string;
   plannedEndDate?: string;
+  projectTags?: string[];
 }

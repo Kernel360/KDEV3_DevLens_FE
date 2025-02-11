@@ -6,11 +6,6 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface LinkInput {
-  linkTitle?: string;
-  /**
-   * @minLength 1
-   * @maxLength 1000
-   */
-  link?: string;
-}
+export type PostProjectChecklistRejectFileBody = {
+  files: Blob[];
+};

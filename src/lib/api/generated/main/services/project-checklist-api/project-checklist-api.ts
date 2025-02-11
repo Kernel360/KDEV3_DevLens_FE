@@ -29,7 +29,7 @@ import type {
 } from '@tanstack/react-query'
 import type {
   APIResponseGetProjectChecklistApplicationResponse,
-  APIResponseListFileMetadataDto,
+  APIResponseListFileMetadataResponse,
   APIResponseListLinkResponse,
   APIResponseSuccessCode,
   DeleteProjectChecklistResponse,
@@ -39,7 +39,7 @@ import type {
   PostProjectChecklistApplication1Body,
   PostProjectChecklistApplicationRequest,
   PostProjectChecklistApplicationResponse,
-  PostProjectChecklistRejectFileParams,
+  PostProjectChecklistRejectFileBody,
   PostProjectChecklistRejectRequest,
   PostProjectChecklistRejectResponse,
   PostProjectChecklistRequest,
@@ -404,7 +404,7 @@ export const usePostProjectChecklist = <TError = unknown,
 ) => {
       
       
-      return mainAxios<APIResponseListFileMetadataDto>(
+      return mainAxios<APIResponseListFileMetadataResponse>(
       {url: `/api/projects/reject/${applicationId}/files`, method: 'GET', signal
     },
       );
@@ -544,14 +544,17 @@ export function useGetProjectChecklistRejectFiles<TData = Awaited<ReturnType<typ
 
 export const postProjectChecklistRejectFile = (
     applicationId: number,
-    params: PostProjectChecklistRejectFileParams,
+    postProjectChecklistRejectFileBody: PostProjectChecklistRejectFileBody,
  signal?: AbortSignal
 ) => {
       
-      
+      const formData = new FormData();
+postProjectChecklistRejectFileBody.files.forEach(value => formData.append('files', value));
+
       return mainAxios<APIResponseSuccessCode>(
       {url: `/api/projects/reject/${applicationId}/files`, method: 'POST',
-        params, signal
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
     },
       );
     }
@@ -559,8 +562,8 @@ export const postProjectChecklistRejectFile = (
 
 
 export const getPostProjectChecklistRejectFileMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, TError,{applicationId: number;params: PostProjectChecklistRejectFileParams}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, TError,{applicationId: number;params: PostProjectChecklistRejectFileParams}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, TError,{applicationId: number;data: PostProjectChecklistRejectFileBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, TError,{applicationId: number;data: PostProjectChecklistRejectFileBody}, TContext> => {
     
 const mutationKey = ['postProjectChecklistRejectFile'];
 const {mutation: mutationOptions} = options ?
@@ -572,10 +575,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, {applicationId: number;params: PostProjectChecklistRejectFileParams}> = (props) => {
-          const {applicationId,params} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, {applicationId: number;data: PostProjectChecklistRejectFileBody}> = (props) => {
+          const {applicationId,data} = props ?? {};
 
-          return  postProjectChecklistRejectFile(applicationId,params,)
+          return  postProjectChecklistRejectFile(applicationId,data,)
         }
 
         
@@ -584,15 +587,15 @@ const {mutation: mutationOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostProjectChecklistRejectFileMutationResult = NonNullable<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>>
-    
+    export type PostProjectChecklistRejectFileMutationBody = PostProjectChecklistRejectFileBody
     export type PostProjectChecklistRejectFileMutationError = unknown
 
     export const usePostProjectChecklistRejectFile = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, TError,{applicationId: number;params: PostProjectChecklistRejectFileParams}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postProjectChecklistRejectFile>>, TError,{applicationId: number;data: PostProjectChecklistRejectFileBody}, TContext>, }
 ): UseMutationResult<
         Awaited<ReturnType<typeof postProjectChecklistRejectFile>>,
         TError,
-        {applicationId: number;params: PostProjectChecklistRejectFileParams},
+        {applicationId: number;data: PostProjectChecklistRejectFileBody},
         TContext
       > => {
 
@@ -1295,7 +1298,7 @@ export const getProjectChecklistApplicationFiles = (
 ) => {
       
       
-      return mainAxios<APIResponseListFileMetadataDto>(
+      return mainAxios<APIResponseListFileMetadataResponse>(
       {url: `/api/projects/checklists/applications/${applicationId}/files`, method: 'GET', signal
     },
       );
