@@ -69,44 +69,53 @@ export default function ProjectForm() {
 
       // 2. 프로젝트 ID가 있을 때만 멤버 할당
       if (newProject?.id) {
-        const authorizations = [
-          ...customer.selectedApprovers.map((member) => ({
-            memberId: Number(member.memberId),
-            projectAuthorization: "APPROVER",
-            memberDivision: "CLIENT",
-          })),
-          ...customer.selectedNormal.map((member) => ({
-            memberId: member.memberId,
-            projectAuthorization: "MEMBER",
-            memberDivision: "CLIENT",
-          })),
-          ...developer.selectedApprovers.map((member) => ({
-            memberId: member.memberId,
-            projectAuthorization: "APPROVER",
-            memberDivision: "DEVELOPER",
-          })),
-          ...developer.selectedNormal.map((member) => ({
-            memberId: member.memberId,
-            projectAuthorization: "MEMBER",
-            memberDivision: "DEVELOPER",
-          })),
-        ];
+        try {
+          const authorizations = [
+            ...customer.selectedApprovers.map((member) => ({
+              memberId: Number(member.memberId),
+              projectAuthorization: "APPROVER",
+              memberDivision: "CLIENT",
+            })),
+            ...customer.selectedNormal.map((member) => ({
+              memberId: Number(member.memberId),
+              projectAuthorization: "MEMBER",
+              memberDivision: "CLIENT",
+            })),
+            ...developer.selectedApprovers.map((member) => ({
+              memberId: Number(member.memberId),
+              projectAuthorization: "APPROVER",
+              memberDivision: "DEVELOPER",
+            })),
+            ...developer.selectedNormal.map((member) => ({
+              memberId: Number(member.memberId),
+              projectAuthorization: "MEMBER",
+              memberDivision: "DEVELOPER",
+            })),
+          ];
 
-        await assignMembers({
-          projectId: newProject.id,
-          data: {
-            authorizations:
-              authorizations as PostProjectAuthorizationMemberAuthorization[],
-          },
-        });
+          await assignMembers({
+            projectId: newProject.id,
+            data: {
+              authorizations:
+                authorizations as PostProjectAuthorizationMemberAuthorization[],
+            },
+          });
+
+          toast.success("프로젝트 생성 및 멤버 배정이 완료되었습니다.", {
+            action: {
+              label: "프로젝트로 이동",
+              onClick: () => router.push(`/projects/${newProject.id}`),
+            },
+          });
+        } catch (memberError) {
+          toast.warning("프로젝트는 생성되었으나 멤버 배정에 실패했습니다.", {
+            action: {
+              label: `${memberError}, 상세 페이지에서 재시도`,
+              onClick: () => router.push(`/projects/${newProject.id}`),
+            },
+          });
+        }
       }
-
-      toast.success("프로젝트가 생성되었습니다.", {
-        action: {
-          label: "프로젝트 목록으로 이동",
-          onClick: () => router.push("/projects"),
-        },
-      });
     } catch (error) {
       toast.error(`프로젝트 생성 중 오류가 발생했습니다. ${error}`);
     }
