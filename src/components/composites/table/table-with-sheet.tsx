@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@ui";
 import { DataTable } from "./data-table";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/skeleton/table-skeleton";
+import { ErrorBoundary } from "@/components/error/error-boundary";
 
 interface TableWithSheetProps<T extends { id: number }> {
   columns: ColumnDef<T>[];
@@ -23,8 +24,8 @@ export default function TableWithSheet<T extends { id: number }>({
   totalPages,
   isLoading,
 }: TableWithSheetProps<T>) {
-  const [postId, setPostId] = useQueryState("post");
-  const id = postId ? Number(postId) : null;
+  const [Id, setId] = useQueryState("id");
+  const id = Id ? Number(Id) : null;
 
   if (isLoading) {
     return <TableSkeleton />;
@@ -34,12 +35,12 @@ export default function TableWithSheet<T extends { id: number }>({
       <DataTable
         columns={columns}
         data={data}
-        onRowClick={(row) => setPostId(String(row.id))}
+        onRowClick={(row) => setId(String(row.id))}
         totalPages={totalPages}
       />
-      <Sheet open={!!postId} onOpenChange={() => setPostId(null)}>
+      <Sheet open={!!Id} onOpenChange={() => setId(null)}>
         <SheetContent
-          className="w-[100vw] sm:max-w-3xl md:w-4/5"
+          className="w-[100vw] px-10 sm:max-w-3xl md:w-4/5"
           transparentOverlay
         >
           <SheetHeader>
@@ -47,15 +48,17 @@ export default function TableWithSheet<T extends { id: number }>({
           </SheetHeader>
           <div className="h-[calc(100vh-4rem)] overflow-y-auto">
             {id && (
-              <Suspense
-                fallback={
-                  <div className="flex h-full items-center justify-center">
-                    <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
-                  </div>
-                }
-              >
-                <Content id={id} />
-              </Suspense>
+              <ErrorBoundary>
+                <Suspense
+                  fallback={
+                    <div className="flex h-full items-center justify-center">
+                      <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
+                    </div>
+                  }
+                >
+                  <Content id={id} />
+                </Suspense>
+              </ErrorBoundary>
             )}
           </div>
         </SheetContent>
