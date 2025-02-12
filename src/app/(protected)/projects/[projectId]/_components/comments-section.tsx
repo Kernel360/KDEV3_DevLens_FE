@@ -1,62 +1,76 @@
-import { Comment, CommentWithReplies } from "@/types/comment";
-import { CommentFormValues } from "@/schemas/comment";
+import { useCreateComment } from "@/lib/api/generated/main/services/comment-api/comment-api";
+import {
+  PostCommentRequest,
+  GetCommentResponse,
+} from "@/lib/api/generated/main/models";
 import { useState } from "react";
 import CommentForm from "./comment-form";
 import CommentItem from "./comment-item";
-import { PostApi } from "@/lib/apis/main/postApi";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+import { getSelectPostQueryKey } from "@/lib/api/generated/main/services/post-api/post-api";
 
 interface CommentsSectionProps {
   postId: number;
-  comments: Comment[];
+  comments: GetCommentResponse[];
   onCommentUpdate?: () => void;
 }
 
-function groupComments(comments: Comment[]): CommentWithReplies[] {
-  const parentComments: CommentWithReplies[] = [];
-  const replyMap = new Map<number, Comment[]>();
-
-  comments.forEach((comment) => {
-    if (comment.parentCommentId === null) {
-      parentComments.push({ ...comment, replies: [] });
-    } else {
-      const replies = replyMap.get(comment.parentCommentId) || [];
-      replies.push(comment);
-      replyMap.set(comment.parentCommentId, replies);
-    }
-  });
-
-  parentComments.forEach((comment) => {
-    comment.replies = replyMap.get(comment.commentId) || [];
-  });
-
-  return parentComments;
+function groupComments(comments: CommentsSectionProps["comments"]) {
+  return comments.reduce(
+    (acc, comment) => {
+      if (!comment.parentCommentId) {
+        return [
+          ...acc,
+          {
+            ...comment,
+            replies: comments.filter(
+              (c) => c.parentCommentId === comment.commentId,
+            ),
+          },
+        ];
+      }
+      return acc;
+    },
+    [] as (CommentsSectionProps["comments"][0] & {
+      replies: CommentsSectionProps["comments"];
+    })[],
+  );
 }
 
-export function CommentsSection({
-  postId,
-  comments,
-  onCommentUpdate,
-}: CommentsSectionProps) {
+export function CommentsSection({ postId, comments }: CommentsSectionProps) {
+  const queryClient = useQueryClient();
   const [isReplying, setIsReplying] = useState<number | null>(null);
-  const groupedComments = groupComments(comments || []);
+  const groupedComments = groupComments(comments);
+
+  const { mutate: createComment } = useCreateComment({
+    mutation: {
+      onSuccess: async () => {
+        setIsReplying(null);
+        await queryClient.invalidateQueries({
+          queryKey: getSelectPostQueryKey(postId),
+        });
+      },
+      onError: (error) => {
+        console.error("Failed to submit comment:", error);
+        toast.error("댓글 작성에 실패했습니다");
+      },
+    },
+  });
 
   const handleCommentSubmit = async (
-    data: CommentFormValues,
+    data: { content: string },
     parentId?: number,
   ) => {
-    try {
-      await PostApi.createComment(postId, {
-        content: data.content,
-        parentCommentId: parentId || null,
-      });
-      setIsReplying(null);
-      toast.success("댓글이 작성되었습니다.");
-      onCommentUpdate?.();
-    } catch (error) {
-      console.error("Failed to submit comment:", error);
-      toast.error("댓글 작성에 실패했습니다.");
-    }
+    const commentData: PostCommentRequest = {
+      content: data.content,
+      parentCommentId: parentId,
+    };
+
+    createComment({
+      postId,
+      data: commentData,
+    });
   };
 
   return (
@@ -67,23 +81,25 @@ export function CommentsSection({
       <div className="space-y-6">
         {groupedComments.map((comment) => (
           <CommentItem
-            key={comment.commentId}
-            userName={comment.writer}
-            content={comment.content}
-            createdAt={comment.createdAt}
+            key={comment.commentId ?? 0}
+            userName={comment.writer ?? "익명"}
+            content={comment.content ?? ""}
+            createdAt={comment.createdAt ?? ""}
             onReplyClick={() =>
               setIsReplying(
-                isReplying === comment.commentId ? null : comment.commentId,
+                isReplying === comment.commentId
+                  ? null
+                  : (comment.commentId ?? null),
               )
             }
           >
             {/* 대댓글 목록 */}
             {comment.replies?.map((reply) => (
-              <div key={reply.commentId} className="ml-11">
+              <div key={reply.commentId ?? 0} className="ml-11">
                 <CommentItem
-                  userName={reply.writer}
-                  content={reply.content}
-                  createdAt={reply.createdAt}
+                  userName={reply.writer ?? "익명"}
+                  content={reply.content ?? ""}
+                  createdAt={reply.createdAt ?? ""}
                 />
               </div>
             ))}
@@ -97,6 +113,7 @@ export function CommentsSection({
                   }
                   placeholder="답글을 입력하세요"
                   className="space-y-3"
+                  autoFocus
                 />
               </div>
             )}

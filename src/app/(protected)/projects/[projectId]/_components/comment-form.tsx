@@ -7,7 +7,7 @@ import {
   FormField,
   FormItem,
   FormMessage,
-  Input
+  Input,
 } from "@ui";
 import { SendHorizontal } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -16,12 +16,14 @@ interface CommentFormProps {
   onSubmit: (data: CommentFormValues) => Promise<void>;
   placeholder?: string;
   className?: string;
+  autoFocus?: boolean;
 }
 
 export default function CommentForm({
   onSubmit,
   placeholder = "댓글을 입력하세요",
   className,
+  autoFocus,
 }: CommentFormProps) {
   const form = useForm<CommentFormValues>({
     resolver: zodResolver(commentSchema),
@@ -49,6 +51,7 @@ export default function CommentForm({
                     <Input
                       placeholder={placeholder}
                       className="h-[42px] min-h-0 resize-none"
+                      autoFocus={autoFocus}
                       {...field}
                     />
                   </div>

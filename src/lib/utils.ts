@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { format, parseISO } from "date-fns";
+import { ko } from "date-fns/locale";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -105,4 +107,8 @@ export function getStatusLabel(status: string) {
     default:
       return status;
   }
+}
+
+export function formatDateWithTime(dateStr: string) {
+  return format(parseISO(dateStr), "yyyy-M-d HH:mm:ss", { locale: ko });
 }

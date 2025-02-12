@@ -1,6 +1,6 @@
 import { UserAvatar } from "@/components/composites/user-avatar";
+import { formatDateWithTime } from "@/lib/utils";
 import { Button } from "@ui";
-import { formatDateToRelative } from "@/lib/utils";
 
 interface CommentItemProps {
   userName: string;
@@ -29,7 +29,7 @@ export default function CommentItem({
           <div className="flex items-center gap-2">
             <span className="font-medium">{userName}</span>
             <span className="text-xs text-muted-foreground">
-              {formatDateToRelative(createdAt)}
+              {formatDateWithTime(createdAt)}
             </span>
             {onReplyClick && (
               <Button
