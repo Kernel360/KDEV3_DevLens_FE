@@ -5,6 +5,8 @@ import {
   getStatusLabel,
   getStatusVariant,
   formatDateToRelative,
+  getPriorityLabel,
+  getPriorityVariant,
 } from "@/lib/utils";
 import { Post } from "@/types/post";
 import { ColumnDef } from "@/types/table";
@@ -20,16 +22,24 @@ export const postListColumns: ColumnDef<Post>[] = [
     id: "priority",
     header: "우선순위",
     className: "w-20",
-    cell: ({ row }) => <Badge>{row.original.priority}</Badge>,
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Badge variant={getPriorityVariant(row.original.priority)}>
+          {getPriorityLabel(row.original.priority)}
+        </Badge>
+      </div>
+    ),
   },
   {
     id: "status",
     header: "상태",
     className: "w-20",
     cell: ({ row }) => (
-      <Badge variant={getStatusVariant(row.original.status)}>
-        {getStatusLabel(row.original.status)}
-      </Badge>
+      <div className="flex justify-center">
+        <Badge variant={getStatusVariant(row.original.status)}>
+          {getStatusLabel(row.original.status)}
+        </Badge>
+      </div>
     ),
   },
   {

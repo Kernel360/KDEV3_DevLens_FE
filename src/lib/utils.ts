@@ -74,6 +74,8 @@ export function handleRegistrationNumberChange(
 // 상태 관련 헬퍼 함수들
 export function getStatusVariant(status: string) {
   switch (status) {
+    case "DEFAULT":
+      return "outline";
     case "PREPARED":
       return "secondary";
     case "IN_PROGRESS":
@@ -92,6 +94,8 @@ export function getStatusVariant(status: string) {
 
 export function getStatusLabel(status: string) {
   switch (status) {
+    case "DEFAULT":
+      return "기본";
     case "PREPARED":
       return "준비";
     case "IN_PROGRESS":
@@ -124,4 +128,32 @@ export function formatFileSize(bytes: number): string {
   }
 
   return `${size.toFixed(1)}${units[unitIndex]}`;
+}
+
+export function getPriorityVariant(priority: string) {
+  switch (priority) {
+    case "HIGH":
+      return "destructive";
+    case "MEDIUM":
+      return "default";
+    case "LOW":
+      return "secondary";
+    case "DEFAULT":
+    default:
+      return "outline";
+  }
+}
+
+export function getPriorityLabel(priority: string) {
+  switch (priority) {
+    case "HIGH":
+      return "높음";
+    case "MEDIUM":
+      return "중간";
+    case "LOW":
+      return "낮음";
+    case "DEFAULT":
+    default:
+      return "기본";
+  }
 }

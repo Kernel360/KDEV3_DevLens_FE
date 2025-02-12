@@ -4,7 +4,7 @@ export interface Post {
   postId: number;
   projectStepId: number;
   status: "DEFAULT" | "IN_PROGRESS" | "COMPLETED";
-  priority: number;
+  priority: "DEFAULT" | "LOW" | "MEDIUM" | "HIGH";
   title: string;
   writer: string;
   createDate: string;
