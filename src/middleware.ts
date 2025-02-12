@@ -12,8 +12,6 @@ export async function middleware(request: NextRequest) {
   const isPublicPath = publicPaths.some((path) => pathname.startsWith(path));
 
   // 로그인하지 않은 사용자가 공개 경로가 아닌 곳에 접근하면 로그인 페이지로 리다이렉트
-  // if (!accessToken && !isPublicPath) {
-  // 기존 접근하려던 경로 저장 - 로그인 후 리다이렉트
 
   // 액세스 토큰이 없고 리프레시 토큰이 있는 경우
   if (!accessToken && refreshToken && !isPublicPath) {
@@ -24,10 +22,10 @@ export async function middleware(request: NextRequest) {
     //   return NextResponse.next();
     // } catch (error) {
     //   console.error(error);
-      // 재발급 실패시 로그인 페이지로
-      const loginUrl = new URL("/login", request.url);
-      loginUrl.searchParams.set("redirect_to", pathname);
-      return NextResponse.redirect(loginUrl);
+    // 재발급 실패시 로그인 페이지로
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("redirect_to", pathname);
+    return NextResponse.redirect(loginUrl);
     // }
   }
 
