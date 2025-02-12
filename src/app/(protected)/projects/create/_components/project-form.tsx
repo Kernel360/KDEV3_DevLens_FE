@@ -9,6 +9,7 @@ import { createProjectSchema, type ProjectFormData } from "@/schemas/project";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMemberStore } from "@/store/useMemberAssignStore";
 import {
+  Badge,
   Button,
   Form,
   FormControl,
@@ -27,7 +28,22 @@ import {
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { X } from "lucide-react";
 import { MemberAssignment } from "./member-assignment";
+
+export const SUGGESTED_PROJECT_TAGS = [
+  "웹",
+  "모바일",
+  "네이티브",
+  "하이브리드",
+  "웹앱",
+  "키오스크",
+  "챗봇",
+  "전자정부",
+  "공공데이터",
+  "데이터분석",
+  "컨설팅",
+] as const;
 
 export default function ProjectForm() {
   const form = useForm<ProjectFormData>({
@@ -42,6 +58,7 @@ export default function ProjectForm() {
       contractNumber: "",
       plannedStartDate: "",
       plannedEndDate: "",
+      projectTags: [],
     },
   });
   const router = useRouter();
@@ -63,6 +80,7 @@ export default function ProjectForm() {
           contractNumber: data.contractNumber,
           plannedStartDate: data.plannedStartDate,
           plannedEndDate: data.plannedEndDate,
+          projectTags: data.projectTags,
         },
       });
 
@@ -277,6 +295,81 @@ export default function ProjectForm() {
                     className="h-32"
                     {...field}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="projectTags"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>프로젝트 태그</FormLabel>
+                <FormControl>
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      {field.value?.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="flex items-center gap-1"
+                        >
+                          {tag}
+                          <X
+                            className="h-3 w-3 cursor-pointer"
+                            onClick={() => {
+                              const newTags = [...(field.value ?? [])];
+                              newTags.splice(index, 1);
+                              field.onChange(newTags);
+                            }}
+                          />
+                        </Badge>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-1.5">
+                      {SUGGESTED_PROJECT_TAGS.map((tag) => (
+                        <Badge
+                          key={tag}
+                          variant="outline"
+                          className="shrink-0 cursor-pointer hover:bg-secondary"
+                          onClick={() => {
+                            if (!field.value?.includes(tag)) {
+                              field.onChange([...(field.value ?? []), tag]);
+                            }
+                          }}
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+
+                      <Input
+                        placeholder="직접 입력: 태그를 입력하고 Enter를 누르세요"
+                        onCompositionEnd={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          target.dataset.composing = "false";
+                        }}
+                        onCompositionStart={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          target.dataset.composing = "true";
+                        }}
+                        onKeyDown={(e) => {
+                          const target = e.target as HTMLInputElement;
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            if (target.dataset.composing === "true") return;
+
+                            const value = target.value.trim();
+                            if (value && !field.value?.includes(value)) {
+                              field.onChange([...(field.value ?? []), value]);
+                              target.value = "";
+                            }
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -19,6 +19,7 @@ export const createProjectSchema = z
     contractNumber: z.string().min(1, "계약번호는 필수입니다"),
     plannedStartDate: z.string().min(1, "계획 시작일은 필수입니다"),
     plannedEndDate: z.string().min(1, "계획 종료일은 필수입니다"),
+    projectTags: z.array(z.string()).optional(),
   })
   .refine(
     (data) => {

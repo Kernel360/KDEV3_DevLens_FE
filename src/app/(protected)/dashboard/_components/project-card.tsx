@@ -1,8 +1,9 @@
-import { GetProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
+import { GetMyProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
 import {
-  // Badge,
+  Badge,
   Card,
   CardContent,
+  CardFooter,
   // CardDescription,
   CardHeader,
   CardTitle,
@@ -11,36 +12,36 @@ import { Calendar } from "lucide-react";
 import Link from "next/link";
 
 export default function ProjectCard(
-  props: GetProjectListGetMyProjectResponseInfo,
+  props: GetMyProjectListGetMyProjectResponseInfo,
 ) {
   const {
     id,
     projectName,
-    // name,
-    // projectDescription,
     // projectStatusCode,
     startDate,
     endDate,
     customerCompanyName,
+    // developerCompanyName,
+    projectTags,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const getStatusColor = (
+  const getStatusColor = () =>
     // status: GetProjectListGetMyProjectResponseInfo["projectStatusCode"],
-  ) => {
-    // switch (status) {
-    //   case "진행중":
-    //     return "bg-blue-500/15 text-blue-500 hover:bg-blue-500/25";
-    //   case "완료":
-    //     return "bg-green-500/15 text-green-500 hover:bg-green-500/25";
-    //   case "중단":
-    //     return "bg-red-500/15 text-red-500 hover:bg-red-500/25";
-    //   case "예정":
-    //     return "bg-yellow-500/15 text-yellow-500 hover:bg-yellow-500/25";
-    //   default:
-    //     return "bg-gray-500/15 text-gray-500 hover:bg-gray-500/25";
-    // }
-  };
+    {
+      // switch (status) {
+      //   case "진행중":
+      //     return "bg-blue-500/15 text-blue-500 hover:bg-blue-500/25";
+      //   case "완료":
+      //     return "bg-green-500/15 text-green-500 hover:bg-green-500/25";
+      //   case "중단":
+      //     return "bg-red-500/15 text-red-500 hover:bg-red-500/25";
+      //   case "예정":
+      //     return "bg-yellow-500/15 text-yellow-500 hover:bg-yellow-500/25";
+      //   default:
+      //     return "bg-gray-500/15 text-gray-500 hover:bg-gray-500/25";
+      // }
+    };
 
   return (
     <Link href={`/projects/${id}`}>
@@ -65,9 +66,7 @@ export default function ProjectCard(
               </Badge> */}
             </div>
           </CardTitle>
-          {/* <CardDescription className="truncate">
-            {projectDescription}
-          </CardDescription> */}
+          {/* <CardDescription className="truncate"></CardDescription> */}
         </CardHeader>
         <CardContent className="flex justify-between text-sm">
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
@@ -79,6 +78,21 @@ export default function ProjectCard(
             <span>{endDate}</span>
           </div>
         </CardContent>
+        {projectTags && projectTags.length > 0 && (
+          <CardFooter>
+            <div className="flex flex-wrap gap-2">
+              {projectTags?.map((tag) => (
+                <Badge
+                  key={tag}
+                  variant="outline"
+                  className="group-hover:bg-primary/5"
+                >
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+          </CardFooter>
+        )}
       </Card>
     </Link>
   );
