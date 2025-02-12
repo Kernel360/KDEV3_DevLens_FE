@@ -1,31 +1,19 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { LoginResponse } from "@/types/auth";
-
-const INITIAL_USER: LoginResponse = {
-  loginId: "",
-  name: "",
-  email: "",
-  role: "",
-  profileUrl: "",
-  companyId: 0,
-  companyName: "",
-  department: "",
-  position: "",
-};
+import { APIResponseLoginResponse } from "@/lib/api/generated/main/models";
 
 interface AuthState {
-  user: LoginResponse; // null 대신 항상 객체 유지
-  setUser: (user: LoginResponse) => void;
+  user: APIResponseLoginResponse["data"] | null;
+  setUser: (user: APIResponseLoginResponse["data"]) => void;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      user: INITIAL_USER,
+      user: null,
       setUser: (user) => set({ user }),
-      logout: () => set({ user: INITIAL_USER }),
+      logout: () => set({ user: null }),
     }),
     {
       name: "auth-storage",

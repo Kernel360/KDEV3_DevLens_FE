@@ -45,14 +45,15 @@ export default function EditAvatarButton() {
           queryKey: [`/api/members/${userInfo?.memberId}/profile-image`],
         });
 
-        // 전역 상태 업데이트
-        if (userInfo) {
-          setUser({
-            ...userInfo,
-            profileUrl: URL.createObjectURL(selectedFile as Blob),
-            // @ts-expect-error imageUrl은 LoginResponse 타입에 없으므로 제거
-            imageUrl: undefined,
-          });
+        // 전역 상태 업데이트 - 기존 사용자 정보는 유지하고 프로필 URL만 업데이트
+        if (userInfo && selectedFile) {
+          const currentUser = useAuthStore.getState().user;
+          if (currentUser) {
+            setUser({
+              ...currentUser,
+              profileUrl: URL.createObjectURL(selectedFile),
+            });
+          }
         }
 
         setOpen(false);

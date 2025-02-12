@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { AuthApi } from "../apis/main/authApi";
 import { LoginRequest } from "@/types/auth";
 import { APIError } from "@/types/common";
+import { APIResponseLoginResponse } from "../api/generated/main/models";
 
 export async function loginAction(data: LoginRequest) {
   try {
@@ -48,20 +49,10 @@ export async function loginAction(data: LoginRequest) {
       });
     }
 
-    const responseData = await response.json();
+    const responseData = (await response.json()) as APIResponseLoginResponse;
     return {
       success: true,
-      user: {
-        loginId: responseData.data.loginId,
-        name: responseData.data.name,
-        email: responseData.data.email,
-        role: responseData.data.role,
-        profileUrl: responseData.data.profileUrl,
-        companyId: responseData.data.companyId,
-        companyName: responseData.data.companyName,
-        department: responseData.data.department,
-        position: responseData.data.position,
-      },
+      user: responseData.data,
     };
   } catch (error) {
     console.error(error);
