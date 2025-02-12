@@ -40,7 +40,7 @@ export default function TableWithSheet<T extends { id: number }>({
       />
       <Sheet open={!!Id} onOpenChange={() => setId(null)}>
         <SheetContent
-          className="w-[100vw] px-10 sm:max-w-3xl md:w-4/5"
+          className="w-[100vw] px-10 sm:max-w-4xl md:w-4/5"
           transparentOverlay
         >
           <SheetHeader>
