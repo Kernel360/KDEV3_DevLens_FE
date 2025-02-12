@@ -3,12 +3,13 @@
 import { UserAvatar } from "@/components/composites/user-avatar";
 import {
   useDeletePost,
-  useSelectPost
+  useSelectPost,
 } from "@/lib/api/generated/main/services/post-api/post-api";
 import {
   formatDateToRelative,
   getStatusLabel,
   getStatusVariant,
+  formatFileSize,
 } from "@/lib/utils";
 import {
   Badge,
@@ -23,7 +24,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  Separator
+  Separator,
 } from "@ui";
 import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -173,10 +174,16 @@ function PostDetail({ id }: { id: number }) {
               {post.files.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-sm">
                   <FileIcon className="h-4 w-4" />
-                  <a href={file.path} className="text-primary hover:underline">
+                  <a
+                    href={file.path}
+                    target="_blank"
+                    className="text-primary hover:underline"
+                  >
                     {file.displayTitle}
                   </a>
-                  <span className="text-muted-foreground">({file.size})</span>
+                  <span className="text-muted-foreground">
+                    ({formatFileSize(Number(file.size))})
+                  </span>
                 </div>
               ))}
             </div>
@@ -206,10 +213,7 @@ function PostDetail({ id }: { id: number }) {
 
         {/* 댓글 */}
         <Separator />
-        <CommentsSection
-          comments={post.comments || []}
-          postId={id}
-        />
+        <CommentsSection comments={post.comments || []} postId={id} />
       </div>
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
