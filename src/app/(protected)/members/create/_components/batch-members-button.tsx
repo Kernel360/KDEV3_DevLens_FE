@@ -37,6 +37,13 @@ export default function BatchMembersButton() {
   const [isLoading, setIsLoading] = useState(false);
   const [previewData, setPreviewData] = useState<BatchMemberFormValues[]>([]);
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      setPreviewData([]);
+    }
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -45,8 +52,14 @@ export default function BatchMembersButton() {
       header: true,
       complete: (results) => {
         try {
-          // CSV 데이터 검증
-          const parsedData = results.data as BatchMemberFormValues[];
+          // CSV 데이터 검증 및 companyId를 숫자로 변환
+          const parsedData = (results.data as BatchMemberFormValues[]).map(
+            (item) => ({
+              ...item,
+              companyId: Number(item.companyId),
+            }),
+          );
+
           const isValid = parsedData.every(
             (item) =>
               item.loginId &&
@@ -54,11 +67,14 @@ export default function BatchMembersButton() {
               item.email &&
               item.role &&
               item.phoneNumber &&
-              item.birthDate,
+              item.birthDate &&
+              !isNaN(item.companyId), // companyId가 유효한 숫자인지 확인
           );
 
           if (!isValid) {
-            throw new Error("Required fields are missing");
+            throw new Error(
+              "필수 필드가 누락되었거나 회사 ID가 유효하지 않습니다.",
+            );
           }
 
           setPreviewData(parsedData);
@@ -111,7 +127,7 @@ export default function BatchMembersButton() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <FileSpreadsheet className="size-4" />
@@ -184,7 +200,13 @@ export default function BatchMembersButton() {
           </div>
         )}
         <DialogFooter>
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button
+            variant="outline"
+            onClick={() => {
+              setOpen(false);
+              setPreviewData([]);
+            }}
+          >
             취소
           </Button>
           <Button
