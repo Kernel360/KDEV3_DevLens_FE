@@ -1,5 +1,10 @@
 "use client";
 
+import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
+import {
+  useCreatePost,
+  useUploadPostFiles,
+} from "@/lib/api/generated/main/services/post-api/post-api";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -27,6 +32,7 @@ import {
   Textarea,
 } from "@ui";
 import { format } from "date-fns";
+import { ko } from "date-fns/locale";
 import {
   CalendarIcon,
   Loader2,
@@ -34,17 +40,9 @@ import {
   TrashIcon,
   UploadIcon,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-
-import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
-import {
-  useCreatePost,
-  useUploadPostFiles,
-} from "@/lib/api/generated/main/services/post-api/post-api";
-import { ko } from "date-fns/locale";
 import * as z from "zod";
 
 const formSchema = z.object({
@@ -70,15 +68,21 @@ type FormValues = z.infer<typeof formSchema>;
 interface PostFormProps {
   steps: GetProjectStepProjectStepInfo[];
   defaultStepId: number;
+  initialData?: FormValues;
+  onCancel?: () => void;
+  postId?: number;
 }
 
-export default function PostForm({ steps, defaultStepId }: PostFormProps) {
-  const router = useRouter();
+export default function PostForm({
+  steps,
+  defaultStepId,
+  onCancel,
+}: PostFormProps) {
   const [files, setFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const defaultValues: Partial<FormValues> = {
-    step: String(defaultStepId),
+    step: String(defaultStepId ?? 0),
     status: "DEFAULT",
     title: "",
     content: "",
@@ -97,14 +101,13 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
   });
 
   const { mutateAsync: createPost } = useCreatePost();
-  const { mutateAsync: uploadFiles } = useUploadPostFiles();
+  const { mutateAsync: uploadPostFiles } = useUploadPostFiles();
 
   const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB in bytes
 
   const onSubmit = async (data: FormValues) => {
     try {
-      // 1. 게시글 생성
-      const response = (await createPost({
+      const createResponse = (await createPost({
         data: {
           projectStepId: Number(data.step),
           priority: data.priority,
@@ -117,26 +120,55 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
             link: link.link,
           })),
         },
-      })) as { data: { postId: number } };
+      })) as { postId: number };
 
-      // 2. 파일이 있다면 업로드
-      if (response.data && files.length > 0) {
-        await uploadFiles({
-          postId: response.data.postId,
-          data: {
-            files,
-          },
+      if (!createResponse.postId) {
+        throw new Error("게시물 생성 실패");
+      }
+
+      if (files.length > 0) {
+        console.log("파일 업로드 시작");
+        await uploadPostFiles({
+          postId: createResponse.postId,
+          data: { files },
         });
       }
 
+      // 모든 작업이 성공적으로 완료됨
       toast.success("게시물이 작성되었습니다");
-      router.back();
-      router.refresh();
-    } catch (error) {
+    } catch {
       toast.error("게시물 작성에 실패했습니다");
-      console.error(error);
+      //     console.error(error);
     }
   };
+
+  // const onSubmit = async (data: FormValues) => {
+  //   try {
+  //     // 1. 게시글 생성
+
+  //     // 2. 파일이 있다면 게시글 생성 api의 응답으로 온 postId를 파라미터에 추가하고, 파일 업로드
+  //     try {
+  //       if (files.length > 0) {
+  //         console.log("파일 업로드 시작");
+  //         await uploadPostFiles({
+  //           postId: Number(response.postId),
+  //           data: files,
+  //         });
+  //       }
+
+  //       // 모든 작업이 성공적으로 완료됨
+  //       toast.success("게시물이 작성되었습니다");
+  //       router.back();
+  //       router.refresh();
+  //     } catch (uploadError) {
+  //       toast.error("파일 업로드에 실패했습니다");
+  //       console.error(uploadError);
+  //     }
+  //   } catch (error) {
+  //     toast.error("게시물 작성에 실패했습니다");
+  //     console.error(error);
+  //   }
+  // };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -444,7 +476,7 @@ export default function PostForm({ steps, defaultStepId }: PostFormProps) {
         </div>
 
         <div className="flex gap-4 bg-background py-4 lg:pt-10">
-          <Button type="button" variant="outline">
+          <Button type="button" variant="outline" onClick={onCancel}>
             취소
           </Button>
           <Button type="submit" disabled={form.formState.isSubmitting}>

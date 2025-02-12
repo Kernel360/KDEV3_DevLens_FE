@@ -1,48 +1,47 @@
 "use client";
 
 import TableWithSheet from "@/components/composites/table/table-with-sheet";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { parseAsInteger, useQueryState } from "nuqs";
-import { PostApi } from "@/lib/apis/main/postApi";
 import TableTools from "@/components/composites/table/table-tools";
 import { postListColumns } from "./post-list-columns";
 import PostDetail from "./post-detail";
+import { useSelectPosts } from "@/lib/api/generated/main/services/post-api/post-api";
+import { useParams } from "next/navigation";
+import { PostListResponse } from "@/lib/api/generated/main/models";
 
 export default function PostListTable() {
+  const { projectId } = useParams<{ projectId: string }>();
   const [page] = useQueryState("page", parseAsInteger.withDefault(0));
   const [search] = useQueryState("search");
   const [filter] = useQueryState("filter");
   const [sortType] = useQueryState("sortType");
   const [step] = useQueryState("step", parseAsInteger);
 
-  const { data } = useSuspenseQuery({
-    queryKey: ["projectList", step, page, search, sortType],
-    queryFn: () => {
-      if (!step) return null;
-      return PostApi.getListByStep(
-        step,
-        page,
-        search ?? "",
-        filter as "ALL" | "TITLE" | "CONTENT" | "WRITER" | undefined,
-        sortType === "NEWEST"
-          ? "LATEST"
-          : sortType === "OLDEST"
-            ? "OLDEST"
-            : undefined,
-      );
-    },
+  const { data } = useSelectPosts<{
+    content: PostListResponse[];
+    totalPage: number;
+  }>(Number(projectId), {
+    projectStepId: step ?? undefined,
+    isAllStages: step ? false : true,
+    page: page ?? 0,
+    filter: filter as "ALL" | "TITLE" | "CONTENT" | "WRITER" | undefined,
+    keyword: search ?? "",
+    sortType: sortType as "NEWEST" | "OLDEST" | undefined,
   });
 
-  if (!step || !data) return null;
+  if (!data) return null;
 
   return (
     <>
       <TableTools showFilter showSort />
       <TableWithSheet
         columns={postListColumns}
-        data={data.content.map((post) => ({ ...post, id: post.postId }))}
+        data={(data.content || []).map((post) => ({
+          ...post,
+          id: post.postId ?? 0,
+        }))}
         content={PostDetail}
-        totalPages={data.totalPages}
+        totalPages={data.totalPage}
       />
     </>
   );

@@ -8,10 +8,12 @@ import {
   getPriorityLabel,
   getPriorityVariant,
 } from "@/lib/utils";
-import { Post } from "@/types/post";
 import { ColumnDef } from "@/types/table";
+import { PostResponse } from "@/lib/api/generated/main/models";
 
-export const postListColumns: ColumnDef<Post>[] = [
+type PostListItem = PostResponse & { id: number };
+
+export const postListColumns: ColumnDef<PostListItem>[] = [
   {
     id: "postId",
     header: "번호",
@@ -24,8 +26,8 @@ export const postListColumns: ColumnDef<Post>[] = [
     className: "w-20",
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <Badge variant={getPriorityVariant(row.original.priority)}>
-          {getPriorityLabel(row.original.priority)}
+        <Badge variant={getPriorityVariant(row.original.priority ?? "NONE")}>
+          {getPriorityLabel(row.original.priority ?? "NONE")}
         </Badge>
       </div>
     ),
@@ -36,8 +38,8 @@ export const postListColumns: ColumnDef<Post>[] = [
     className: "w-20",
     cell: ({ row }) => (
       <div className="flex justify-center">
-        <Badge variant={getStatusVariant(row.original.status)}>
-          {getStatusLabel(row.original.status)}
+        <Badge variant={getStatusVariant(row.original.status ?? "NONE")}>
+          {getStatusLabel(row.original.status ?? "NONE")}
         </Badge>
       </div>
     ),
@@ -60,7 +62,7 @@ export const postListColumns: ColumnDef<Post>[] = [
     className: "w-[100px]",
     cell: ({ row }) => (
       <span className="font-mono">
-        {formatDateToRelative(row.original.createDate)}
+        {formatDateToRelative(row.original.createDate ?? "-")}
       </span>
     ),
   },

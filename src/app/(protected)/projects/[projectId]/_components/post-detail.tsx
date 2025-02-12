@@ -7,10 +7,11 @@ import {
 } from "@/lib/api/generated/main/services/post-api/post-api";
 import {
   formatDateToRelative,
+  formatFileSize,
   getStatusLabel,
   getStatusVariant,
-  formatFileSize,
 } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Badge,
   Button,
@@ -27,10 +28,11 @@ import {
   Separator,
 } from "@ui";
 import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CommentsSection } from "./comments-section";
+import PostForm from "./post-form";
 
 const initialPost = {
   postId: 0,
@@ -50,7 +52,9 @@ const initialPost = {
 
 function PostDetail({ id }: { id: number }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const router = useRouter();
+  const [isEditing, setIsEditing] = useState(false);
+  const [, setPostId] = useQueryState("id");
+  const queryClient = useQueryClient();
 
   const { data: post = initialPost, isLoading } = useSelectPost(id, {
     query: {
@@ -63,7 +67,10 @@ function PostDetail({ id }: { id: number }) {
       onSuccess: () => {
         toast.success("게시물이 삭제되었습니다");
         setIsDeleteDialogOpen(false);
-        router.back();
+        // 쿼리파라미터의 id 삭제 목록으로 돌아가기
+        setPostId(null);
+        // post list table 쿼리 무효화
+        queryClient.invalidateQueries({ queryKey: ["postList"] });
       },
       onError: (error) => {
         toast.error("게시물 삭제에 실패했습니다");
@@ -80,6 +87,37 @@ function PostDetail({ id }: { id: number }) {
 
   if (!post) return <div>게시물을 찾을 수 없습니다.</div>;
 
+  if (isEditing) {
+    return (
+      <PostForm
+        steps={[]}
+        defaultStepId={post.projectStepId ?? 0}
+        initialData={{
+          step: String(post.projectStepId ?? 0),
+          title: post.title ?? "",
+          content: post.content ?? "",
+          status: (post.status ?? "DEFAULT") as
+            | "DEFAULT"
+            | "IN_PROGRESS"
+            | "COMPLETED",
+          priority: (post.priority ?? "DEFAULT") as
+            | "DEFAULT"
+            | "LOW"
+            | "MEDIUM"
+            | "HIGH",
+          dueDate: post.deadline ? new Date(post.deadline) : undefined,
+          links:
+            post.links?.map((link) => ({
+              linkTitle: link.linkTitle ?? "",
+              link: link.link ?? "",
+            })) || [],
+        }}
+        onCancel={() => setIsEditing(false)}
+        postId={id}
+      />
+    );
+  }
+
   return (
     <>
       {/* 제목 및 메타 정보 */}
@@ -94,7 +132,7 @@ function PostDetail({ id }: { id: number }) {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setIsEditing(true)}>
                 <Pencil className="mr-2 h-4 w-4" />
                 수정하기
               </DropdownMenuItem>
@@ -115,7 +153,7 @@ function PostDetail({ id }: { id: number }) {
             <div className="mt-1 flex items-center gap-2">
               <UserAvatar
                 className="size-6"
-                name={post.writer ?? ""}
+                name={post.writer!}
                 imageSrc={""}
               />
               <span>{post.writer}</span>
