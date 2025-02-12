@@ -37,7 +37,7 @@ import type {
   PostListResponse,
   PostResponse,
   PostUpdateRequest,
-  SelectListParams,
+  SelectPostsParams,
   UploadPostFilesBody
 } from '../../models'
 import { mainAxios } from '../../../../../axiosClient';
@@ -800,90 +800,90 @@ const {mutation: mutationOptions} = options ?
     }
     /**
  * 게시글 목록을 조회합니다.
- * @summary 게시글 목록 조회
+ * @summary 게시글 목록 조회 (전체 목록 조회 포함)
  */
-export const selectList = (
-    projectStepId: number,
-    params: SelectListParams,
+export const selectPosts = (
+    projectId: number,
+    params: SelectPostsParams,
  signal?: AbortSignal
 ) => {
       
       
       return mainAxios<PostListResponse>(
-      {url: `/api/posts/steps/${projectStepId}`, method: 'GET',
+      {url: `/api/posts/project/${projectId}`, method: 'GET',
         params, signal
     },
       );
     }
   
 
-export const getSelectListQueryKey = (projectStepId: number,
-    params: SelectListParams,) => {
-    return [`/api/posts/steps/${projectStepId}`, ...(params ? [params]: [])] as const;
+export const getSelectPostsQueryKey = (projectId: number,
+    params: SelectPostsParams,) => {
+    return [`/api/posts/project/${projectId}`, ...(params ? [params]: [])] as const;
     }
 
     
-export const getSelectListInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
+export const getSelectPostsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof selectPosts>>>, TError = unknown>(projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getSelectListQueryKey(projectStepId,params);
+  const queryKey =  queryOptions?.queryKey ?? getSelectPostsQueryKey(projectId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectList>>> = ({ signal }) => selectList(projectStepId,params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectPosts>>> = ({ signal }) => selectPosts(projectId,params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(projectStepId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(projectId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type SelectListInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof selectList>>>
-export type SelectListInfiniteQueryError = unknown
+export type SelectPostsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof selectPosts>>>
+export type SelectPostsInfiniteQueryError = unknown
 
 
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>> & Pick<
+export function useSelectPostsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPosts>>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectList>>,
+          Awaited<ReturnType<typeof selectPosts>>,
           TError,
-          Awaited<ReturnType<typeof selectList>>
+          Awaited<ReturnType<typeof selectPosts>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>> & Pick<
+export function useSelectPostsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPosts>>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectList>>,
+          Awaited<ReturnType<typeof selectPosts>>,
           TError,
-          Awaited<ReturnType<typeof selectList>>
+          Awaited<ReturnType<typeof selectPosts>>
         > , 'initialData'
       >, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
+export function useSelectPostsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPosts>>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary 게시글 목록 조회
+ * @summary 게시글 목록 조회 (전체 목록 조회 포함)
  */
 
-export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectList>>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
+export function useSelectPostsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPosts>>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>>, }
 
   ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getSelectListInfiniteQueryOptions(projectStepId,params,options)
+  const queryOptions = getSelectPostsInfiniteQueryOptions(projectId,params,options)
 
   const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
@@ -894,67 +894,67 @@ export function useSelectListInfinite<TData = InfiniteData<Awaited<ReturnType<ty
 
 
 
-export const getSelectListQueryOptions = <TData = Awaited<ReturnType<typeof selectList>>, TError = unknown>(projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
+export const getSelectPostsQueryOptions = <TData = Awaited<ReturnType<typeof selectPosts>>, TError = unknown>(projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getSelectListQueryKey(projectStepId,params);
+  const queryKey =  queryOptions?.queryKey ?? getSelectPostsQueryKey(projectId,params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectList>>> = ({ signal }) => selectList(projectStepId,params, signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectPosts>>> = ({ signal }) => selectPosts(projectId,params, signal);
 
       
 
       
 
-   return  { queryKey, queryFn, enabled: !!(projectStepId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+   return  { queryKey, queryFn, enabled: !!(projectId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
 }
 
-export type SelectListQueryResult = NonNullable<Awaited<ReturnType<typeof selectList>>>
-export type SelectListQueryError = unknown
+export type SelectPostsQueryResult = NonNullable<Awaited<ReturnType<typeof selectPosts>>>
+export type SelectPostsQueryError = unknown
 
 
-export function useSelectList<TData = Awaited<ReturnType<typeof selectList>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>> & Pick<
+export function useSelectPosts<TData = Awaited<ReturnType<typeof selectPosts>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectList>>,
+          Awaited<ReturnType<typeof selectPosts>>,
           TError,
-          Awaited<ReturnType<typeof selectList>>
+          Awaited<ReturnType<typeof selectPosts>>
         > , 'initialData'
       >, }
 
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectList<TData = Awaited<ReturnType<typeof selectList>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>> & Pick<
+export function useSelectPosts<TData = Awaited<ReturnType<typeof selectPosts>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectList>>,
+          Awaited<ReturnType<typeof selectPosts>>,
           TError,
-          Awaited<ReturnType<typeof selectList>>
+          Awaited<ReturnType<typeof selectPosts>>
         > , 'initialData'
       >, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectList<TData = Awaited<ReturnType<typeof selectList>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
+export function useSelectPosts<TData = Awaited<ReturnType<typeof selectPosts>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary 게시글 목록 조회
+ * @summary 게시글 목록 조회 (전체 목록 조회 포함)
  */
 
-export function useSelectList<TData = Awaited<ReturnType<typeof selectList>>, TError = unknown>(
- projectStepId: number,
-    params: SelectListParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectList>>, TError, TData>>, }
+export function useSelectPosts<TData = Awaited<ReturnType<typeof selectPosts>>, TError = unknown>(
+ projectId: number,
+    params: SelectPostsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPosts>>, TError, TData>>, }
 
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getSelectListQueryOptions(projectStepId,params,options)
+  const queryOptions = getSelectPostsQueryOptions(projectId,params,options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

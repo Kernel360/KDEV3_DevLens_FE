@@ -17,4 +17,5 @@ export interface PostListResponse {
   writer?: string;
   createDate?: string;
   deadline?: string;
+  commentCount?: number;
 }

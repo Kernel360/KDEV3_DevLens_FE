@@ -28,7 +28,8 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query'
 import type {
-  APIResponseGetProjectChecklistApplicationResponse,
+  APIResponseGetApplicationResponse,
+  APIResponseGetChecklistApplicationResponse,
   APIResponseListFileMetadataResponse,
   APIResponseListLinkResponse,
   APIResponseSuccessCode,
@@ -603,7 +604,151 @@ const {mutation: mutationOptions} = options ?
 
       return useMutation(mutationOptions);
     }
-    /**
+    export const getChecklistApplication = (
+    checklistId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainAxios<APIResponseGetChecklistApplicationResponse>(
+      {url: `/api/projects/checklists/${checklistId}/applications`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetChecklistApplicationQueryKey = (checklistId: number,) => {
+    return [`/api/projects/checklists/${checklistId}/applications`] as const;
+    }
+
+    
+export const getGetChecklistApplicationInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getChecklistApplication>>>, TError = unknown>(checklistId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChecklistApplicationQueryKey(checklistId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChecklistApplication>>> = ({ signal }) => getChecklistApplication(checklistId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(checklistId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetChecklistApplicationInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getChecklistApplication>>>
+export type GetChecklistApplicationInfiniteQueryError = unknown
+
+
+export function useGetChecklistApplicationInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getChecklistApplication>>>, TError = unknown>(
+ checklistId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChecklistApplication>>,
+          TError,
+          Awaited<ReturnType<typeof getChecklistApplication>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChecklistApplicationInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getChecklistApplication>>>, TError = unknown>(
+ checklistId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChecklistApplication>>,
+          TError,
+          Awaited<ReturnType<typeof getChecklistApplication>>
+        > , 'initialData'
+      >, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChecklistApplicationInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getChecklistApplication>>>, TError = unknown>(
+ checklistId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetChecklistApplicationInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getChecklistApplication>>>, TError = unknown>(
+ checklistId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetChecklistApplicationInfiniteQueryOptions(checklistId,options)
+
+  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getGetChecklistApplicationQueryOptions = <TData = Awaited<ReturnType<typeof getChecklistApplication>>, TError = unknown>(checklistId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetChecklistApplicationQueryKey(checklistId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getChecklistApplication>>> = ({ signal }) => getChecklistApplication(checklistId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(checklistId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetChecklistApplicationQueryResult = NonNullable<Awaited<ReturnType<typeof getChecklistApplication>>>
+export type GetChecklistApplicationQueryError = unknown
+
+
+export function useGetChecklistApplication<TData = Awaited<ReturnType<typeof getChecklistApplication>>, TError = unknown>(
+ checklistId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChecklistApplication>>,
+          TError,
+          Awaited<ReturnType<typeof getChecklistApplication>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChecklistApplication<TData = Awaited<ReturnType<typeof getChecklistApplication>>, TError = unknown>(
+ checklistId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getChecklistApplication>>,
+          TError,
+          Awaited<ReturnType<typeof getChecklistApplication>>
+        > , 'initialData'
+      >, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetChecklistApplication<TData = Awaited<ReturnType<typeof getChecklistApplication>>, TError = unknown>(
+ checklistId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetChecklistApplication<TData = Awaited<ReturnType<typeof getChecklistApplication>>, TError = unknown>(
+ checklistId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getChecklistApplication>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetChecklistApplicationQueryOptions(checklistId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
  * 체크리스트에 새로운 신청을 생성합니다.
  * @summary 체크리스트 신청 생성
  */
@@ -1010,7 +1155,7 @@ export const getProjectChecklistApplication = (
 ) => {
       
       
-      return mainAxios<APIResponseGetProjectChecklistApplicationResponse>(
+      return mainAxios<APIResponseGetApplicationResponse>(
       {url: `/api/projects/checklists/applications/${applicationId}`, method: 'GET', signal
     },
       );

@@ -8,6 +8,6 @@
 import type { PostProjectAuthorizationFailList } from './postProjectAuthorizationFailList';
 
 export interface PostProjectAuthorizationResponse {
-  stepId?: number;
+  projectId?: number;
   failList?: PostProjectAuthorizationFailList[];
 }

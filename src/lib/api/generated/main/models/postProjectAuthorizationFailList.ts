@@ -5,12 +5,12 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
-import type { PostProjectAuthorizationFailListMemberDivision } from './postProjectAuthorizationFailListMemberDivision';
+import type { PostProjectAuthorizationFailListMemberType } from './postProjectAuthorizationFailListMemberType';
 import type { PostProjectAuthorizationFailListStatus } from './postProjectAuthorizationFailListStatus';
 
 export interface PostProjectAuthorizationFailList {
   memberId?: number;
-  memberDivision?: PostProjectAuthorizationFailListMemberDivision;
+  memberType?: PostProjectAuthorizationFailListMemberType;
   projectAuthorization?: string;
   status?: PostProjectAuthorizationFailListStatus;
   message?: string;

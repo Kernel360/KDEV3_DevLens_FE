@@ -5,9 +5,11 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
-import type { GetProjectAuthorizationMemberAuthorization } from './getProjectAuthorizationMemberAuthorization';
+import type { GetProjectAuthorizationCustomerMemberAuthorization } from './getProjectAuthorizationCustomerMemberAuthorization';
+import type { GetProjectAuthorizationDeveloperMemberAuthorization } from './getProjectAuthorizationDeveloperMemberAuthorization';
 
 export interface GetProjectAuthorizationResponse {
   projectId?: number;
-  memberAuthorization?: GetProjectAuthorizationMemberAuthorization[];
+  customerMemberAuthorizations?: GetProjectAuthorizationCustomerMemberAuthorization[];
+  developerMemberAuthorizations?: GetProjectAuthorizationDeveloperMemberAuthorization[];
 }
