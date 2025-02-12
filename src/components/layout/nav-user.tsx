@@ -1,7 +1,7 @@
 "use client";
 
 import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
-import { LoginResponse } from "@/types/auth";
+import { LoginResponse } from "@/lib/api/generated/main/models";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +20,6 @@ import { UserAvatar } from "../composites/user-avatar";
 import { logoutAction } from "@/lib/actions/logoutAction";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
-// import { AuthApi } from "@/lib/apis/main/authApi";
 
 export function NavUser({ user }: { user: LoginResponse | null }) {
   const { isMobile } = useSidebar();

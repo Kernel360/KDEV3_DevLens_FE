@@ -21,7 +21,7 @@ export default function ProjectCard(
     // projectStatusCode,
     startDate,
     endDate,
-    customerName,
+    customerCompanyName,
   } = props;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -53,7 +53,7 @@ export default function ProjectCard(
                   {projectName}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {customerName}
+                  {customerCompanyName}
                 </p>
               </div>
               {/* <Badge

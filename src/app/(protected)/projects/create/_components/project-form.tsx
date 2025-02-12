@@ -28,7 +28,6 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { MemberAssignment } from "./member-assignment";
-import { PostProjectAuthorizationMemberAuthorization } from "@/lib/api/generated/main/models/postProjectAuthorizationMemberAuthorization";
 
 export default function ProjectForm() {
   const form = useForm<ProjectFormData>({
@@ -70,34 +69,29 @@ export default function ProjectForm() {
       // 2. 프로젝트 ID가 있을 때만 멤버 할당
       if (newProject?.id) {
         try {
-          const authorizations = [
-            ...customer.selectedApprovers.map((member) => ({
-              memberId: Number(member.memberId),
-              projectAuthorization: "APPROVER",
-              memberDivision: "CLIENT",
-            })),
-            ...customer.selectedNormal.map((member) => ({
-              memberId: Number(member.memberId),
-              projectAuthorization: "MEMBER",
-              memberDivision: "CLIENT",
-            })),
-            ...developer.selectedApprovers.map((member) => ({
-              memberId: Number(member.memberId),
-              projectAuthorization: "APPROVER",
-              memberDivision: "DEVELOPER",
-            })),
-            ...developer.selectedNormal.map((member) => ({
-              memberId: Number(member.memberId),
-              projectAuthorization: "MEMBER",
-              memberDivision: "DEVELOPER",
-            })),
-          ];
-
           await assignMembers({
             projectId: newProject.id,
             data: {
-              authorizations:
-                authorizations as PostProjectAuthorizationMemberAuthorization[],
+              customerAuthorizations: [
+                ...customer.selectedApprovers.map((member) => ({
+                  memberId: Number(member.memberId),
+                  projectAuthorization: "APPROVER" as const,
+                })),
+                ...customer.selectedNormal.map((member) => ({
+                  memberId: Number(member.memberId),
+                  projectAuthorization: "MEMBER" as const,
+                })),
+              ],
+              developerAuthorizations: [
+                ...developer.selectedApprovers.map((member) => ({
+                  memberId: Number(member.memberId),
+                  projectAuthorization: "APPROVER" as const,
+                })),
+                ...developer.selectedNormal.map((member) => ({
+                  memberId: Number(member.memberId),
+                  projectAuthorization: "MEMBER" as const,
+                })),
+              ],
             },
           });
 
