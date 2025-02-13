@@ -1,6 +1,7 @@
 "use client";
 
 import { UserAvatar } from "@/components/composites/user-avatar";
+import { PostResponse } from "@/lib/api/generated/main/models/postResponse";
 import {
   useDeletePost,
   useSelectPost,
@@ -27,21 +28,26 @@ import {
   DropdownMenuTrigger,
   Separator,
 } from "@ui";
-import { FileIcon, LinkIcon, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import {
+  MoreVertical,
+  Paperclip,
+  Pencil,
+  Trash2
+} from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CommentsSection } from "./comments-section";
 import PostForm from "./post-form";
-
-const initialPost = {
+const initialPost: Required<PostResponse> = {
   postId: 0,
+  parentPostId: 0,
   projectStepId: 0,
   title: "",
   content: "",
   writer: "",
-  status: "PREPARED",
-  priority: "NORMAL",
+  status: "DEFAULT",
+  priority: "DEFAULT",
   createDate: "",
   updateDate: "",
   deadline: "",
@@ -59,6 +65,11 @@ function PostDetail({ id }: { id: number }) {
   const { data: post = initialPost, isLoading } = useSelectPost(id, {
     query: {
       enabled: !!id,
+      // 타입에 undefined 제거
+      select: (data): Required<PostResponse> => ({
+        ...initialPost,
+        ...data,
+      }),
     },
   });
 
@@ -90,30 +101,27 @@ function PostDetail({ id }: { id: number }) {
   if (isEditing) {
     return (
       <PostForm
-        steps={[]}
-        defaultStepId={post.projectStepId ?? 0}
+        mode="edit"
+        defaultStepId={post.projectStepId}
+        postId={post.postId}
         initialData={{
-          step: String(post.projectStepId ?? 0),
-          title: post.title ?? "",
-          content: post.content ?? "",
-          status: (post.status ?? "DEFAULT") as
-            | "DEFAULT"
-            | "IN_PROGRESS"
-            | "COMPLETED",
-          priority: (post.priority ?? "DEFAULT") as
-            | "DEFAULT"
-            | "LOW"
-            | "MEDIUM"
-            | "HIGH",
+          step: String(post.projectStepId),
+          status: post.status,
+          priority: post.priority,
+          title: post.title,
+          content: post.content,
           dueDate: post.deadline ? new Date(post.deadline) : undefined,
           links:
             post.links?.map((link) => ({
               linkTitle: link.linkTitle ?? "",
               link: link.link ?? "",
-            })) || [],
+            })) ?? [],
         }}
-        onCancel={() => setIsEditing(false)}
-        postId={id}
+        initialFiles={post.files}
+        onCancel={() => {
+          setIsEditing(false);
+          setPostId(String(post.postId)); // URL 파라미터 복구
+        }}
       />
     );
   }
@@ -162,8 +170,8 @@ function PostDetail({ id }: { id: number }) {
           <div>
             <span className="text-muted-foreground">상태</span>
             <div className="mt-1">
-              <Badge variant={getStatusVariant(post.status ?? "")}>
-                {getStatusLabel(post.status ?? "")}
+              <Badge variant={getStatusVariant(post.status)}>
+                {getStatusLabel(post.status)}
               </Badge>
             </div>
           </div>
@@ -181,15 +189,11 @@ function PostDetail({ id }: { id: number }) {
           </div>
           <div>
             <span className="text-muted-foreground">작성일</span>
-            <div className="mt-1">
-              {post.createDate ? formatDateToRelative(post.createDate) : "-"}
-            </div>
+            <div className="mt-1">{formatDateToRelative(post.createDate)}</div>
           </div>
           <div>
             <span className="text-muted-foreground">수정일</span>
-            <div className="mt-1">
-              {post.updateDate ? formatDateToRelative(post.updateDate) : "-"}
-            </div>
+            <div className="mt-1">{formatDateToRelative(post.updateDate)}</div>
           </div>
         </div>
       </div>
@@ -202,16 +206,16 @@ function PostDetail({ id }: { id: number }) {
           {post.content}
         </div>
 
-        <Separator className="my-4" />
-
         {/* 첨부파일 */}
+
         {post.files && post.files.length > 0 && (
           <div>
+            <Separator className="my-4" />
             <h3 className="mb-3 font-medium">첨부파일</h3>
             <div className="space-y-2">
               {post.files.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-sm">
-                  <FileIcon className="h-4 w-4" />
+                  <Paperclip className="h-4 w-4" />
                   <a
                     href={file.path}
                     target="_blank"
@@ -232,18 +236,19 @@ function PostDetail({ id }: { id: number }) {
         {post.links && post.links.length > 0 && (
           <div>
             <h3 className="mb-3 font-medium">관련 링크</h3>
-            <div className="space-y-2">
+            <div className="grid grid-cols-2 gap-2">
               {post.links.map((link) => (
-                <div key={link.id} className="flex items-center gap-2 text-sm">
-                  <LinkIcon className="h-4 w-4" />
-                  <a
-                    href={link.link}
-                    target="_blank"
-                    className="text-primary hover:underline"
-                  >
-                    {link.linkTitle}
-                  </a>
-                </div>
+                <a
+                  key={link.id}
+                  href={link.link}
+                  target="_blank"
+                  className="w-full items-center gap-4 rounded-md border p-3"
+                >
+                  <div className="font-medium">{link.linkTitle}</div>
+                  <div className="truncate text-sm text-muted-foreground hover:underline">
+                    {link.link}
+                  </div>
+                </a>
               ))}
             </div>
           </div>

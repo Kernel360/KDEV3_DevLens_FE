@@ -25,7 +25,7 @@ export function CreatePost({ projectId, stepId, steps }: CreatePostProps) {
         </Button>
         <Heading>새 게시물 작성</Heading>
       </div>
-      <PostForm steps={steps} defaultStepId={stepId} />
+      <PostForm mode="create" steps={steps} defaultStepId={stepId} />
     </div>
   );
 }
