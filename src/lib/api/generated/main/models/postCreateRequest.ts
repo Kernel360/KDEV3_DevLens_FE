@@ -25,5 +25,9 @@ export interface PostCreateRequest {
    */
   content: string;
   deadline?: string;
+  /**
+   * @minItems 0
+   * @maxItems 10
+   */
   linkInputList?: LinkInput[];
 }

@@ -278,6 +278,112 @@
         }
       }
     },
+    "/api/posts/{postId}/files": {
+      "get": {
+        "tags": ["Post API"],
+        "operationId": "selectPostFiles",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Post API"],
+        "operationId": "updatePostFiles",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["files"],
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseSuccessCode"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Post API"],
+        "operationId": "uploadPostFiles",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": ["files"],
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": { "type": "string", "format": "binary" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseSuccessCode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/send-mail": {
       "post": {
         "tags": ["Login Page API"],
@@ -744,72 +850,6 @@
             }
           },
           "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseSuccessCode"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/posts/{postId}/files": {
-      "get": {
-        "tags": ["Post API"],
-        "operationId": "selectPostFiles",
-        "parameters": [
-          {
-            "name": "postId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "tags": ["Post API"],
-        "operationId": "uploadPostFiles",
-        "parameters": [
-          {
-            "name": "postId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "required": ["files"],
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": { "type": "string", "format": "binary" }
-                  }
-                }
-              }
-            }
-          }
         },
         "responses": {
           "200": {
@@ -1903,6 +1943,13 @@
           "data": { "type": "object" }
         }
       },
+      "LinkInput": {
+        "type": "object",
+        "properties": {
+          "linkTitle": { "type": "string" },
+          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
+        }
+      },
       "PostUpdateRequest": {
         "required": ["content", "postId", "projectStepId", "status", "title"],
         "type": "object",
@@ -1926,7 +1973,31 @@
           },
           "title": { "maxLength": 100, "minLength": 5, "type": "string" },
           "content": { "maxLength": 10000, "minLength": 10, "type": "string" },
-          "deadline": { "type": "string", "format": "date" }
+          "deadline": { "type": "string", "format": "date" },
+          "linkInputList": {
+            "maxItems": 10,
+            "minItems": 0,
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LinkInput" }
+          }
+        }
+      },
+      "APIResponseSuccessCode": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "string",
+            "enum": [
+              "OK",
+              "UPDATED",
+              "DELETED",
+              "CREATED",
+              "MULTISTATUS",
+              "NO_CONTENT"
+            ]
+          }
         }
       },
       "PostProjectStepPostChecklist": {
@@ -1981,24 +2052,6 @@
           "checklistDescription": { "type": "string" }
         }
       },
-      "APIResponseSuccessCode": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "message": { "type": "string" },
-          "data": {
-            "type": "string",
-            "enum": [
-              "OK",
-              "UPDATED",
-              "DELETED",
-              "CREATED",
-              "MULTISTATUS",
-              "NO_CONTENT"
-            ]
-          }
-        }
-      },
       "PostProjectChecklistApplicationResponse": {
         "type": "object",
         "properties": {
@@ -2008,13 +2061,6 @@
           "description": { "type": "string" },
           "requesterId": { "type": "integer", "format": "int64" },
           "requesterIp": { "type": "string" }
-        }
-      },
-      "LinkInput": {
-        "type": "object",
-        "properties": {
-          "linkTitle": { "type": "string" },
-          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
         }
       },
       "PostProjectChecklistApplicationRequest": {
@@ -2087,6 +2133,8 @@
           "content": { "maxLength": 10000, "minLength": 10, "type": "string" },
           "deadline": { "type": "string", "format": "date" },
           "linkInputList": {
+            "maxItems": 10,
+            "minItems": 0,
             "type": "array",
             "items": { "$ref": "#/components/schemas/LinkInput" }
           }

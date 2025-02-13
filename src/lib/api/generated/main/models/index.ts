@@ -125,5 +125,6 @@ export * from './selectListSortType';
 export * from './selectPostsFilter';
 export * from './selectPostsParams';
 export * from './selectPostsSortType';
+export * from './updatePostFilesBody';
 export * from './uploadPostFilesBody';
 export * from './uploadProfileImageBody';
