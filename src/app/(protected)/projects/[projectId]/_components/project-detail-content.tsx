@@ -31,6 +31,7 @@ export default function ProjectDetailContent({
   const { data } = useQuery({
     queryKey: ["projectSteps", projectId],
     queryFn: () => getProjectStepAndChecklist(projectId),
+    staleTime: 5 * 60 * 1000,
   });
 
   const steps = useMemo(

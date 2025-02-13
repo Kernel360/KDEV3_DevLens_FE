@@ -1,11 +1,16 @@
 "use client";
 
-import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
 import {
   useCreatePost,
+  useDeleteLink,
+  useDeletePostFiles,
+  useUpdatePost,
+  useUpdatePostFiles,
+  useUploadLinks,
   useUploadPostFiles,
 } from "@/lib/api/generated/main/services/post-api/post-api";
-import { cn } from "@/lib/utils";
+import { useGetProjectStepAndChecklist } from "@/lib/api/generated/main/services/project-step-api/project-step-api";
+import { cn, formatFileSize } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
@@ -40,15 +45,27 @@ import {
   TrashIcon,
   UploadIcon,
 } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useRef, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { FileMetadataResponse } from "@/lib/api/generated/main/models/fileMetadataResponse";
+import { ConfirmDialog } from "@/components/composites/confirm-dialog";
+import { LinkResponse } from "@/lib/api/generated/main/models/linkResponse";
 
 const formSchema = z.object({
   step: z.string().min(1, { message: "단계를 선택해주세요" }),
-  title: z.string().trim().min(2, { message: "제목은 필수 입력 항목입니다" }),
-  status: z.enum(["DEFAULT", "IN_PROGRESS", "COMPLETED"]),
+  title: z.string().trim().min(5, { message: "제목은 필수 입력 항목입니다" }),
+  status: z.enum([
+    "DEFAULT",
+    "IN_PROGRESS",
+    "ADDITION",
+    "COMPLETED",
+    "ON_HOLD",
+  ] as const),
   priority: z.enum(["DEFAULT", "LOW", "MEDIUM", "HIGH"]),
   dueDate: z.date().optional(),
   content: z
@@ -66,20 +83,45 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface PostFormProps {
-  steps: GetProjectStepProjectStepInfo[];
+  mode: "create" | "edit";
   defaultStepId: number;
   initialData?: FormValues;
   onCancel?: () => void;
   postId?: number;
+  initialFiles?: FileMetadataResponse[];
 }
 
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB in bytes
+
 export default function PostForm({
-  steps,
+  mode,
   defaultStepId,
+  initialData,
   onCancel,
+  postId,
+  initialFiles = [],
 }: PostFormProps) {
+  // 새로 업로드할 File 객체들
   const [files, setFiles] = useState<File[]>([]);
+  // 기존 파일 메타데이터
+  const [existingFiles, setExistingFiles] = useState<FileMetadataResponse[]>(
+    initialFiles ?? [],
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [tempLink, setTempLink] = useState({
+    linkTitle: "",
+    link: "",
+  });
+  const [existingLinks, setExistingLinks] = useState<LinkResponse[]>(
+    initialData?.links ?? [],
+  );
+
+  const { projectId } = useParams();
+  const { data: projectSteps } = useGetProjectStepAndChecklist(
+    Number(projectId),
+  );
+  const steps = projectSteps?.projectStepInfo ?? [];
 
   const defaultValues: Partial<FormValues> = {
     step: String(defaultStepId ?? 0),
@@ -88,11 +130,14 @@ export default function PostForm({
     content: "",
     links: [],
     priority: "DEFAULT",
+    ...initialData, // initialData로 덮어써야 함
   };
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
+    // values가 있을 때 폼을 리셋하도록 설정
+    values: initialData,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -100,12 +145,106 @@ export default function PostForm({
     control: form.control,
   });
 
+  // 게시글 생성
   const { mutateAsync: createPost } = useCreatePost();
   const { mutateAsync: uploadPostFiles } = useUploadPostFiles();
 
-  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB in bytes
+  // 게시글 수정때 개별 동작
+  const { mutateAsync: updatePost } = useUpdatePost();
+  const { mutateAsync: deletePostFile } = useDeletePostFiles();
+  const { mutateAsync: updatePostFile } = useUpdatePostFiles();
+  const { mutateAsync: uploadLinks } = useUploadLinks();
+  const { mutateAsync: deleteLink } = useDeleteLink();
 
-  const onSubmit = async (data: FormValues) => {
+  const queryClient = useQueryClient();
+
+  // 링크 입력 핸들러
+  const handleLinkChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTempLink((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  // 링크 추가 핸들러
+  const handleAddLink = async () => {
+    if (!tempLink.linkTitle || !tempLink.link) {
+      toast.error("링크 제목과 URL을 모두 입력해주세요");
+      return;
+    }
+
+    try {
+      if (mode === "create") {
+        // 생성 모드: form 상태에만 추가
+        append(tempLink);
+      } else if (postId) {
+        // 수정 모드: API 호출 후 상태 업데이트
+        await uploadLinks({
+          postId,
+          data: [tempLink],
+        });
+        setExistingLinks((prev) => [...prev, tempLink]);
+        setTempLink({ linkTitle: "", link: "" });
+        toast.success("링크가 추가되었습니다");
+      }
+    } catch (error) {
+      toast.error("링크 추가에 실패했습니다");
+      console.error(error);
+    }
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+
+    const newFiles = Array.from(e.target.files);
+
+    // 파일 크기 검증
+    const oversizedFiles = newFiles.filter((file) => file.size > MAX_FILE_SIZE);
+    if (oversizedFiles.length > 0) {
+      toast.error("파일 크기는 50MB를 초과할 수 없습니다");
+      return;
+    }
+
+    if (mode === "create") {
+      // 생성 모드: 브라우저 상태에만 파일 추가
+      setFiles((prev) => [...prev, ...newFiles]);
+    } else if (postId) {
+      // 수정 모드: 파일 업로드 API 호출 후 상태 업데이트
+      try {
+        await uploadPostFiles({
+          postId,
+          data: { files: newFiles },
+        });
+        setExistingFiles((prev) => [...prev, ...newFiles]);
+        toast.success("파일이 업로드되었습니다");
+      } catch (error) {
+        toast.error("파일 업로드에 실패했습니다");
+        console.error(error);
+      }
+    }
+  };
+
+  const removeFile = async (index: number, fileId?: number) => {
+    if (mode === "create") {
+      // 생성 모드: 브라우저 상태에서만 제거
+      setFiles((prev) => prev.filter((_, i) => i !== index));
+    } else if (postId && fileId) {
+      // 수정 모드 파일 삭제
+      setExistingFiles((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  const removeLink = () => {
+    if (mode === "create") {
+      // 생성 모드: 브라우저 상태에서만 제거
+    } else {
+      // 수정 모드 : api 호출하고 링크 리스트 ui에서 삭제
+    }
+  };
+
+  // 게시글 생성
+  const onCreate = async (data: FormValues) => {
     try {
       const createResponse = (await createPost({
         data: {
@@ -142,54 +281,37 @@ export default function PostForm({
     }
   };
 
-  // const onSubmit = async (data: FormValues) => {
-  //   try {
-  //     // 1. 게시글 생성
+  const onUpdate = async (data: FormValues) => {
+    if (!postId) return;
 
-  //     // 2. 파일이 있다면 게시글 생성 api의 응답으로 온 postId를 파라미터에 추가하고, 파일 업로드
-  //     try {
-  //       if (files.length > 0) {
-  //         console.log("파일 업로드 시작");
-  //         await uploadPostFiles({
-  //           postId: Number(response.postId),
-  //           data: files,
-  //         });
-  //       }
+    try {
+      await updatePost({
+        postId,
+        data: {
+          postId,
+          projectStepId: Number(data.step),
+          priority: data.priority,
+          status: data.status,
+          title: data.title,
+          content: data.content,
+          deadline: data.dueDate ? format(data.dueDate, "yyyy-MM-dd") : "",
+        },
+      });
 
-  //       // 모든 작업이 성공적으로 완료됨
-  //       toast.success("게시물이 작성되었습니다");
-  //       router.back();
-  //       router.refresh();
-  //     } catch (uploadError) {
-  //       toast.error("파일 업로드에 실패했습니다");
-  //       console.error(uploadError);
-  //     }
-  //   } catch (error) {
-  //     toast.error("게시물 작성에 실패했습니다");
-  //     console.error(error);
-  //   }
-  // };
+      // 게시글 데이터 무효화
+      await queryClient.invalidateQueries({
+        queryKey: ["post", postId],
+      });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newFiles = Array.from(e.target.files);
-
-      // 파일 크기 검증
-      const oversizedFiles = newFiles.filter(
-        (file) => file.size > MAX_FILE_SIZE,
-      );
-      if (oversizedFiles.length > 0) {
-        toast.error("파일 크기는 50MB를 초과할 수 없습니다");
-        return;
-      }
-
-      setFiles((prev) => [...prev, ...newFiles]);
+      toast.success("게시물이 수정되었습니다");
+      onCancel?.();
+    } catch (error) {
+      toast.error("게시물 수정에 실패했습니다");
+      console.error(error);
     }
   };
 
-  const removeFile = (index: number) => {
-    setFiles((prev) => prev.filter((_, i) => i !== index));
-  };
+  const onSubmit = mode === "create" ? onCreate : onUpdate;
 
   return (
     <Form {...form}>
@@ -266,7 +388,9 @@ export default function PostForm({
               <div className="flex justify-between">
                 <FormLabel>첨부파일</FormLabel>
                 <FormDescription>
-                  최대 10개의 파일을 첨부할 수 있습니다.
+                  {mode === "create"
+                    ? "최대 10개의 파일을 첨부할 수 있습니다."
+                    : "게시글 수정 시 파일 추가와 삭제는 미리보기와 동시에 서버에 반영됩니다."}
                 </FormDescription>
               </div>
               <FormControl>
@@ -290,27 +414,36 @@ export default function PostForm({
                     </Button>
                   </div>
                   <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                    {files.map((file, index) => (
+                    {/* 파일 목록 */}
+                    {existingFiles.map((file, index) => (
                       <div
                         key={index}
                         className="flex items-center gap-2 rounded-md border p-2"
                       >
                         <div className="flex-1 truncate">
-                          <div className="text-sm font-medium">{file.name}</div>
+                          <div className="text-sm font-medium">
+                            {file.displayTitle}
+                          </div>
                           <div className="text-xs text-muted-foreground">
-                            {(file.size / 1024 / 1024).toFixed(2)}MB
+                            {formatFileSize(Number(file.size))}
                           </div>
                         </div>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => removeFile(index)}
-                        >
-                          <TrashIcon className="h-4 w-4" />
-                          <span className="sr-only">파일 삭제</span>
-                        </Button>
+                        <ConfirmDialog
+                          title="파일 삭제"
+                          description={`${file.displayTitle} 파일을 삭제하시겠습니까? 삭제된 파일은 복구할 수 없습니다.`}
+                          trigger={
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
+                              <TrashIcon className="h-4 w-4" />
+                            </Button>
+                          }
+                          onConfirm={() => removeFile(index, file.id)}
+                          confirmText="삭제"
+                        />
                       </div>
                     ))}
                   </div>
@@ -320,57 +453,64 @@ export default function PostForm({
 
             {/* 관련 링크 */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <FormLabel>관련 링크</FormLabel>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => append({ linkTitle: "", link: "" })}
-                >
+              <FormLabel>관련 링크</FormLabel>
+
+              {/* 링크 입력 폼 */}
+              <div className="flex gap-4">
+                <Input
+                  placeholder="링크 제목"
+                  name="linkTitle"
+                  value={tempLink.linkTitle}
+                  onChange={handleLinkChange}
+                />
+                <Input
+                  placeholder="URL"
+                  name="link"
+                  value={tempLink.link}
+                  onChange={handleLinkChange}
+                />
+                <Button type="button" variant="outline" onClick={handleAddLink}>
                   <PlusCircle className="mr-2 h-4 w-4" />
-                  링크 추가
+                  추가
                 </Button>
               </div>
+
+              {/* 링크 목록 */}
               {fields.map((field, index) => (
-                <div key={field.id} className="flex gap-4">
-                  <FormField
-                    control={form.control}
-                    name={`links.${index}.linkTitle`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormControl>
-                          <Input placeholder="링크 제목" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                <div
+                  key={field.id}
+                  className="flex items-center gap-4 rounded-md border p-3"
+                >
+                  <div className="flex-1">
+                    <div className="font-medium">{field.linkTitle}</div>
+                    <Link
+                      href={field.link}
+                      target="_blank"
+                      className="truncate text-sm text-muted-foreground hover:underline"
+                    >
+                      {field.link}
+                    </Link>
+                  </div>
+                  <ConfirmDialog
+                    title="링크 삭제"
+                    description={`${field.linkTitle} 링크를 삭제하시겠습니까? 삭제된 링크는 복구할 수 없습니다.`}
+                    trigger={
+                      <Button type="button" variant="ghost" size="icon">
+                        <TrashIcon className="h-4 w-4" />
+                        <span className="sr-only">링크 삭제</span>
+                      </Button>
+                    }
+                    onConfirm={() => {
+                      removeLink();
+                    }}
+                    confirmText="삭제"
                   />
-                  <FormField
-                    control={form.control}
-                    name={`links.${index}.link`}
-                    render={({ field }) => (
-                      <FormItem className="flex-1">
-                        <FormControl>
-                          <Input placeholder="URL" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => remove(index)}
-                  >
-                    <TrashIcon className="h-4 w-4" />
-                    <span className="sr-only">링크 삭제</span>
-                  </Button>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* 옵션카드 */}
           <Card className="h-fit min-w-24 lg:w-72">
             <CardHeader>옵션</CardHeader>
             <CardContent className="flex flex-col gap-6 lg:flex-row">
