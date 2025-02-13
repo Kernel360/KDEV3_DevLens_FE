@@ -25,3 +25,4 @@ export * from "./calendar";
 export * from "./radio-group";
 export * from "./textarea";
 export * from "./scroll-area";
+export * from "./accordion";

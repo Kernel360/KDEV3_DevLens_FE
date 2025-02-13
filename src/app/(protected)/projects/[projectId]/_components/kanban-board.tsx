@@ -26,7 +26,10 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setIsExpanded(!isExpanded)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsExpanded(!isExpanded);
+          }}
           className="flex items-center gap-2"
         >
           {isExpanded ? (
@@ -58,7 +61,7 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
                 <Card className="group h-full border-none bg-zinc-50 px-3 shadow-none [&>*]:p-2">
                   <CardHeader className="!pb-0">
                     <CardTitle
-                      className="flex h-[2.25rem] cursor-pointer items-center justify-between gap-2text-sm hover:text-primary"
+                      className="gap-2text-sm flex h-[2.25rem] cursor-pointer items-center justify-between hover:text-primary"
                       onClick={() => setIsExpanded(!isExpanded)}
                     >
                       {step.stepName}
