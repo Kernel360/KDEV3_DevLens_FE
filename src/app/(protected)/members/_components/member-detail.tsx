@@ -39,6 +39,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useUpdateMember } from "@/lib/api/generated/admin/services/administrator-member-management-api/administrator-member-management-api";
 
 interface MemberDetailProps {
   id: number;
@@ -78,23 +79,17 @@ export function MemberDetail({ id }: MemberDetailProps) {
     queryFn: () => adminMemberApi.getDetail(id),
   });
 
-  const { mutate: updateMember } = useMutation({
-    mutationFn: (formData: MemberDetailFormValues) =>
-      adminMemberApi.update(id, {
-        name: formData.name,
-        role: formData.role,
-        phoneNumber: formData.phoneNumber,
-        department: formData.department,
-        position: formData.position,
-        companyId: formData.companyId,
-      }),
-    onSuccess: () => {
-      toast.success("회원 정보가 수정되었습니다.");
-      setIsEditing(false);
-      queryClient.invalidateQueries({ queryKey: ["memberList"] });
-    },
-    onError: () => {
-      toast.error("회원 정보 수정 중 오류가 발생했습니다.");
+  const { mutate: updateMember } = useUpdateMember({
+    mutation: {
+      onSuccess: () => {
+        toast.success("회원 정보가 수정되었습니다.");
+        setIsEditing(false);
+        queryClient.invalidateQueries({ queryKey: ["memberList"] });
+        queryClient.invalidateQueries({ queryKey: ["memberDetail", id] });
+      },
+      onError: () => {
+        toast.error("회원 정보 수정 중 오류가 발생했습니다.");
+      },
     },
   });
 
@@ -125,9 +120,18 @@ export function MemberDetail({ id }: MemberDetailProps) {
   });
 
   const onSubmit = (formData: MemberDetailFormValues) => {
-    updateMember(formData);
+    updateMember({
+      memberId: id,
+      data: {
+        name: formData.name,
+        role: formData.role,
+        phoneNumber: formData.phoneNumber,
+        department: formData.department,
+        position: formData.position,
+        companyId: formData.companyId,
+      },
+    });
   };
-
   const handleDelete = () => {
     deleteMember();
     setIsDeleteDialogOpen(false);
