@@ -11,7 +11,7 @@ import { PostListResponse } from "@/lib/api/generated/main/models";
 
 export default function PostListTable() {
   const { projectId } = useParams<{ projectId: string }>();
-  const [page] = useQueryState("page", parseAsInteger.withDefault(0));
+  const [page] = useQueryState("page", parseAsInteger.withDefault(1));
   const [search] = useQueryState("search");
   const [filter] = useQueryState("filter");
   const [sortType] = useQueryState("sortType");
@@ -23,7 +23,7 @@ export default function PostListTable() {
   }>(Number(projectId), {
     projectStepId: step ?? undefined,
     isAllStages: step ? false : true,
-    page: page ?? 0,
+    page: page - 1,
     filter: filter as "ALL" | "TITLE" | "CONTENT" | "WRITER" | undefined,
     keyword: search ?? "",
     sortType: sortType as "NEWEST" | "OLDEST" | undefined,

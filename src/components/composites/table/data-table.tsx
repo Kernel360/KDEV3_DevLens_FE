@@ -29,7 +29,7 @@ export function DataTable<T extends { id: number | string }>({
 }: DataTableProps<T> & {
   onRowClick?: (row: T) => void;
 }) {
-  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(0));
 
   return (
     <>
@@ -87,7 +87,7 @@ export function DataTable<T extends { id: number | string }>({
           )}
         </TableBody>
       </Table>
-      {totalPages > 1 && (
+      {totalPages && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
