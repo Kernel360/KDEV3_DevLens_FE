@@ -61,14 +61,24 @@ const createAxiosInstance = (baseURL: string): AxiosInstance => {
   return instance;
 };
 
+// 서버사이드 환경을 위한 baseURL 설정
+const getBaseUrl = () => {
+  if (typeof window === "undefined") {
+    return process.env.API_URL; // 서버 환경용 URL
+  }
+  return process.env.NEXT_PUBLIC_API_URL; // 클라이언트 환경용 URL
+};
+
 // Main API와 Admin API mutator 함수 생성
 export const mainAxios = <T>(config: AxiosRequestConfig): Promise<T> => {
-  const instance = createAxiosInstance(`${process.env.NEXT_PUBLIC_API_URL}/main`);
+  const instance = createAxiosInstance(`${getBaseUrl()}/main`);
   return instance(config) as Promise<T>;
 };
 
 export const adminAxios = <T>(config: AxiosRequestConfig): Promise<T> => {
-  const instance = createAxiosInstance(`${process.env.NEXT_PUBLIC_API_URL}/admin`);
+  const instance = createAxiosInstance(
+    `${process.env.NEXT_PUBLIC_API_URL}/admin`,
+  );
   return instance(config) as Promise<T>;
 };
 

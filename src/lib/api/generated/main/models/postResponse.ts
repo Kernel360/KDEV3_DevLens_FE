@@ -21,6 +21,7 @@ export interface PostResponse {
   content?: string;
   deadline?: string;
   writer?: string;
+  isAuthor?: boolean;
   createDate?: string;
   updateDate?: string;
   comments?: GetCommentResponse[];

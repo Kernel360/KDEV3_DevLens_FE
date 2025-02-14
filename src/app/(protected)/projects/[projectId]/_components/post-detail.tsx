@@ -51,6 +51,7 @@ const initialPost: Required<PostResponse> = {
   createDate: "",
   updateDate: "",
   deadline: "",
+  isAuthor: false,
   files: [],
   links: [],
   comments: [],

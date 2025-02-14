@@ -5,7 +5,6 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
-import type { GetCommentResponseIsEdited } from './getCommentResponseIsEdited';
 
 export interface GetCommentResponse {
   commentId?: number;
@@ -14,5 +13,6 @@ export interface GetCommentResponse {
   writer?: string;
   content?: string;
   createdAt?: string;
-  isEdited?: GetCommentResponseIsEdited;
+  isEdited?: boolean;
+  isAuthor?: boolean;
 }

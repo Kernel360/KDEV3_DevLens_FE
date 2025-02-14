@@ -7,7 +7,6 @@
  */
 import type { PostUpdateRequestPriority } from './postUpdateRequestPriority';
 import type { PostUpdateRequestStatus } from './postUpdateRequestStatus';
-import type { LinkInput } from './linkInput';
 
 export interface PostUpdateRequest {
   projectStepId: number;
@@ -26,9 +25,4 @@ export interface PostUpdateRequest {
    */
   content: string;
   deadline?: string;
-  /**
-   * @minItems 0
-   * @maxItems 10
-   */
-  linkInputList?: LinkInput[];
 }

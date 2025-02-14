@@ -38,7 +38,6 @@ import type {
   PostResponse,
   PostUpdateRequest,
   SelectPostsParams,
-  UpdatePostFilesBody,
   UploadPostFilesBody
 } from '../../models'
 import { mainAxios } from '../../../../../axiosClient';
@@ -326,271 +325,6 @@ export const useDeletePost = <TError = unknown,
 
       return useMutation(mutationOptions);
     }
-    export const selectPostFiles = (
-    postId: number,
- signal?: AbortSignal
-) => {
-      
-      
-      return mainAxios<APIResponseListFileMetadataResponse>(
-      {url: `/api/posts/${postId}/files`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getSelectPostFilesQueryKey = (postId: number,) => {
-    return [`/api/posts/${postId}/files`] as const;
-    }
-
-    
-export const getSelectPostFilesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSelectPostFilesQueryKey(postId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectPostFiles>>> = ({ signal }) => selectPostFiles(postId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SelectPostFilesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof selectPostFiles>>>
-export type SelectPostFilesInfiniteQueryError = unknown
-
-
-export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
- postId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectPostFiles>>,
-          TError,
-          Awaited<ReturnType<typeof selectPostFiles>>
-        > , 'initialData'
-      >, }
-
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectPostFiles>>,
-          TError,
-          Awaited<ReturnType<typeof selectPostFiles>>
-        > , 'initialData'
-      >, }
-
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
-
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
-
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getSelectPostFilesInfiniteQueryOptions(postId,options)
-
-  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-export const getSelectPostFilesQueryOptions = <TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getSelectPostFilesQueryKey(postId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectPostFiles>>> = ({ signal }) => selectPostFiles(postId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type SelectPostFilesQueryResult = NonNullable<Awaited<ReturnType<typeof selectPostFiles>>>
-export type SelectPostFilesQueryError = unknown
-
-
-export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
- postId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectPostFiles>>,
-          TError,
-          Awaited<ReturnType<typeof selectPostFiles>>
-        > , 'initialData'
-      >, }
-
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof selectPostFiles>>,
-          TError,
-          Awaited<ReturnType<typeof selectPostFiles>>
-        > , 'initialData'
-      >, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getSelectPostFilesQueryOptions(postId,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-export const updatePostFiles = (
-    postId: number,
-    updatePostFilesBody: UpdatePostFilesBody,
- ) => {
-      
-      const formData = new FormData();
-updatePostFilesBody.files.forEach(value => formData.append('files', value));
-
-      return mainAxios<APIResponseSuccessCode>(
-      {url: `/api/posts/${postId}/files`, method: 'PUT',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData
-    },
-      );
-    }
-  
-
-
-export const getUpdatePostFilesMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePostFiles>>, TError,{postId: number;data: UpdatePostFilesBody}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof updatePostFiles>>, TError,{postId: number;data: UpdatePostFilesBody}, TContext> => {
-    
-const mutationKey = ['updatePostFiles'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof updatePostFiles>>, {postId: number;data: UpdatePostFilesBody}> = (props) => {
-          const {postId,data} = props ?? {};
-
-          return  updatePostFiles(postId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UpdatePostFilesMutationResult = NonNullable<Awaited<ReturnType<typeof updatePostFiles>>>
-    export type UpdatePostFilesMutationBody = UpdatePostFilesBody
-    export type UpdatePostFilesMutationError = unknown
-
-    export const useUpdatePostFiles = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof updatePostFiles>>, TError,{postId: number;data: UpdatePostFilesBody}, TContext>, }
-): UseMutationResult<
-        Awaited<ReturnType<typeof updatePostFiles>>,
-        TError,
-        {postId: number;data: UpdatePostFilesBody},
-        TContext
-      > => {
-
-      const mutationOptions = getUpdatePostFilesMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    export const uploadPostFiles = (
-    postId: number,
-    uploadPostFilesBody: UploadPostFilesBody,
- signal?: AbortSignal
-) => {
-      
-      const formData = new FormData();
-uploadPostFilesBody.files.forEach(value => formData.append('files', value));
-
-      return mainAxios<APIResponseSuccessCode>(
-      {url: `/api/posts/${postId}/files`, method: 'POST',
-      headers: {'Content-Type': 'multipart/form-data', },
-       data: formData, signal
-    },
-      );
-    }
-  
-
-
-export const getUploadPostFilesMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadPostFiles>>, TError,{postId: number;data: UploadPostFilesBody}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof uploadPostFiles>>, TError,{postId: number;data: UploadPostFilesBody}, TContext> => {
-    
-const mutationKey = ['uploadPostFiles'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadPostFiles>>, {postId: number;data: UploadPostFilesBody}> = (props) => {
-          const {postId,data} = props ?? {};
-
-          return  uploadPostFiles(postId,data,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type UploadPostFilesMutationResult = NonNullable<Awaited<ReturnType<typeof uploadPostFiles>>>
-    export type UploadPostFilesMutationBody = UploadPostFilesBody
-    export type UploadPostFilesMutationError = unknown
-
-    export const useUploadPostFiles = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadPostFiles>>, TError,{postId: number;data: UploadPostFilesBody}, TContext>, }
-): UseMutationResult<
-        Awaited<ReturnType<typeof uploadPostFiles>>,
-        TError,
-        {postId: number;data: UploadPostFilesBody},
-        TContext
-      > => {
-
-      const mutationOptions = getUploadPostFilesMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
     /**
  * 새로운 게시글을 생성합니다.
  * @summary 게시글 생성
@@ -856,6 +590,211 @@ const {mutation: mutationOptions} = options ?
       > => {
 
       const mutationOptions = getUploadLinksMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    export const selectPostFiles = (
+    postId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainAxios<APIResponseListFileMetadataResponse>(
+      {url: `/api/posts/${postId}/files`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getSelectPostFilesQueryKey = (postId: number,) => {
+    return [`/api/posts/${postId}/files`] as const;
+    }
+
+    
+export const getSelectPostFilesInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSelectPostFilesQueryKey(postId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectPostFiles>>> = ({ signal }) => selectPostFiles(postId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SelectPostFilesInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof selectPostFiles>>>
+export type SelectPostFilesInfiniteQueryError = unknown
+
+
+export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
+ postId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof selectPostFiles>>,
+          TError,
+          Awaited<ReturnType<typeof selectPostFiles>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof selectPostFiles>>,
+          TError,
+          Awaited<ReturnType<typeof selectPostFiles>>
+        > , 'initialData'
+      >, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useSelectPostFilesInfinite<TData = InfiniteData<Awaited<ReturnType<typeof selectPostFiles>>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSelectPostFilesInfiniteQueryOptions(postId,options)
+
+  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getSelectPostFilesQueryOptions = <TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getSelectPostFilesQueryKey(postId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof selectPostFiles>>> = ({ signal }) => selectPostFiles(postId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type SelectPostFilesQueryResult = NonNullable<Awaited<ReturnType<typeof selectPostFiles>>>
+export type SelectPostFilesQueryError = unknown
+
+
+export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
+ postId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof selectPostFiles>>,
+          TError,
+          Awaited<ReturnType<typeof selectPostFiles>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof selectPostFiles>>,
+          TError,
+          Awaited<ReturnType<typeof selectPostFiles>>
+        > , 'initialData'
+      >, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useSelectPostFiles<TData = Awaited<ReturnType<typeof selectPostFiles>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof selectPostFiles>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getSelectPostFilesQueryOptions(postId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const uploadPostFiles = (
+    postId: number,
+    uploadPostFilesBody: UploadPostFilesBody,
+ signal?: AbortSignal
+) => {
+      
+      const formData = new FormData();
+uploadPostFilesBody.files.forEach(value => formData.append('files', value));
+
+      return mainAxios<APIResponseSuccessCode>(
+      {url: `/api/posts/${postId}/files`, method: 'POST',
+      headers: {'Content-Type': 'multipart/form-data', },
+       data: formData, signal
+    },
+      );
+    }
+  
+
+
+export const getUploadPostFilesMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadPostFiles>>, TError,{postId: number;data: UploadPostFilesBody}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof uploadPostFiles>>, TError,{postId: number;data: UploadPostFilesBody}, TContext> => {
+    
+const mutationKey = ['uploadPostFiles'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof uploadPostFiles>>, {postId: number;data: UploadPostFilesBody}> = (props) => {
+          const {postId,data} = props ?? {};
+
+          return  uploadPostFiles(postId,data,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UploadPostFilesMutationResult = NonNullable<Awaited<ReturnType<typeof uploadPostFiles>>>
+    export type UploadPostFilesMutationBody = UploadPostFilesBody
+    export type UploadPostFilesMutationError = unknown
+
+    export const useUploadPostFiles = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof uploadPostFiles>>, TError,{postId: number;data: UploadPostFilesBody}, TContext>, }
+): UseMutationResult<
+        Awaited<ReturnType<typeof uploadPostFiles>>,
+        TError,
+        {postId: number;data: UploadPostFilesBody},
+        TContext
+      > => {
+
+      const mutationOptions = getUploadPostFilesMutationOptions(options);
 
       return useMutation(mutationOptions);
     }
