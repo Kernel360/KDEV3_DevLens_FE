@@ -50,7 +50,6 @@ export default function CommentItem({
   content,
   createdAt,
   onReplyClick,
-  onCommentUpdate,
   children,
   isAuthor,
   className = "",
