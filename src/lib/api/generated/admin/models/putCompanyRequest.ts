@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 import type { PutCompanyRequestBusinessType } from './putCompanyRequestBusinessType';
+import type { PutCompanyRequestIsActive } from './putCompanyRequestIsActive';
 
 export interface PutCompanyRequest {
   companyName: string;
@@ -14,5 +15,6 @@ export interface PutCompanyRequest {
   representativeEmail?: string;
   address?: string;
   businessType?: PutCompanyRequestBusinessType;
+  isActive?: PutCompanyRequestIsActive;
   businessRegistrationNumber?: string;
 }

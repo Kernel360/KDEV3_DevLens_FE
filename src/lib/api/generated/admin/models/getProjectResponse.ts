@@ -5,9 +5,17 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
+import type { Project } from './project';
+import type { ProjectTag } from './projectTag';
+import type { ProjectAuthorization } from './projectAuthorization';
 import type { GetProjectResponseProjectStatusCode } from './getProjectResponseProjectStatusCode';
+import type { PatchAuthorizationCustomerMemberAuthorization } from './patchAuthorizationCustomerMemberAuthorization';
+import type { PatchAuthorizationDeveloperMemberAuthorization } from './patchAuthorizationDeveloperMemberAuthorization';
 
 export interface GetProjectResponse {
+  project?: Project;
+  tags?: ProjectTag[];
+  authorizations?: ProjectAuthorization[];
   id?: number;
   projectName?: string;
   customerCompanyName?: string;
@@ -23,4 +31,7 @@ export interface GetProjectResponse {
   endDate?: string;
   finalApprover?: string;
   finalApprovalDate?: string;
+  projectTags?: string[];
+  customerMemberAuthorizations?: PatchAuthorizationCustomerMemberAuthorization[];
+  developerMemberAuthorizations?: PatchAuthorizationDeveloperMemberAuthorization[];
 }

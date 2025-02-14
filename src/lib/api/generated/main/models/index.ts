@@ -51,6 +51,8 @@ export * from './getProjectAuthorizationMemberAuthorizationMemberDivision';
 export * from './getProjectAuthorizationResponse';
 export * from './getProjectChecklistApplicationResponse';
 export * from './getProjectDetailChecklistApplicationList';
+export * from './getProjectDetailCustomerMemberAuthorization';
+export * from './getProjectDetailDeveloperMemberAuthorization';
 export * from './getProjectDetailProjectDetail';
 export * from './getProjectDetailProjectStepInfo';
 export * from './getProjectDetailResponse';

@@ -109,14 +109,14 @@ export const getProjectDetail = (
       
       
       return mainAxios<GetProjectDetailResponse>(
-      {url: `/api/projects/detail/${projectId}`, method: 'GET', signal
+      {url: `/api/projects/${projectId}/detail`, method: 'GET', signal
     },
       );
     }
   
 
 export const getGetProjectDetailQueryKey = (projectId: number,) => {
-    return [`/api/projects/detail/${projectId}`] as const;
+    return [`/api/projects/${projectId}/detail`] as const;
     }
 
     

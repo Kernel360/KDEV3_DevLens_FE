@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 import type { PutProjectRequestProjectStatusCode } from './putProjectRequestProjectStatusCode';
+import type { PatchAuthorizationCustomerMemberAuthorization } from './patchAuthorizationCustomerMemberAuthorization';
+import type { PatchAuthorizationDeveloperMemberAuthorization } from './patchAuthorizationDeveloperMemberAuthorization';
 
 export interface PutProjectRequest {
   projectName: string;
@@ -22,4 +24,6 @@ export interface PutProjectRequest {
   endDate?: string;
   finalApprovalDate?: string;
   projectTags?: string[];
+  customerAuthorizations?: PatchAuthorizationCustomerMemberAuthorization[];
+  developerAuthorizations?: PatchAuthorizationDeveloperMemberAuthorization[];
 }

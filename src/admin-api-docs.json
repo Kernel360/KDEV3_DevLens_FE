@@ -178,32 +178,6 @@
             }
           }
         }
-      },
-      "patch": {
-        "tags": ["Administrator Company Management API"],
-        "summary": "회사 상태 변경",
-        "description": "회사 상태 변경",
-        "operationId": "changeCompanyIsActive",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "회사 id",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "수정 완료.",
-            "content": {
-              "*/*": {
-                "schema": { "$ref": "#/components/schemas/APIResponseObject" }
-              }
-            }
-          }
-        }
       }
     },
     "/api/login": {
@@ -933,6 +907,55 @@
           "isActive": { "type": "string", "enum": ["Y", "N"] }
         }
       },
+      "Member": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "company": { "$ref": "#/components/schemas/Company" },
+          "role": { "type": "string", "enum": ["ADMIN", "SUPER", "USER"] },
+          "loginId": { "type": "string" },
+          "password": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["ACTIVE", "INACTIVE", "WITHDRAW", "SUSPENDED"]
+          },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "birthDate": { "type": "string", "format": "date" },
+          "phoneNumber": { "type": "string" },
+          "department": { "type": "string" },
+          "position": { "type": "string" }
+        }
+      },
+      "MemberProjectStepId": {
+        "type": "object",
+        "properties": {
+          "memberId": { "type": "integer", "format": "int64" },
+          "projectId": { "type": "integer", "format": "int64" }
+        }
+      },
+      "PatchAuthorizationCustomerMemberAuthorization": {
+        "type": "object",
+        "properties": {
+          "memberId": { "type": "integer", "format": "int64" },
+          "memberName": { "type": "string" },
+          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
+          "projectAuthorization": { "type": "string" }
+        }
+      },
+      "PatchAuthorizationDeveloperMemberAuthorization": {
+        "type": "object",
+        "properties": {
+          "memberId": { "type": "integer", "format": "int64" },
+          "memberName": { "type": "string" },
+          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
+          "projectAuthorization": { "type": "string" }
+        }
+      },
       "Project": {
         "type": "object",
         "properties": {
@@ -966,6 +989,21 @@
           "endDate": { "type": "string", "format": "date" },
           "finalApproverId": { "type": "integer", "format": "int64" },
           "finalApprovalDate": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProjectAuthorization": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "$ref": "#/components/schemas/MemberProjectStepId" },
+          "member": { "$ref": "#/components/schemas/Member" },
+          "project": { "$ref": "#/components/schemas/Project" },
+          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
+          "authorizationCode": { "type": "string" },
+          "isActive": { "type": "string", "enum": ["YES", "NO"] }
         }
       },
       "ProjectTag": {
@@ -1003,6 +1041,11 @@
             "writeOnly": true,
             "items": { "$ref": "#/components/schemas/ProjectTag" }
           },
+          "authorizations": {
+            "type": "array",
+            "writeOnly": true,
+            "items": { "$ref": "#/components/schemas/ProjectAuthorization" }
+          },
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
           "customerId": { "type": "string" },
@@ -1027,7 +1070,19 @@
           "startDate": { "type": "string", "format": "date" },
           "endDate": { "type": "string", "format": "date" },
           "finalApprovalDate": { "type": "string", "format": "date-time" },
-          "projectTags": { "type": "array", "items": { "type": "string" } }
+          "projectTags": { "type": "array", "items": { "type": "string" } },
+          "customerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationCustomerMemberAuthorization"
+            }
+          },
+          "developerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationDeveloperMemberAuthorization"
+            }
+          }
         }
       },
       "PutProjectRequest": {
@@ -1057,7 +1112,19 @@
           "startDate": { "type": "string", "format": "date" },
           "endDate": { "type": "string", "format": "date" },
           "finalApprovalDate": { "type": "string", "format": "date-time" },
-          "projectTags": { "type": "array", "items": { "type": "string" } }
+          "projectTags": { "type": "array", "items": { "type": "string" } },
+          "customerAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationCustomerMemberAuthorization"
+            }
+          },
+          "developerAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationDeveloperMemberAuthorization"
+            }
+          }
         }
       },
       "PutCompanyResponse": {
@@ -1090,6 +1157,7 @@
             "type": "string",
             "enum": ["INDIVIDUAL", "CORPORATION"]
           },
+          "isActive": { "type": "string", "enum": ["Y", "N"] },
           "businessRegistrationNumber": { "type": "string" }
         }
       },
@@ -1157,6 +1225,11 @@
             "writeOnly": true,
             "items": { "$ref": "#/components/schemas/ProjectTag" }
           },
+          "authorizations": {
+            "type": "array",
+            "writeOnly": true,
+            "items": { "$ref": "#/components/schemas/ProjectAuthorization" }
+          },
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
           "customerCompanyName": { "type": "string" },
@@ -1178,7 +1251,19 @@
           "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
           "plannedEndDate": { "type": "string", "format": "date" },
-          "projectTags": { "type": "array", "items": { "type": "string" } }
+          "projectTags": { "type": "array", "items": { "type": "string" } },
+          "customerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationCustomerMemberAuthorization"
+            }
+          },
+          "developerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationDeveloperMemberAuthorization"
+            }
+          }
         }
       },
       "PostProjectRequest": {
@@ -1194,7 +1279,19 @@
           "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
           "plannedEndDate": { "type": "string", "format": "date" },
-          "projectTags": { "type": "array", "items": { "type": "string" } }
+          "projectTags": { "type": "array", "items": { "type": "string" } },
+          "customerAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationCustomerMemberAuthorization"
+            }
+          },
+          "developerAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationDeveloperMemberAuthorization"
+            }
+          }
         }
       },
       "MemberDtoResponse": {
@@ -1284,17 +1381,20 @@
           "password": { "type": "string" }
         }
       },
-      "APIResponseObject": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "message": { "type": "string" },
-          "data": { "type": "object" }
-        }
-      },
       "GetProjectResponse": {
         "type": "object",
         "properties": {
+          "project": { "$ref": "#/components/schemas/Project" },
+          "tags": {
+            "type": "array",
+            "writeOnly": true,
+            "items": { "$ref": "#/components/schemas/ProjectTag" }
+          },
+          "authorizations": {
+            "type": "array",
+            "writeOnly": true,
+            "items": { "$ref": "#/components/schemas/ProjectAuthorization" }
+          },
           "id": { "type": "integer", "format": "int64" },
           "projectName": { "type": "string" },
           "customerCompanyName": { "type": "string" },
@@ -1319,7 +1419,20 @@
           "startDate": { "type": "string", "format": "date" },
           "endDate": { "type": "string", "format": "date" },
           "finalApprover": { "type": "string" },
-          "finalApprovalDate": { "type": "string", "format": "date-time" }
+          "finalApprovalDate": { "type": "string", "format": "date-time" },
+          "projectTags": { "type": "array", "items": { "type": "string" } },
+          "customerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationCustomerMemberAuthorization"
+            }
+          },
+          "developerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PatchAuthorizationDeveloperMemberAuthorization"
+            }
+          }
         }
       },
       "GetProjectHistoryResponse": {

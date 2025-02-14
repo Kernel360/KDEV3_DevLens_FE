@@ -28,7 +28,6 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query'
 import type {
-  APIResponseObject,
   GetCompanyDetailResponse,
   GetCompanyMemberResponse,
   PaginatedResponse,
@@ -260,68 +259,6 @@ export const useUpdateCompany = <TError = unknown,
       > => {
 
       const mutationOptions = getUpdateCompanyMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
- * 회사 상태 변경
- * @summary 회사 상태 변경
- */
-export const changeCompanyIsActive = (
-    id: number,
- ) => {
-      
-      
-      return adminAxios<APIResponseObject>(
-      {url: `/api/admin/companies/${id}`, method: 'PATCH'
-    },
-      );
-    }
-  
-
-
-export const getChangeCompanyIsActiveMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeCompanyIsActive>>, TError,{id: number}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof changeCompanyIsActive>>, TError,{id: number}, TContext> => {
-    
-const mutationKey = ['changeCompanyIsActive'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof changeCompanyIsActive>>, {id: number}> = (props) => {
-          const {id} = props ?? {};
-
-          return  changeCompanyIsActive(id,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type ChangeCompanyIsActiveMutationResult = NonNullable<Awaited<ReturnType<typeof changeCompanyIsActive>>>
-    
-    export type ChangeCompanyIsActiveMutationError = unknown
-
-    /**
- * @summary 회사 상태 변경
- */
-export const useChangeCompanyIsActive = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof changeCompanyIsActive>>, TError,{id: number}, TContext>, }
-): UseMutationResult<
-        Awaited<ReturnType<typeof changeCompanyIsActive>>,
-        TError,
-        {id: number},
-        TContext
-      > => {
-
-      const mutationOptions = getChangeCompanyIsActiveMutationOptions(options);
 
       return useMutation(mutationOptions);
     }

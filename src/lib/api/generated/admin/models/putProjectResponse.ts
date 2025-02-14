@@ -7,11 +7,15 @@
  */
 import type { Project } from './project';
 import type { ProjectTag } from './projectTag';
+import type { ProjectAuthorization } from './projectAuthorization';
 import type { PutProjectResponseProjectStatusCode } from './putProjectResponseProjectStatusCode';
+import type { PatchAuthorizationCustomerMemberAuthorization } from './patchAuthorizationCustomerMemberAuthorization';
+import type { PatchAuthorizationDeveloperMemberAuthorization } from './patchAuthorizationDeveloperMemberAuthorization';
 
 export interface PutProjectResponse {
   project?: Project;
   tags?: ProjectTag[];
+  authorizations?: ProjectAuthorization[];
   id?: number;
   projectName?: string;
   customerId?: string;
@@ -27,4 +31,6 @@ export interface PutProjectResponse {
   endDate?: string;
   finalApprovalDate?: string;
   projectTags?: string[];
+  customerMemberAuthorizations?: PatchAuthorizationCustomerMemberAuthorization[];
+  developerMemberAuthorizations?: PatchAuthorizationDeveloperMemberAuthorization[];
 }
