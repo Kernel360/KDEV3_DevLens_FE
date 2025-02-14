@@ -19,7 +19,7 @@ export default function PostListTable() {
 
   const { data } = useSelectPosts<{
     content: PostListResponse[];
-    totalPage: number;
+    totalPages: number;
   }>(Number(projectId), {
     projectStepId: step ?? undefined,
     isAllStages: step ? false : true,
@@ -41,7 +41,7 @@ export default function PostListTable() {
           id: post.postId ?? 0,
         }))}
         content={PostDetail}
-        totalPages={data.totalPage}
+        totalPages={data.totalPages}
       />
     </>
   );
