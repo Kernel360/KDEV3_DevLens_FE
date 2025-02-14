@@ -61,7 +61,7 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
                 <Card className="group h-full border-none bg-muted px-3 shadow-none [&>*]:p-2">
                   <CardHeader className="!pb-0">
                     <CardTitle
-                      className="gap-2text-sm flex h-[2.25rem] cursor-pointer items-center justify-between hover:text-primary"
+                      className="flex h-[2.25rem] cursor-pointer items-center justify-between text-sm hover:text-primary"
                       onClick={() => setIsExpanded(!isExpanded)}
                     >
                       {step.stepName}
