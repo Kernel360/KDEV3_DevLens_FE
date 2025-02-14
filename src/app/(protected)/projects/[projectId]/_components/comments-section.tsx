@@ -82,9 +82,12 @@ export function CommentsSection({ postId, comments }: CommentsSectionProps) {
         {groupedComments.map((comment) => (
           <CommentItem
             key={comment.commentId ?? 0}
+            postId={postId}
+            commentId={comment.commentId ?? 0}
             userName={comment.writer ?? "익명"}
             content={comment.content ?? ""}
             createdAt={comment.createdAt ?? ""}
+            isAuthor={comment.isAuthor ?? false}
             onReplyClick={() =>
               setIsReplying(
                 isReplying === comment.commentId
@@ -97,9 +100,12 @@ export function CommentsSection({ postId, comments }: CommentsSectionProps) {
             {comment.replies?.map((reply) => (
               <div key={reply.commentId ?? 0} className="ml-11">
                 <CommentItem
+                  postId={postId}
+                  commentId={reply.commentId ?? 0}
                   userName={reply.writer ?? "익명"}
                   content={reply.content ?? ""}
                   createdAt={reply.createdAt ?? ""}
+                  isAuthor={reply.isAuthor ?? false}
                 />
               </div>
             ))}

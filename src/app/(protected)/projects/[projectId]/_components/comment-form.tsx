@@ -14,6 +14,8 @@ import { useForm } from "react-hook-form";
 
 interface CommentFormProps {
   onSubmit: (data: CommentFormValues) => Promise<void>;
+  initialValue?: string;
+  onCancel?: () => void;
   placeholder?: string;
   className?: string;
   autoFocus?: boolean;
@@ -21,6 +23,8 @@ interface CommentFormProps {
 
 export default function CommentForm({
   onSubmit,
+  initialValue = "",
+  onCancel,
   placeholder = "댓글을 입력하세요",
   className,
   autoFocus,
@@ -28,7 +32,7 @@ export default function CommentForm({
   const form = useForm<CommentFormValues>({
     resolver: zodResolver(commentSchema),
     defaultValues: {
-      content: "",
+      content: initialValue,
     },
   });
 
@@ -55,15 +59,28 @@ export default function CommentForm({
                       {...field}
                     />
                   </div>
-                  <Button
-                    type="submit"
-                    size="sm"
-                    className="h-[42px]"
-                    disabled={form.formState.isSubmitting}
-                  >
-                    <SendHorizontal className="h-4 w-4" />
-                    <span className="sr-only">댓글 작성</span>
-                  </Button>
+                  <div className="flex gap-2">
+                    {onCancel && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="h-[42px]"
+                        onClick={onCancel}
+                      >
+                        취소
+                      </Button>
+                    )}
+                    <Button
+                      type="submit"
+                      size="sm"
+                      className="h-[42px]"
+                      disabled={form.formState.isSubmitting}
+                    >
+                      <SendHorizontal className="h-4 w-4" />
+                      <span className="sr-only">댓글 작성</span>
+                    </Button>
+                  </div>
                 </div>
               </FormControl>
               <FormMessage />
