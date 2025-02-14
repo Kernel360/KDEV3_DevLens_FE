@@ -58,7 +58,7 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
             .sort((a, b) => a.stepOrder - b.stepOrder)
             .map((step) => (
               <div key={step.stepId} className="w-[15rem] shrink-0">
-                <Card className="group h-full border-none bg-zinc-50 px-3 shadow-none [&>*]:p-2">
+                <Card className="group h-full border-none bg-muted px-3 shadow-none [&>*]:p-2">
                   <CardHeader className="!pb-0">
                     <CardTitle
                       className="gap-2text-sm flex h-[2.25rem] cursor-pointer items-center justify-between hover:text-primary"
@@ -90,7 +90,7 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
             .sort((a, b) => a.stepOrder - b.stepOrder)
             .map((step) => (
               <div key={step.stepId} className="w-auto shrink-0">
-                <Card className="w-[15rem] border-none bg-zinc-50 px-3 shadow-none">
+                <Card className="w-[15rem] border-none bg-muted px-3 shadow-none">
                   <CardHeader className="p-2">
                     <CardTitle
                       className="flex h-[2.25rem] cursor-pointer items-center justify-between gap-2 text-sm"
