@@ -20,7 +20,7 @@ function Calendar({
       locale={ko}
       showOutsideDays={showOutsideDays}
       captionLayout="dropdown"
-      fromDate={new Date(2014, 6)}
+      fromDate={new Date(1950, 6)}
       toDate={new Date(2050, 9)}
       className={cn("p-3", className)}
       classNames={{

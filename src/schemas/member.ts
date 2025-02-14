@@ -16,8 +16,8 @@ export const createMemberSchema = z
       .min(8, "비밀번호는 최소 8자 이상이어야 합니다.")
       .max(20, "비밀번호는 최대 20자까지 가능합니다.")
       .regex(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-        "영문 대소문자, 숫자, 특수문자를 포함해야 합니다.",
+        /^(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
+        "영문, 숫자, 특수문자를 포함해야 합니다.",
       ),
     confirmPassword: z.string(),
     phoneNumber: z
@@ -28,7 +28,13 @@ export const createMemberSchema = z
         required_error: "생년월일을 선택해주세요",
         invalid_type_error: "올바른 날짜를 선택해주세요",
       })
-      .transform((date) => date.toISOString().split("T")[0]),
+      // timezone 변환  UTC -> KST
+      .transform((date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }),
     email: z.string().email("올바른 이메일 형식이 아닙니다."),
     companyId: z.number(),
     department: z.string(),
