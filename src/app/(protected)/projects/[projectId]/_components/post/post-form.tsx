@@ -44,7 +44,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 import { FileUploadSection } from "./file-upload-section";
-import { LinkUploadSection } from "./link-upload-section";
+import { LinkUploadSection } from "../link-upload-section";
 import { LinkInput } from "@/lib/api/generated/main/models";
 
 type FormValues = z.infer<typeof postFormSchema>;

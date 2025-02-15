@@ -4,7 +4,7 @@ import TableWithSheet from "@/components/composites/table/table-with-sheet";
 import { parseAsInteger, useQueryState } from "nuqs";
 import TableTools from "@/components/composites/table/table-tools";
 import { postListColumns } from "./post-list-columns";
-import PostDetail from "./post-detail";
+import PostDetail from "./post/post-detail";
 import { useSelectPosts } from "@/lib/api/generated/main/services/post-api/post-api";
 import { useParams } from "next/navigation";
 import { PostListResponse } from "@/lib/api/generated/main/models";

@@ -12,9 +12,9 @@ import { Plus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { parseAsBoolean, useQueryState } from "nuqs";
 import { Suspense, useEffect, useMemo } from "react";
-import { CreatePost } from "./create-post";
 import { KanbanBoard } from "./kanban-board";
 import PostListTable from "./post-list-table";
+import { CreatePost } from "./post/create-post";
 
 export default function ProjectDetailContent({
   projectId,

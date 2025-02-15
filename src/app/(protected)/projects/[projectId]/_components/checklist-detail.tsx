@@ -13,11 +13,11 @@ import {
 import { useGetChecklistApplication } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
 import { format } from "date-fns";
 
-interface IssueDetailProps {
+interface ChecklistDetailProps {
   checklistId: number;
 }
 
-export default function IssueDetail({ checklistId }: IssueDetailProps) {
+export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
   const { data } = useGetChecklistApplication(checklistId);
   const applications = data?.data?.applications;
   // const applications = [

@@ -6,7 +6,7 @@ import { GetProjectStepProjectStepInfo } from "@/lib/api/generated/main/models";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { parseAsInteger, useQueryState } from "nuqs";
-import PostForm from "./post-form";
+import PostForm from "./post/post-form";
 
 interface CreatePostProps {
   projectId: number;

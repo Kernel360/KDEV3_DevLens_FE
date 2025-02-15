@@ -8,7 +8,7 @@ import { useState } from "react";
 import AddStepDialog from "./add-step-dialog";
 import CreateChecklistDialog from "./create-checklist-dialog";
 import EditStepDialog from "./edit-step-dialog";
-import IssueCard from "./issue-card";
+import ChecklistCard from "./checklist-card";
 
 export function KanbanBoard({ projectId }: { projectId: number }) {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -70,8 +70,11 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
                   </CardHeader>
                   <CardContent className="max-h-[40dvh] space-y-2 overflow-y-auto !pt-0 scrollbar-hide">
                     <CreateChecklistDialog stepId={step.stepId} />
-                    {step.projectChecklist.map((issue) => (
-                      <IssueCard key={issue.checklistId} issue={issue} />
+                    {step.projectChecklist.map((checklist) => (
+                      <ChecklistCard
+                        key={checklist.checklistId}
+                        checklist={checklist}
+                      />
                     ))}
                   </CardContent>
                 </Card>

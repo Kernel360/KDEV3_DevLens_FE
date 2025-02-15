@@ -8,25 +8,25 @@ import {
   DialogTrigger,
 } from "@/components/ui";
 import { ProjectChecklist } from "@/types/project";
-import IssueDetail from "./issue-detail";
+import ChecklistDetail from "./checklist-detail";
 
-interface IssueCardProps {
-  issue: ProjectChecklist;
+interface ChecklistCardProps {
+  checklist: ProjectChecklist;
 }
 
-export default function IssueCard({ issue }: IssueCardProps) {
+export default function ChecklistCard({ checklist }: ChecklistCardProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Card
-          key={issue.checklistId}
+          key={checklist.checklistId}
           className="flex cursor-pointer flex-col gap-2 p-2"
         >
           <h2 className="line-clamp-1 text-sm font-medium">
-            {issue.checklistName}
+            {checklist.checklistName}
           </h2>
           <div className="flex w-full justify-end">
-            {issue.approvalTime && (
+            {checklist.approvalTime && (
               <Badge className="hover:bg-primary">승인요청</Badge>
             )}
           </div>
@@ -34,10 +34,10 @@ export default function IssueCard({ issue }: IssueCardProps) {
       </DialogTrigger>
       <DialogContent className="flex max-h-[90vh] min-h-[50vh] max-w-3xl flex-col">
         <DialogHeader>
-          <DialogTitle>{issue.checklistName}</DialogTitle>
+          <DialogTitle>{checklist.checklistName}</DialogTitle>
         </DialogHeader>
         <div className="h-full overflow-y-auto">
-          <IssueDetail checklistId={issue.checklistId} />
+          <ChecklistDetail checklistId={checklist.checklistId} />
         </div>
       </DialogContent>
     </Dialog>
