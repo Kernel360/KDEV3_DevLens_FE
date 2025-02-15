@@ -1,17 +1,17 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { PostListResponse } from "@/lib/api/generated/main/models";
 import {
-  getStatusLabel,
-  getStatusVariant,
   formatDateToRelative,
   getPriorityLabel,
   getPriorityVariant,
+  getStatusLabel,
+  getStatusVariant,
 } from "@/lib/utils";
 import { ColumnDef } from "@/types/table";
-import { PostResponse } from "@/lib/api/generated/main/models";
 
-type PostListItem = PostResponse & { id: number };
+type PostListItem = PostListResponse & { id: number };
 
 export const postListColumns: ColumnDef<PostListItem>[] = [
   {
@@ -25,11 +25,9 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
     header: "우선순위",
     className: "w-20",
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <Badge variant={getPriorityVariant(row.original.priority ?? "NONE")}>
-          {getPriorityLabel(row.original.priority ?? "NONE")}
-        </Badge>
-      </div>
+      <Badge variant={getPriorityVariant(row.original.priority ?? "NONE")}>
+        {getPriorityLabel(row.original.priority ?? "NONE")}
+      </Badge>
     ),
   },
   {
@@ -37,18 +35,26 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
     header: "상태",
     className: "w-20",
     cell: ({ row }) => (
-      <div className="flex justify-center">
-        <Badge variant={getStatusVariant(row.original.status ?? "NONE")}>
-          {getStatusLabel(row.original.status ?? "NONE")}
-        </Badge>
-      </div>
+      <Badge variant={getStatusVariant(row.original.status ?? "NONE")}>
+        {getStatusLabel(row.original.status ?? "NONE")}
+      </Badge>
     ),
   },
   {
     id: "title",
     header: "제목",
     className: "min-w-[300px]",
-    cell: ({ row }) => <span className="font-bold">{row.original.title}</span>,
+    cell: ({ row }) => (
+      <span className="flex font-bold">
+        {row.original.title}
+        {row.original.commentCount !== undefined &&
+          row.original.commentCount > 0 && (
+            <span className="ml-2 font-normal text-muted-foreground hover:underline">
+              ({row.original.commentCount})
+            </span>
+          )}
+      </span>
+    ),
   },
   {
     id: "writer",
