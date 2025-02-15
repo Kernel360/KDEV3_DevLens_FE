@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,41 +27,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUpdateCompany } from "@/lib/api/generated/admin/services/administrator-company-management-api/administrator-company-management-api";
 import { adminCompanyApi } from "@/lib/apis/admin/adminCompanyApi";
 import { BUSINESS_TYPE_OPTIONS } from "@/lib/constants/selects";
 import {
   handlePhoneNumberChange,
   handleRegistrationNumberChange,
 } from "@/lib/utils";
-import { createCompanySchema, type CompanyFormData } from "@/schemas/company";
+import { createCompanySchema } from "@/schemas/company";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  useMutation,
-  useSuspenseQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
-interface CompanyDetailProps {
-  id: number;
-}
-
-export default function CompanyDetail({ id }: CompanyDetailProps) {
-  const router = useRouter();
+export default function CompanyDetail({ id }: { id: number }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeactivateDialogOpen, setIsDeactivateDialogOpen] = useState(false);
+  const [, setPendingDeactivation] = useState(false);
   const queryClient = useQueryClient();
 
   const { data } = useSuspenseQuery({
@@ -59,36 +52,19 @@ export default function CompanyDetail({ id }: CompanyDetailProps) {
     queryFn: () => adminCompanyApi.getDetail(id),
   });
 
-  const { mutate: updateCompany } = useMutation({
-    mutationFn: (formData: CompanyFormData) =>
-      adminCompanyApi.update(id, {
-        companyName: formData.companyName,
-        businessType: formData.businessType,
-        businessRegistrationNumber: formData.registrationNumber,
-        representativeName: formData.representativeName,
-        representativeContact: formData.representativeContact,
-        representativeEmail: formData.email,
-        address: formData.address,
-      }),
-    onSuccess: () => {
-      toast.success("회사 정보가 수정되었습니다.");
-      setIsEditing(false);
-      queryClient.invalidateQueries({ queryKey: ["companyList"] });
-    },
-    onError: () => {
-      toast.error("회사 정보 수정 중 오류가 발생했습니다.");
-    },
-  });
-
-  const { mutate: deleteCompany } = useMutation({
-    mutationFn: () => adminCompanyApi.delete(id),
-    onSuccess: () => {
-      toast.success("회사가 삭제되었습니다.");
-      queryClient.invalidateQueries({ queryKey: ["companyList"] });
-      router.push("/company");
-    },
-    onError: () => {
-      toast.error("회사 삭제 중 오류가 발생했습니다.");
+  const { mutate: updateCompany } = useUpdateCompany({
+    mutation: {
+      onSuccess: () => {
+        toast.success("회사 정보가 수정되었습니다.");
+        setIsEditing(false);
+        queryClient.invalidateQueries({ queryKey: ["companyList"] });
+        queryClient.invalidateQueries({
+          queryKey: ["/api/admin/companies", id],
+        });
+      },
+      onError: () => {
+        toast.error("회사 정보 수정 중 오류가 발생했습니다.");
+      },
     },
   });
 
@@ -102,63 +78,66 @@ export default function CompanyDetail({ id }: CompanyDetailProps) {
       representativeContact: data?.representativeContact || "",
       email: data?.representativeEmail || "",
       address: data?.address || "",
+      isActive: data?.isActive === "Y" ? "Y" : "N",
     },
   });
 
-  const onSubmit = (formData: CompanyFormData) => {
-    updateCompany({
-      ...formData,
-    });
+  const handleStatusChange = (value: string) => {
+    const isActive = value === "active";
+    if (!isActive) {
+      setIsDeactivateDialogOpen(true);
+      setPendingDeactivation(true);
+      return;
+    }
+    form.setValue("isActive", isActive ? "Y" : "N");
   };
 
-  const handleDelete = () => {
-    deleteCompany();
-    setIsDeleteDialogOpen(false);
+  const handleDeactivateConfirm = () => {
+    form.setValue("isActive", "N");
+    setIsDeactivateDialogOpen(false);
+    setPendingDeactivation(false);
+  };
+
+  const handleDeactivateCancel = () => {
+    form.setValue("isActive", "Y");
+    setIsDeactivateDialogOpen(false);
+    setPendingDeactivation(false);
   };
 
   return (
     <div className="mx-auto w-full max-w-4xl p-6">
       <div className="mb-6 flex items-center justify-between">
         <h2 className="text-2xl font-bold">회사 상세</h2>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-4">
           <Button
             variant={isEditing ? "outline" : "default"}
             onClick={() => setIsEditing(!isEditing)}
           >
             {isEditing ? "취소" : "수정"}
           </Button>
-          <Dialog
-            open={isDeleteDialogOpen}
-            onOpenChange={setIsDeleteDialogOpen}
-          >
-            <DialogTrigger asChild>
-              <Button variant="outline-destructive">삭제</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>회사 삭제</DialogTitle>
-                <DialogDescription>
-                  정말 이 회사를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsDeleteDialogOpen(false)}
-                >
-                  취소
-                </Button>
-                <Button variant="destructive" onClick={handleDelete}>
-                  삭제
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
       </div>
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit((formData) => {
+            if (!id) return;
+            updateCompany({
+              id,
+              data: {
+                companyName: formData.companyName,
+                businessType: formData.businessType,
+                businessRegistrationNumber: formData.registrationNumber,
+                representativeName: formData.representativeName,
+                representativeContact: formData.representativeContact,
+                representativeEmail: formData.email,
+                address: formData.address,
+                isActive: formData.isActive as "Y" | "N",
+              },
+            });
+          })}
+          className="space-y-6"
+        >
           <div className="grid grid-cols-2 gap-6">
             <FormField
               control={form.control}
@@ -213,6 +192,20 @@ export default function CompanyDetail({ id }: CompanyDetailProps) {
 
             <FormField
               control={form.control}
+              name="representativeName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>대표자명</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={!isEditing} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="registrationNumber"
               render={({ field: { onChange, ...field } }) => (
                 <FormItem>
@@ -234,24 +227,10 @@ export default function CompanyDetail({ id }: CompanyDetailProps) {
 
             <FormField
               control={form.control}
-              name="representativeName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>대표자명</FormLabel>
-                  <FormControl>
-                    <Input {...field} disabled={!isEditing} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
               name="representativeContact"
               render={({ field: { onChange, ...field } }) => (
                 <FormItem>
-                  <FormLabel>대표번호</FormLabel>
+                  <FormLabel>대표 연락처</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -292,6 +271,34 @@ export default function CompanyDetail({ id }: CompanyDetailProps) {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="isActive"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>활성화 상태</FormLabel>
+                  <Select
+                    disabled={!isEditing}
+                    onValueChange={handleStatusChange}
+                    value={field.value === "Y" ? "active" : "inactive"}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue>
+                          {field.value === "Y" ? "활성화" : "비활성화"}
+                        </SelectValue>
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="active">활성화</SelectItem>
+                      <SelectItem value="inactive">비활성화</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           {isEditing && (
@@ -301,6 +308,28 @@ export default function CompanyDetail({ id }: CompanyDetailProps) {
           )}
         </form>
       </Form>
+
+      <AlertDialog
+        open={isDeactivateDialogOpen}
+        onOpenChange={setIsDeactivateDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>비활성화 하시겠습니까?</AlertDialogTitle>
+            <AlertDialogDescription>
+              회사를 비활성화하면 회사에 소속된 모든 회원들도 비활성화 됩니다.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleDeactivateCancel}>
+              취소
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeactivateConfirm}>
+              확인
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

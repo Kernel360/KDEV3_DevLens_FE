@@ -4,7 +4,7 @@ export const createCompanySchema = z.object({
   companyName: z
     .string()
     .min(1, { message: "회사명은 필수입니다" })
-    .max(100, { message: "회사명은 100자 이내로 입력해주세요" }),
+    .max(20, { message: "회사명은 20자 이내로 입력해주세요" }),
   businessType: z.enum(["CORPORATION", "INDIVIDUAL"], {
     required_error: "사업자 유형을 선택해주세요",
   }),
@@ -32,9 +32,22 @@ export const createCompanySchema = z.object({
     .string()
     .min(1, { message: "주소는 필수입니다" })
     .max(200, { message: "주소는 200자 이내로 입력해주세요" }),
+  isActive: z.enum(["Y", "N"], {
+    required_error: "활성화 상태를 선택해주세요",
+  }),
   // departments: z
   //   .array(z.string())
   //   .min(1, { message: "최소 1개 이상의 부서를 입력해주세요" }),
 });
 
-export type CompanyFormData = z.infer<typeof createCompanySchema>;
+export type CompanyFormData = {
+  companyName: string;
+  businessType: "CORPORATION" | "INDIVIDUAL";
+  registrationNumber: string;
+  representativeName: string;
+  representativeContact: string;
+  email: string;
+  address: string;
+  isActive: "Y" | "N";
+  // departments: string[];
+};
