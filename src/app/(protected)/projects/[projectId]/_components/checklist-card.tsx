@@ -9,6 +9,7 @@ import {
 } from "@/components/ui";
 import { ProjectChecklist } from "@/types/project";
 import ChecklistDetail from "./checklist-detail";
+import ChecklistRequestForm from "./checklist-request-form";
 
 interface ChecklistCardProps {
   checklist: ProjectChecklist;
@@ -33,8 +34,9 @@ export default function ChecklistCard({ checklist }: ChecklistCardProps) {
         </Card>
       </DialogTrigger>
       <DialogContent className="flex max-h-[90vh] min-h-[50vh] max-w-3xl flex-col">
-        <DialogHeader>
+        <DialogHeader className="flex flex-row justify-between">
           <DialogTitle>{checklist.checklistName}</DialogTitle>
+          <ChecklistRequestForm checklistId={checklist.checklistId} />
         </DialogHeader>
         <div className="h-full overflow-y-auto">
           <ChecklistDetail checklistId={checklist.checklistId} />
