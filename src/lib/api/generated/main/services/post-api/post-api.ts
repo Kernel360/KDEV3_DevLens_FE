@@ -541,7 +541,7 @@ export const uploadLinks = (
 ) => {
       
       
-      return mainAxios<APIResponseSuccessCode>(
+      return mainAxios<APIResponseListLinkResponse>(
       {url: `/api/posts/${postId}/links`, method: 'POST',
       headers: {'Content-Type': 'application/json', },
       data: linkInput, signal
@@ -746,7 +746,7 @@ export const uploadPostFiles = (
       const formData = new FormData();
 uploadPostFilesBody.files.forEach(value => formData.append('files', value));
 
-      return mainAxios<APIResponseSuccessCode>(
+      return mainAxios<APIResponseListFileMetadataResponse>(
       {url: `/api/posts/${postId}/files`, method: 'POST',
       headers: {'Content-Type': 'multipart/form-data', },
        data: formData, signal

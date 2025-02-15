@@ -25,8 +25,7 @@ export default function ProjectDetailContent({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const [isNew] = useQueryState("new", parseAsBoolean);
-  const [, setNewPost] = useQueryState("new", parseAsBoolean);
+  const [isNew, setNewPost] = useQueryState("new", parseAsBoolean);
 
   const { data } = useQuery({
     queryKey: ["projectSteps", projectId],
@@ -45,10 +44,6 @@ export default function ProjectDetailContent({
       router.replace(`${pathname}?step=${steps[0].stepId}`);
     }
   }, [steps, currentStepId, pathname, router]);
-
-  const addNewParam = () => {
-    setNewPost(true, { scroll: false, history: "push" });
-  };
 
   // steps가 없거나 로딩 중일 때는 렌더링하지 않음
   if (steps.length === 0) return null;
@@ -89,7 +84,12 @@ export default function ProjectDetailContent({
             }}
           />
         </div>
-        <Button onClick={addNewParam} className="flex-none">
+        <Button
+          onClick={() => {
+            setNewPost(true, { scroll: false, history: "push" });
+          }}
+          className="flex-none"
+        >
           <Plus className="mr-2 h-4 w-4" />새 게시물
         </Button>
       </div>

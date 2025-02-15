@@ -1,4 +1,3 @@
-import Header from "@/components/layout/Header";
 import { getProjectStepAndChecklist } from "@/lib/api/generated/main/services/project-step-api/project-step-api";
 import {
   dehydrate,
@@ -6,6 +5,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import ProjectDetailContent from "./_components/project-detail-content";
+import ProjectHeader from "./_components/project-header";
 
 type PageProps = {
   params: Promise<{ projectId: string }>;
@@ -20,7 +20,7 @@ export default async function ProjectDetailPage({
   const projectId = Number((await params).projectId);
   const stepParam = (await searchParams).step;
 
-  // 서버에서 데이터 미리 가져오기
+  // 서버에서 단계 데이터 미리 가져오기
   await queryClient.prefetchQuery({
     queryKey: ["projectSteps", projectId],
     queryFn: () => getProjectStepAndChecklist(projectId),
@@ -30,13 +30,7 @@ export default async function ProjectDetailPage({
 
   return (
     <>
-      <Header
-        breadcrumbs={[
-          { label: "내 프로젝트", href: "/dashboard" },
-          // TODO: 프로젝트 이름 동적으로 받아오기
-          { label: "프로젝트 이름" },
-        ]}
-      />
+      <ProjectHeader projectId={projectId} />
       <HydrationBoundary state={dehydratedState}>
         <ProjectDetailContent projectId={projectId} currentStepId={stepParam} />
       </HydrationBoundary>

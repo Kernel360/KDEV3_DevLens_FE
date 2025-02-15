@@ -29,16 +29,20 @@ import {
   Separator,
 } from "@ui";
 import {
+  ArrowUpLeft,
   MoreVertical,
   Paperclip,
   Pencil,
-  Trash2
+  Reply,
+  Trash2,
 } from "lucide-react";
-import { useQueryState } from "nuqs";
-import { useState } from "react";
+import { parseAsBoolean, useQueryState } from "nuqs";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { CommentsSection } from "./comments-section";
 import PostForm from "./post-form";
+import { useLinkStore } from "@/store/use-link-store";
+
 const initialPost: Required<PostResponse> = {
   postId: 0,
   parentPostId: 0,
@@ -61,6 +65,8 @@ function PostDetail({ id }: { id: number }) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [, setPostId] = useQueryState("id");
+
+  const [, setNewPost] = useQueryState("new", parseAsBoolean);
   const queryClient = useQueryClient();
 
   const { data: post = initialPost, isLoading } = useSelectPost(id, {
@@ -94,6 +100,19 @@ function PostDetail({ id }: { id: number }) {
   const handleDelete = () => {
     deletePost({ postId: id });
   };
+
+  const setLinks = useLinkStore((state) => state.setLinks);
+  const reset = useLinkStore((state) => state.reset);
+
+  useEffect(() => {
+    if (post.links) {
+      setLinks(post.links);
+    }
+
+    return () => {
+      reset(); // cleanup
+    };
+  }, [post.links, setLinks, reset]);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -131,29 +150,43 @@ function PostDetail({ id }: { id: number }) {
     <>
       {/* 제목 및 메타 정보 */}
       <div className="space-y-4">
+        {post.parentPostId && (
+          <Button
+            onClick={() => {
+              setPostId(String(post.parentPostId));
+            }}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <ArrowUpLeft className="h-4 w-4" />
+            원글로 이동
+          </Button>
+        )}
         <div className="flex items-start justify-between">
           <h1 className="text-2xl font-bold">{post.title}</h1>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-4 w-4" />
-                <span className="sr-only">메뉴 열기</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setIsEditing(true)}>
-                <Pencil className="mr-2 h-4 w-4" />
-                수정하기
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="text-destructive"
-                onClick={() => setIsDeleteDialogOpen(true)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                삭제하기
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {post.isAuthor && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <MoreVertical className="h-4 w-4" />
+                  <span className="sr-only">메뉴 열기</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setIsEditing(true)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  수정하기
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-destructive"
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  삭제하기
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
@@ -255,11 +288,25 @@ function PostDetail({ id }: { id: number }) {
           </div>
         )}
 
+        {!post.parentPostId && (
+          <Button
+            variant="outline"
+            className="mt-4 w-full"
+            onClick={() => {
+              setNewPost(true);
+            }}
+          >
+            <Reply className="rotate-180" />
+            답글 작성
+          </Button>
+        )}
+
         {/* 댓글 */}
         <Separator />
         <CommentsSection comments={post.comments || []} postId={id} />
       </div>
 
+      {/* 삭제 모달 */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>

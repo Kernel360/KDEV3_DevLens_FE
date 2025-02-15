@@ -18,6 +18,7 @@ export const postFormSchema = z.object({
     .min(10, { message: "본문을 10자 이상 입력해주세요" }),
   links: z.array(
     z.object({
+      id: z.number().optional(), 
       linkTitle: z.string().trim(),
       link: z.string().trim().url({ message: "올바른 URL을 입력해주세요" }),
     }),
