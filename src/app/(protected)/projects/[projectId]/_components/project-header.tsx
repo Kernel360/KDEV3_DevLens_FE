@@ -95,6 +95,7 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
                         <p key={member.memberId}>
                           {member.memberName} {member.department}{" "}
                           {member.position}
+                          {member.projectAuthorization === "APPROVER" && "*"}
                         </p>
                       ))}
                     </TooltipContent>
@@ -111,6 +112,7 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
                         <p key={member.memberId}>
                           {member.memberName} {member.department}{" "}
                           {member.position}
+                          {member.projectAuthorization === "APPROVER" && "*"}
                         </p>
                       ))}
                     </TooltipContent>
@@ -119,7 +121,11 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
               </TooltipProvider>
               <div className="flex gap-2">
                 {projectTags?.map((tag) => (
-                  <Badge key={tag} variant="outline" className="group-hover:bg-primary/5">
+                  <Badge
+                    key={tag}
+                    variant="outline"
+                    className="group-hover:bg-primary/5"
+                  >
                     {tag}
                   </Badge>
                 ))}
