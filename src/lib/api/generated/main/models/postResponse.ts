@@ -10,11 +10,11 @@ import type { PostResponseStatus } from './postResponseStatus';
 import type { GetCommentResponse } from './getCommentResponse';
 import type { LinkResponse } from './linkResponse';
 import type { FileMetadataResponse } from './fileMetadataResponse';
+import type { RelatedPostResponse } from './relatedPostResponse';
 
 export interface PostResponse {
   postId?: number;
   projectStepId?: number;
-  parentPostId?: number;
   priority?: PostResponsePriority;
   status?: PostResponseStatus;
   title?: string;
@@ -27,4 +27,6 @@ export interface PostResponse {
   comments?: GetCommentResponse[];
   links?: LinkResponse[];
   files?: FileMetadataResponse[];
+  isParentPost?: boolean;
+  relatedPosts?: RelatedPostResponse[];
 }

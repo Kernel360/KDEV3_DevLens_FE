@@ -361,34 +361,6 @@
       }
     },
     "/api/projects/steps/{stepId}/checklists": {
-      "get": {
-        "tags": ["Project Checklist API"],
-        "summary": "체크리스트 조회",
-        "description": "특정 단계의 체크리스트를 조회합니다.",
-        "operationId": "getProjectChecklist",
-        "parameters": [
-          {
-            "name": "stepId",
-            "in": "path",
-            "description": "체크리스트를 조회할 단계의 ID",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "성공적으로 체크리스트를 반환했습니다.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetStepChecklistResponse"
-                }
-              }
-            }
-          }
-        }
-      },
       "post": {
         "tags": ["Project Checklist API"],
         "summary": "체크리스트 생성",
@@ -1315,6 +1287,42 @@
         }
       }
     },
+    "/api/projects/{projectId}/steps/{stepId}/checklists": {
+      "get": {
+        "tags": ["Project Checklist API"],
+        "summary": "체크리스트 조회",
+        "description": "특정 단계의 체크리스트를 조회합니다.",
+        "operationId": "getProjectChecklist",
+        "parameters": [
+          {
+            "name": "stepId",
+            "in": "path",
+            "description": "체크리스트를 조회할 단계의 ID",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공적으로 체크리스트를 반환했습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetStepChecklistResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/detail": {
       "get": {
         "tags": ["Project API"],
@@ -1560,7 +1568,7 @@
             "schema": {
               "type": "string",
               "default": "ALL",
-              "enum": ["ALL", "TITLE", "CONTENT", "WRITER"]
+              "enum": ["ALL", "TITLE", "CONTENT", "WRITER", "DOC_NUM"]
             },
             "example": "ALL"
           },
@@ -2022,7 +2030,6 @@
         "properties": {
           "title": { "type": "string" },
           "description": { "type": "string" },
-          "requesterId": { "type": "integer", "format": "int64" },
           "linkInputs": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/LinkInput" }
@@ -2297,6 +2304,48 @@
           }
         }
       },
+      "GetStepChecklistResponse": {
+        "type": "object",
+        "properties": {
+          "stepId": { "type": "integer", "format": "int64" },
+          "checklists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetStepChecklistprojectChecklist"
+            }
+          }
+        }
+      },
+      "GetStepChecklistprojectChecklist": {
+        "type": "object",
+        "properties": {
+          "checklistId": { "type": "integer", "format": "int64" },
+          "checklistName": { "type": "string" },
+          "checklistStatus": { "type": "boolean" },
+          "checkAcceptTime": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "companyName": { "type": "string" },
+          "representativeName": { "type": "string" },
+          "representativeContact": { "type": "string" },
+          "representativeEmail": { "type": "string" },
+          "address": { "type": "string" },
+          "businessType": {
+            "type": "string",
+            "enum": ["INDIVIDUAL", "CORPORATION"]
+          },
+          "businessRegistrationNumber": { "type": "string" },
+          "isActive": { "type": "string", "enum": ["Y", "N"] }
+        }
+      },
       "GetProjectDetailCustomerMemberAuthorization": {
         "type": "object",
         "properties": {
@@ -2317,6 +2366,16 @@
           "position": { "type": "string" }
         }
       },
+      "GetProjectDetailProjectSteps": {
+        "type": "object",
+        "properties": {
+          "project": { "$ref": "#/components/schemas/Project" },
+          "projectStep": { "$ref": "#/components/schemas/ProjectStep" },
+          "stepId": { "type": "integer", "format": "int64" },
+          "stepName": { "type": "string" },
+          "isCurrentStep": { "type": "boolean" }
+        }
+      },
       "GetProjectDetailResponse": {
         "type": "object",
         "properties": {
@@ -2326,19 +2385,89 @@
           "projectDescription": { "type": "string" },
           "bnsManager": { "type": "string" },
           "projectTags": { "type": "array", "items": { "type": "string" } },
-          "currentStep": { "type": "string" },
+          "projectSteps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectDetailProjectSteps"
+            }
+          },
+          "customerCompanyName": { "type": "string" },
           "customerMemberAuthorizations": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GetProjectDetailCustomerMemberAuthorization"
             }
           },
+          "developerCompanyName": { "type": "string" },
           "developerMemberAuthorizations": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/GetProjectDetailDeveloperMemberAuthorization"
             }
           }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "projectName": { "type": "string" },
+          "customer": { "$ref": "#/components/schemas/Company" },
+          "developer": { "$ref": "#/components/schemas/Company" },
+          "projectDescription": { "type": "string" },
+          "projectType": { "$ref": "#/components/schemas/ProjectType" },
+          "projectStatusCode": {
+            "type": "string",
+            "enum": [
+              "PREPARED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CLOSED",
+              "CANCELLED",
+              "DELETED"
+            ]
+          },
+          "currentProjectStep": { "type": "string" },
+          "bnsManager": { "type": "string" },
+          "contractNumber": { "type": "string" },
+          "plannedStartDate": { "type": "string", "format": "date" },
+          "plannedEndDate": { "type": "string", "format": "date" },
+          "startDate": { "type": "string", "format": "date" },
+          "endDate": { "type": "string", "format": "date" },
+          "finalApproverId": { "type": "integer", "format": "int64" },
+          "finalApprovalDate": { "type": "string", "format": "date-time" }
+        }
+      },
+      "ProjectStep": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "project": { "$ref": "#/components/schemas/Project" },
+          "stepName": { "type": "string" },
+          "stepDescription": { "type": "string" },
+          "stepOrder": { "type": "integer", "format": "int32" },
+          "isActive": { "type": "string", "enum": ["YES", "NO"] }
+        }
+      },
+      "ProjectType": {
+        "type": "object",
+        "properties": {
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" },
+          "createdBy": { "type": "integer", "format": "int64" },
+          "updatedBy": { "type": "integer", "format": "int64" },
+          "id": { "type": "integer", "format": "int64" },
+          "projectTypeName": { "type": "string" },
+          "projectTypeDescription": { "type": "string" },
+          "useStatus": { "type": "string", "enum": ["YES", "NO"] }
         }
       },
       "APIResponseGetProjectAuthorizationResponse": {
@@ -2403,27 +2532,6 @@
           "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] }
         }
       },
-      "GetStepChecklistResponse": {
-        "type": "object",
-        "properties": {
-          "stepId": { "type": "integer", "format": "int64" },
-          "checklists": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GetStepChecklistprojectChecklist"
-            }
-          }
-        }
-      },
-      "GetStepChecklistprojectChecklist": {
-        "type": "object",
-        "properties": {
-          "checklistId": { "type": "integer", "format": "int64" },
-          "checklistName": { "type": "string" },
-          "checklistStatus": { "type": "boolean" },
-          "checkAcceptTime": { "type": "string", "format": "date-time" }
-        }
-      },
       "APIResponseGetChecklistApplicationResponse": {
         "type": "object",
         "properties": {
@@ -2454,6 +2562,10 @@
           "applicationDate": { "type": "string", "format": "date-time" },
           "applicationResult": {
             "$ref": "#/components/schemas/GetChecklistApplicationApplicationResult"
+          },
+          "linkResponse": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LinkResponse" }
           }
         }
       },
@@ -2515,7 +2627,6 @@
         "properties": {
           "postId": { "type": "integer", "format": "int64" },
           "projectStepId": { "type": "integer", "format": "int64" },
-          "parentPostId": { "type": "integer", "format": "int64" },
           "priority": {
             "type": "string",
             "enum": ["DEFAULT", "LOW", "MEDIUM", "HIGH"]
@@ -2548,13 +2659,26 @@
           "files": {
             "type": "array",
             "items": { "$ref": "#/components/schemas/FileMetadataResponse" }
+          },
+          "isParentPost": { "type": "boolean" },
+          "relatedPosts": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RelatedPostResponse" }
           }
+        }
+      },
+      "RelatedPostResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "title": { "type": "string" }
         }
       },
       "PostListResponse": {
         "type": "object",
         "properties": {
           "projectStepId": { "type": "integer", "format": "int64" },
+          "parentPostId": { "type": "integer", "format": "int64" },
           "postId": { "type": "integer", "format": "int64" },
           "status": {
             "type": "string",

@@ -5,10 +5,8 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
-import type { LinkInput } from './linkInput';
 
-export interface PostProjectChecklistApplicationRequest {
+export interface RelatedPostResponse {
+  id?: number;
   title?: string;
-  description?: string;
-  linkInputs?: LinkInput[];
 }

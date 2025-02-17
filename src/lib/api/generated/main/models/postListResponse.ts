@@ -10,6 +10,7 @@ import type { PostListResponsePriority } from './postListResponsePriority';
 
 export interface PostListResponse {
   projectStepId?: number;
+  parentPostId?: number;
   postId?: number;
   status?: PostListResponseStatus;
   priority?: PostListResponsePriority;

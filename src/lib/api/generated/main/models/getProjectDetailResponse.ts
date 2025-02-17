@@ -5,6 +5,7 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
+import type { GetProjectDetailProjectSteps } from './getProjectDetailProjectSteps';
 import type { GetProjectDetailCustomerMemberAuthorization } from './getProjectDetailCustomerMemberAuthorization';
 import type { GetProjectDetailDeveloperMemberAuthorization } from './getProjectDetailDeveloperMemberAuthorization';
 
@@ -15,7 +16,9 @@ export interface GetProjectDetailResponse {
   projectDescription?: string;
   bnsManager?: string;
   projectTags?: string[];
-  currentStep?: string;
+  projectSteps?: GetProjectDetailProjectSteps[];
+  customerCompanyName?: string;
   customerMemberAuthorizations?: GetProjectDetailCustomerMemberAuthorization[];
+  developerCompanyName?: string;
   developerMemberAuthorizations?: GetProjectDetailDeveloperMemberAuthorization[];
 }

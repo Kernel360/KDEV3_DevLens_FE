@@ -6,6 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 import type { GetChecklistApplicationApplicationResult } from './getChecklistApplicationApplicationResult';
+import type { LinkResponse } from './linkResponse';
 
 export interface GetChecklistApplicationChecklistApplication {
   applicationId?: number;
@@ -16,4 +17,5 @@ export interface GetChecklistApplicationChecklistApplication {
   proposer?: string;
   applicationDate?: string;
   applicationResult?: GetChecklistApplicationApplicationResult;
+  linkResponse?: LinkResponse[];
 }

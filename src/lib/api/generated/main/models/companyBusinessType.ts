@@ -6,14 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 
-export type SelectPostsFilter = typeof SelectPostsFilter[keyof typeof SelectPostsFilter];
+export type CompanyBusinessType = typeof CompanyBusinessType[keyof typeof CompanyBusinessType];
 
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const SelectPostsFilter = {
-  ALL: 'ALL',
-  TITLE: 'TITLE',
-  CONTENT: 'CONTENT',
-  WRITER: 'WRITER',
-  DOC_NUM: 'DOC_NUM',
+export const CompanyBusinessType = {
+  INDIVIDUAL: 'INDIVIDUAL',
+  CORPORATION: 'CORPORATION',
 } as const;

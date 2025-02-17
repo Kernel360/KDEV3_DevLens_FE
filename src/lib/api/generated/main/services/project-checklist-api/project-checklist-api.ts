@@ -180,160 +180,6 @@ export const useDeleteProjectChecklist = <TError = unknown,
       return useMutation(mutationOptions);
     }
     /**
- * 특정 단계의 체크리스트를 조회합니다.
- * @summary 체크리스트 조회
- */
-export const getProjectChecklist = (
-    stepId: number,
- signal?: AbortSignal
-) => {
-      
-      
-      return mainAxios<GetStepChecklistResponse>(
-      {url: `/api/projects/steps/${stepId}/checklists`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-export const getGetProjectChecklistQueryKey = (stepId: number,) => {
-    return [`/api/projects/steps/${stepId}/checklists`] as const;
-    }
-
-    
-export const getGetProjectChecklistInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetProjectChecklistQueryKey(stepId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProjectChecklist>>> = ({ signal }) => getProjectChecklist(stepId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(stepId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetProjectChecklistInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getProjectChecklist>>>
-export type GetProjectChecklistInfiniteQueryError = unknown
-
-
-export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
- stepId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getProjectChecklist>>,
-          TError,
-          Awaited<ReturnType<typeof getProjectChecklist>>
-        > , 'initialData'
-      >, }
-
-  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
- stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getProjectChecklist>>,
-          TError,
-          Awaited<ReturnType<typeof getProjectChecklist>>
-        > , 'initialData'
-      >, }
-
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
- stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
-
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary 체크리스트 조회
- */
-
-export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
- stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
-
-  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetProjectChecklistInfiniteQueryOptions(stepId,options)
-
-  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-export const getGetProjectChecklistQueryOptions = <TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getGetProjectChecklistQueryKey(stepId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProjectChecklist>>> = ({ signal }) => getProjectChecklist(stepId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(stepId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
-}
-
-export type GetProjectChecklistQueryResult = NonNullable<Awaited<ReturnType<typeof getProjectChecklist>>>
-export type GetProjectChecklistQueryError = unknown
-
-
-export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
- stepId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getProjectChecklist>>,
-          TError,
-          Awaited<ReturnType<typeof getProjectChecklist>>
-        > , 'initialData'
-      >, }
-
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
- stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getProjectChecklist>>,
-          TError,
-          Awaited<ReturnType<typeof getProjectChecklist>>
-        > , 'initialData'
-      >, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
- stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-/**
- * @summary 체크리스트 조회
- */
-
-export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
- stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
-
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetProjectChecklistQueryOptions(stepId,options)
-
-  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-/**
  * 새로운 체크리스트를 생성합니다.
  * @summary 체크리스트 생성
  */
@@ -1005,7 +851,173 @@ export const usePostProjectChecklistAccept = <TError = unknown,
 
       return useMutation(mutationOptions);
     }
-    export const getProjectChecklistRejectLinks = (
+    /**
+ * 특정 단계의 체크리스트를 조회합니다.
+ * @summary 체크리스트 조회
+ */
+export const getProjectChecklist = (
+    projectId: number,
+    stepId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainAxios<GetStepChecklistResponse>(
+      {url: `/api/projects/${projectId}/steps/${stepId}/checklists`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetProjectChecklistQueryKey = (projectId: number,
+    stepId: number,) => {
+    return [`/api/projects/${projectId}/steps/${stepId}/checklists`] as const;
+    }
+
+    
+export const getGetProjectChecklistInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(projectId: number,
+    stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProjectChecklistQueryKey(projectId,stepId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProjectChecklist>>> = ({ signal }) => getProjectChecklist(projectId,stepId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(projectId && stepId), ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetProjectChecklistInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getProjectChecklist>>>
+export type GetProjectChecklistInfiniteQueryError = unknown
+
+
+export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getProjectChecklist>>,
+          TError,
+          Awaited<ReturnType<typeof getProjectChecklist>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getProjectChecklist>>,
+          TError,
+          Awaited<ReturnType<typeof getProjectChecklist>>
+        > , 'initialData'
+      >, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 체크리스트 조회
+ */
+
+export function useGetProjectChecklistInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getProjectChecklist>>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetProjectChecklistInfiniteQueryOptions(projectId,stepId,options)
+
+  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getGetProjectChecklistQueryOptions = <TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(projectId: number,
+    stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetProjectChecklistQueryKey(projectId,stepId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getProjectChecklist>>> = ({ signal }) => getProjectChecklist(projectId,stepId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(projectId && stepId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetProjectChecklistQueryResult = NonNullable<Awaited<ReturnType<typeof getProjectChecklist>>>
+export type GetProjectChecklistQueryError = unknown
+
+
+export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getProjectChecklist>>,
+          TError,
+          Awaited<ReturnType<typeof getProjectChecklist>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getProjectChecklist>>,
+          TError,
+          Awaited<ReturnType<typeof getProjectChecklist>>
+        > , 'initialData'
+      >, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary 체크리스트 조회
+ */
+
+export function useGetProjectChecklist<TData = Awaited<ReturnType<typeof getProjectChecklist>>, TError = unknown>(
+ projectId: number,
+    stepId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getProjectChecklist>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetProjectChecklistQueryOptions(projectId,stepId,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getProjectChecklistRejectLinks = (
     applicationId: number,
  signal?: AbortSignal
 ) => {
