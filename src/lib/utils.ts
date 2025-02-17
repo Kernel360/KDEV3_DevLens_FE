@@ -2,6 +2,8 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
+import { ALLOWED_FILE_TYPES } from "./constants/etc";
+import { ALLOWED_IMAGE_TYPES } from "./constants/etc";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -156,4 +158,14 @@ export function getPriorityLabel(priority: string) {
     default:
       return "기본";
   }
+}
+
+export function isValidFileType(
+  filename: string,
+  fileType: "image" | "file" = "file",
+): boolean {
+  const extension = filename.toLowerCase().slice(filename.lastIndexOf("."));
+  const allowedTypes =
+    fileType === "image" ? ALLOWED_IMAGE_TYPES : ALLOWED_FILE_TYPES;
+  return allowedTypes.includes(extension);
 }
