@@ -2,8 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Plus, Trash2 } from "lucide-react";
+import { PlusCircle, TrashIcon } from "lucide-react";
 import * as z from "zod";
+import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 
 import {
   Form,
@@ -22,15 +24,16 @@ import {
   DialogTrigger,
 } from "@/components/ui";
 import { usePostProjectChecklistApplication } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
+import { getGetChecklistApplicationQueryKey } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
 
 const requestFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요"),
   content: z.string().min(1, "설명을 입력해주세요"),
-  links: z
+  linkInputs: z
     .array(
       z.object({
-        title: z.string().min(1, "링크 제목을 입력해주세요"),
-        url: z.string().url("올바른 URL을 입력해주세요"),
+        linkTitle: z.string().min(1, "링크 제목을 입력해주세요"),
+        link: z.string().url("올바른 URL을 입력해주세요"),
       }),
     )
     .optional(),
@@ -45,49 +48,62 @@ interface ChecklistRequestFormProps {
 export default function ChecklistRequestForm({
   checklistId,
 }: ChecklistRequestFormProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
+
   const form = useForm<RequestFormValues>({
     resolver: zodResolver(requestFormSchema),
     defaultValues: {
       title: "",
       content: "",
-      links: [],
+      linkInputs: [],
     },
   });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "links",
+    name: "linkInputs",
   });
+
+  const [newLinkTitle, setNewLinkTitle] = useState("");
+  const [newLinkUrl, setNewLinkUrl] = useState("");
 
   const { mutate: createRequest, isPending } =
     usePostProjectChecklistApplication();
 
-  const onSubmit = (values: RequestFormValues) => {
+  console.log("fields", fields);
+  console.log("linkInputs", form.getValues().linkInputs);
+
+  const onSubmit = () => {
+    const values = form.getValues();
+    console.log("values", values);
     createRequest(
       {
         checklistId,
         data: {
           title: values.title,
           description: values.content,
-          linkInputs:
-            values.links?.map((link) => ({
-              linkTitle: link.title,
-              link: link.url,
-            })) || [],
+          linkInputs: values.linkInputs,
         },
       },
       {
         onSuccess: () => {
           form.reset();
+          setIsDialogOpen(false);
+          queryClient.invalidateQueries({
+            queryKey: getGetChecklistApplicationQueryKey(checklistId),
+          });
         },
       },
     );
   };
 
   return (
-    <Dialog>
+    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">요청 생성</Button>
+        <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
+          요청 생성
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
@@ -128,67 +144,68 @@ export default function ChecklistRequestForm({
               )}
             />
 
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <FormLabel>관련 링크</FormLabel>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => append({ title: "", url: "" })}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  링크 추가
-                </Button>
-              </div>
-
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="flex items-start gap-4 rounded-lg border p-4"
-                >
-                  <div className="flex-1 space-y-4">
-                    <FormField
-                      control={form.control}
-                      name={`links.${index}.title`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>링크 제목</FormLabel>
-                          <FormControl>
-                            <Input placeholder="링크 제목" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+            <FormItem className="space-y-4">
+              <FormLabel>관련 링크</FormLabel>
+              <FormControl>
+                <div className="space-y-4">
+                  <div className="flex gap-4">
+                    <Input
+                      placeholder="링크 제목"
+                      value={newLinkTitle}
+                      onChange={(e) => setNewLinkTitle(e.target.value)}
                     />
-
-                    <FormField
-                      control={form.control}
-                      name={`links.${index}.url`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>URL</FormLabel>
-                          <FormControl>
-                            <Input placeholder="https://" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
+                    <Input
+                      placeholder="URL"
+                      value={newLinkUrl}
+                      onChange={(e) => setNewLinkUrl(e.target.value)}
                     />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (newLinkTitle && newLinkUrl) {
+                          append({ linkTitle: newLinkTitle, link: newLinkUrl });
+                          setNewLinkTitle("");
+                          setNewLinkUrl("");
+                        }
+                      }}
+                    >
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      추가
+                    </Button>
                   </div>
 
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="mt-8"
-                    onClick={() => remove(index)}
-                  >
-                    <Trash2 className="h-4 w-4 text-destructive" />
-                  </Button>
+                  <div className="space-y-3">
+                    {fields.map((field, index) => (
+                      <div
+                        key={field.id}
+                        className="flex items-center gap-4 rounded-md border p-3"
+                      >
+                        <div className="w-full">
+                          <div className="font-medium">{field.linkTitle}</div>
+                          <a
+                            href={field.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full truncate text-sm text-muted-foreground hover:underline"
+                          >
+                            {field.link}
+                          </a>
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => remove(index)}
+                        >
+                          <TrashIcon className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
+              </FormControl>
+            </FormItem>
 
             <div className="flex justify-end gap-4">
               <Button

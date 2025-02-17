@@ -34,7 +34,7 @@ export default function ChecklistCard({ checklist }: ChecklistCardProps) {
         </Card>
       </DialogTrigger>
       <DialogContent className="flex max-h-[90vh] min-h-[50vh] max-w-3xl flex-col">
-        <DialogHeader className="flex flex-row justify-between">
+        <DialogHeader className="flex flex-row items-center justify-between pr-4">
           <DialogTitle>{checklist.checklistName}</DialogTitle>
           <ChecklistRequestForm checklistId={checklist.checklistId} />
         </DialogHeader>

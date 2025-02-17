@@ -2049,22 +2049,11 @@
           "requesterIp": { "type": "string" }
         }
       },
-      "LinkInput": {
-        "type": "object",
-        "properties": {
-          "linkTitle": { "type": "string" },
-          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
-        }
-      },
       "PostProjectChecklistApplicationRequest": {
         "type": "object",
         "properties": {
           "title": { "type": "string" },
-          "description": { "type": "string" },
-          "linkInputs": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/LinkInput" }
-          }
+          "description": { "type": "string" }
         }
       },
       "PostProjectChecklistRejectResponse": {
@@ -2079,6 +2068,13 @@
           "processorIp": { "type": "string" },
           "processDate": { "type": "string", "format": "date-time" },
           "rejectReason": { "type": "string" }
+        }
+      },
+      "LinkInput": {
+        "type": "object",
+        "properties": {
+          "linkTitle": { "type": "string" },
+          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
         }
       },
       "PostProjectChecklistRejectRequest": {

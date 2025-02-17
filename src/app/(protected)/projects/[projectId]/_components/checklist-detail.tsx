@@ -10,8 +10,22 @@ import {
   ScrollArea,
   Separator,
 } from "@/components/ui";
-import { useGetChecklistApplication } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
+import {
+  useGetChecklistApplication,
+  usePostProjectChecklistReject,
+  usePostProjectChecklistAccept,
+} from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
 import { format } from "date-fns";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 
 interface ChecklistDetailProps {
   checklistId: number;
@@ -37,15 +51,20 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
       }[];
     };
   };
-  const applications = data?.applications;
+  let applications = data?.applications;
+  applications = applications?.sort((a, b) => {
+    const dateA = new Date(a.applicationDate!).getTime();
+    const dateB = new Date(b.applicationDate!).getTime();
+    return dateB - dateA;
+  });
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "APPROVED":
-        return <Badge className="bg-green-500">승인</Badge>;
+      case "승인":
+        return <Badge variant="success">승인</Badge>;
       case "REJECTED":
         return <Badge variant="destructive">반려</Badge>;
-      case "PENDING":
+      case "승인대기":
         return <Badge variant="secondary">대기중</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
@@ -54,104 +73,173 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
 
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
-    return format(new Date(dateString), "yyyy.MM.dd HH:mm");
+    return format(new Date(dateString), "yy년 MM월 dd일 HH:mm");
   };
 
-  // TODO: Sort applications by date (newest first)
+  const [rejectReason, setRejectReason] = useState<string>("");
+  const [selectedApplicationId, setSelectedApplicationId] = useState<
+    number | null
+  >(null);
 
-  return (
-    <ScrollArea className="">
-      {!applications?.length ? (
+  const rejectMutation = usePostProjectChecklistReject();
+  const acceptMutation = usePostProjectChecklistAccept();
+
+  const handleReject = (applicationId: number) => {
+    setSelectedApplicationId(applicationId);
+  };
+
+  const handleRejectSubmit = () => {
+    if (selectedApplicationId) {
+      rejectMutation.mutate({
+        applicationId: selectedApplicationId,
+        data: { rejectReason },
+      });
+    }
+  };
+
+  const handleAccept = (applicationId: number) => {
+    acceptMutation.mutate({ applicationId });
+  };
+
+  if (!applications?.length) {
+    return (
+      <ScrollArea className="">
         <div className="flex h-full flex-col items-center justify-center gap-4">
           <p className="text-sm text-muted-foreground">요청 목록이 없습니다</p>
         </div>
-      ) : (
-        <>
-          <Accordion type="single" collapsible className="space-y-4">
-            {applications.map((app) => (
-              <AccordionItem
-                key={app.applicationId}
-                value={app.applicationId!.toString()}
-                className="rounded-lg border p-4"
-              >
-                <AccordionTrigger className="hover:no-underline">
-                  <div className="flex w-full flex-col items-start gap-2 text-left sm:flex-row sm:items-center">
-                    <div className="flex-1">
-                      <h3 className="font-semibold">{app.applicationTitle}</h3>
-                      {/* <p className="text-sm text-muted-foreground">
-                        {app.checklistTitle}
-                      </p> */}
-                    </div>
-                    <div className="flex items-center gap-3">
-                      {getStatusBadge(app.processStatus!)}
-                      <span className="whitespace-nowrap text-sm text-muted-foreground">
-                        {formatDate(app.applicationDate!)}
-                      </span>
+      </ScrollArea>
+    );
+  }
+
+  return (
+    <ScrollArea className="">
+      <p className="mb-2 text-sm text-muted-foreground">
+        전체 {applications.length}건
+      </p>
+      <Accordion
+        type="single"
+        collapsible
+        className="space-y-4"
+        defaultValue={applications[0].applicationId!.toString()}
+      >
+        {applications.map((app) => (
+          <AccordionItem
+            key={app.applicationId}
+            value={app.applicationId!.toString()}
+            className="rounded-lg border p-4"
+          >
+            <AccordionTrigger className="hover:no-underline">
+              <div className="flex w-full flex-row items-center gap-2 text-left">
+                <div className="flex-1 gap-2 truncate">
+                  <p className="mb-2 whitespace-nowrap text-xs text-muted-foreground">
+                    {formatDate(app.applicationDate!)}
+                  </p>
+                  <h3 className="font-semibold">{app.applicationTitle}</h3>
+                </div>
+                <div className="flex items-center gap-3">
+                  {getStatusBadge(app.processStatus!)}
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pt-4">
+              <div className="space-y-4">
+                <div className="grid grid-cols-[4rem_1fr] gap-2 text-sm">
+                  <span className="font-medium text-muted-foreground">
+                    요청자
+                  </span>
+                  <span>{app.proposer}</span>
+                  <span className="font-medium text-muted-foreground">
+                    요청 내용
+                  </span>
+                  <span>{app.applicationContent}</span>
+                </div>
+                {app.applicationResult && (
+                  <div className="mt-4 space-y-2 border-t pt-4">
+                    <h4 className="font-medium">처리 결과</h4>
+                    <div className="grid gap-2">
+                      {app.applicationResult.processor && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">처리자</span>
+                          <span>{app.applicationResult.processor}</span>
+                        </div>
+                      )}
+                      {app.applicationResult.processDate && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            처리일시
+                          </span>
+                          <span>
+                            {formatDate(app.applicationResult.processDate)}
+                          </span>
+                        </div>
+                      )}
+                      {app.applicationResult.rejectReason && (
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">
+                            반려사유
+                          </span>
+                          <span>{app.applicationResult.rejectReason}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-4">
-                  <div className="space-y-4">
-                    <div className="grid gap-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">요청자</span>
-                        <span>{app.proposer}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">요청 내용</span>
-                        <span>{app.applicationContent}</span>
-                      </div>
-                    </div>
-                    {app.applicationResult ? (
-                      <div className="mt-4 space-y-2 border-t pt-4">
-                        <h4 className="font-medium">처리 결과</h4>
-                        <div className="grid gap-2">
-                          {app.applicationResult.processor && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">
-                                처리자
-                              </span>
-                              <span>{app.applicationResult.processor}</span>
-                            </div>
-                          )}
-                          {app.applicationResult.processDate && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">
-                                처리일시
-                              </span>
-                              <span>
-                                {formatDate(app.applicationResult.processDate)}
-                              </span>
-                            </div>
-                          )}
-                          {app.applicationResult.rejectReason && (
-                            <div className="flex justify-between text-sm">
-                              <span className="text-muted-foreground">
-                                반려사유
-                              </span>
-                              <span>{app.applicationResult.rejectReason}</span>
-                            </div>
-                          )}
-                        </div>
+                )}
+                {!app.applicationResult && (
+                  <div className="flex flex-col space-y-2">
+                    <Separator />
+                    {selectedApplicationId !== app.applicationId ? (
+                      <div className="flex justify-end gap-2">
+                        <Button
+                          variant="destructive"
+                          type="button"
+                          onClick={() => handleReject(app.applicationId!)}
+                        >
+                          반려
+                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button type="button">승인</Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogTitle>승인 확인</DialogTitle>
+                            <DialogDescription>
+                              이 신청을 승인하시겠습니까?
+                            </DialogDescription>
+                            <DialogFooter>
+                              <Button
+                                variant="destructive"
+                                onClick={() => handleAccept(app.applicationId!)}
+                              >
+                                승인
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+                        </Dialog>
                       </div>
                     ) : (
-                      <div className="flex flex-col space-y-2">
-                        <Separator />
-                        <div className="flex justify-end gap-2">
-                          <Button variant="destructive" type="submit">
-                            반려
-                          </Button>
-                          <Button type="submit">승인</Button>
-                        </div>
+                      <div className="mt-4 flex gap-2">
+                        <Input
+                          placeholder="반려 사유를 입력하세요"
+                          value={rejectReason}
+                          className="ml-1"
+                          onChange={(e) => setRejectReason(e.target.value)}
+                        />
+                        <Button
+                          variant="outline"
+                          onClick={() => setSelectedApplicationId(null)}
+                        >
+                          취소
+                        </Button>
+                        <Button onClick={handleRejectSubmit}>제출</Button>
                       </div>
                     )}
                   </div>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </>
-      )}
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
     </ScrollArea>
   );
 }
