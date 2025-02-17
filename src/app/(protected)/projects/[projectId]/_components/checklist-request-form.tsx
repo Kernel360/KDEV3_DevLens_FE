@@ -71,19 +71,14 @@ export default function ChecklistRequestForm({
   const { mutate: createRequest, isPending } =
     usePostProjectChecklistApplication();
 
-  console.log("fields", fields);
-  console.log("linkInputs", form.getValues().linkInputs);
-
   const onSubmit = () => {
     const values = form.getValues();
-    console.log("values", values);
     createRequest(
       {
         checklistId,
         data: {
           title: values.title,
           description: values.content,
-          linkInputs: values.linkInputs,
         },
       },
       {
