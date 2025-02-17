@@ -14,6 +14,8 @@ interface TableWithSheetProps<T extends { id: number }> {
   title?: string;
   content: React.ComponentType<{ id: number }>;
   totalPages: number;
+  last: boolean;
+  pageNumber: number;
   isLoading?: boolean;
 }
 
@@ -22,6 +24,8 @@ export default function TableWithSheet<T extends { id: number }>({
   data,
   content: Content,
   totalPages,
+  last,
+  pageNumber,
   isLoading,
 }: TableWithSheetProps<T>) {
   const [Id, setId] = useQueryState("id");
@@ -37,6 +41,8 @@ export default function TableWithSheet<T extends { id: number }>({
         data={data}
         onRowClick={(row) => setId(String(row.id))}
         totalPages={totalPages}
+        last={last}
+        pageNumber={pageNumber}
       />
       <Sheet open={!!Id} onOpenChange={() => setId(null)}>
         <SheetContent

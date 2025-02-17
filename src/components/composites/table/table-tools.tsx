@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useQueryState } from "nuqs";
+import { parseAsInteger, useQueryState } from "nuqs";
 import { SearchInput } from "../search-input";
 import {
   DEFAULT_ROLE_OPTIONS,
@@ -40,7 +40,7 @@ export default function TableTools({
   const [filter, setFilter] = useQueryState("filter");
   const [status, setStatus] = useQueryState("status");
   const [role, setRole] = useQueryState("role");
-
+  const [, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
   // 로컬 검색어 상태 추가
   const [searchInput, setSearchInput] = useState(search ?? "");
 
@@ -126,6 +126,7 @@ export default function TableTools({
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               handleSearch();
+              setPage(1);
             }
           }}
         />
@@ -134,6 +135,7 @@ export default function TableTools({
             onClick={() => {
               setSearchInput("");
               setSearch(null);
+              setPage(1);
             }}
             className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 hover:bg-zinc-100"
           >

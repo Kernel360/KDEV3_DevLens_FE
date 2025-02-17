@@ -9,6 +9,8 @@ export default function PaginationNumbers({
   totalPages: number;
   onPageChange: (page: number) => void;
 }) {
+  if (totalPages === 0) return null;
+
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   const maxVisible = 5;
 

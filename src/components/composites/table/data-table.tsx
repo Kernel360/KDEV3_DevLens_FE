@@ -26,6 +26,7 @@ export function DataTable<T extends { id: number | string }>({
   className,
   onRowClick,
   totalPages,
+  last,
 }: DataTableProps<T> & {
   onRowClick?: (row: T) => void;
 }) {
@@ -72,22 +73,30 @@ export function DataTable<T extends { id: number | string }>({
                   ))}
                 </TableRow>
               ))}
-
-              {page === totalPages && (
+              {last && (
                 <TableRow>
                   <TableCell
                     colSpan={columns.length}
-                    className="border-t py-4 text-center text-sm text-muted-foreground"
+                    className="border-t text-center text-sm text-muted-foreground"
                   >
                     마지막 데이터입니다
                   </TableCell>
                 </TableRow>
               )}
+
+              {Array.from({ length: 10 - data.length - 1 }).map((_, index) => (
+                <TableRow
+                  key={`empty-${index}`}
+                  className="pointer-events-none !border-b-0"
+                >
+                  <TableCell colSpan={columns.length}>&nbsp;</TableCell>
+                </TableRow>
+              ))}
             </>
           )}
         </TableBody>
       </Table>
-      {totalPages && (
+      {totalPages > 0 && data.length > 0 && (
         <Pagination>
           <PaginationContent>
             <PaginationItem>
@@ -101,7 +110,6 @@ export function DataTable<T extends { id: number | string }>({
               totalPages={totalPages}
               onPageChange={setPage}
             />
-
             <PaginationItem>
               <PaginationNext
                 onClick={() => page < totalPages && setPage(page + 1)}

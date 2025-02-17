@@ -12,4 +12,6 @@ export interface DataTableProps<T> {
   className?: string;
   onRowClick?: (row: T) => void;
   totalPages: number;
+  last: boolean;
+  pageNumber: number;
 }
