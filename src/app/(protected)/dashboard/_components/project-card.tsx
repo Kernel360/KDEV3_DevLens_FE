@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@ui";
-import { Calendar } from "lucide-react";
+import { Calendar, Circle } from "lucide-react";
 import Link from "next/link";
 
 export default function ProjectCard(
@@ -17,7 +17,7 @@ export default function ProjectCard(
   const {
     id,
     projectName,
-    // projectStatusCode,
+    currentStepName,
     startDate,
     endDate,
     customerCompanyName,
@@ -25,7 +25,6 @@ export default function ProjectCard(
     projectTags,
   } = props;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getStatusColor = () =>
     // status: GetProjectListGetMyProjectResponseInfo["projectStatusCode"],
     {
@@ -57,13 +56,15 @@ export default function ProjectCard(
                   {customerCompanyName}
                 </p>
               </div>
-              {/* <Badge
-                variant="secondary"
-                className={`${getStatusColor(projectStatusCode)} shrink-0`}
-              >
-                {projectStatusCode}
-                상태
-              </Badge> */}
+              {currentStepName && (
+                <Badge
+                  variant="successOutline"
+                  className={`${getStatusColor()} shrink-0`}
+                >
+                  <Circle className="mr-2 h-2 w-2" />
+                  {currentStepName}
+                </Badge>
+              )}
             </div>
           </CardTitle>
           {/* <CardDescription className="truncate"></CardDescription> */}
