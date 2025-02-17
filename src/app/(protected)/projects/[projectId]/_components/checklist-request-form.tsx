@@ -25,6 +25,7 @@ import {
 } from "@/components/ui";
 import { usePostProjectChecklistApplication } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
 import { getGetChecklistApplicationQueryKey } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
+import { useParams } from "next/navigation";
 
 const requestFormSchema = z.object({
   title: z.string().min(1, "제목을 입력해주세요"),
@@ -50,6 +51,8 @@ export default function ChecklistRequestForm({
 }: ChecklistRequestFormProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const queryClient = useQueryClient();
+  const params = useParams();
+  const projectId = Number(params.projectId);
 
   const form = useForm<RequestFormValues>({
     resolver: zodResolver(requestFormSchema),
@@ -75,6 +78,7 @@ export default function ChecklistRequestForm({
     const values = form.getValues();
     createRequest(
       {
+        projectId,
         checklistId,
         data: {
           title: values.title,
@@ -86,7 +90,10 @@ export default function ChecklistRequestForm({
           form.reset();
           setIsDialogOpen(false);
           queryClient.invalidateQueries({
-            queryKey: getGetChecklistApplicationQueryKey(checklistId),
+            queryKey: getGetChecklistApplicationQueryKey(
+              projectId,
+              checklistId,
+            ),
           });
         },
       },

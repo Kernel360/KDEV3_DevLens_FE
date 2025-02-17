@@ -6,7 +6,8 @@ import { ConfirmDialog } from "@/components/composites/confirm-dialog";
 import { FileMetadataResponse } from "@/lib/api/generated/main/models";
 import { useDeletePostFiles } from "@/lib/api/generated/main/services/post-api/post-api";
 import { useUploadPostFiles } from "@/lib/api/generated/main/services/post-api/post-api";
-import { formatFileSize } from "@/lib/utils";
+import { formatFileSize, isValidFileType } from "@/lib/utils";
+import { ALLOWED_FILE_TYPES } from "@/lib/constants/etc";
 
 const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
@@ -37,6 +38,20 @@ export function FileUploadSection({
   // 파일 선택 핸들러
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || []);
+
+    // 파일 타입 검증
+    const invalidFiles = selectedFiles.filter(
+      (file) => !isValidFileType(file.name),
+    );
+
+    if (invalidFiles.length > 0) {
+      toast.error(
+        `지원하지 않는 파일 형식이 포함되어 있습니다: ${invalidFiles
+          .map((file) => file.name)
+          .join(", ")}`,
+      );
+      return;
+    }
 
     // 파일 크기 및 개수 검증
     const isValid = selectedFiles.every((file) => file.size <= MAX_FILE_SIZE);
@@ -137,6 +152,7 @@ export function FileUploadSection({
               onChange={handleFileUpload}
               className="hidden"
               multiple
+              accept={ALLOWED_FILE_TYPES.join(",")}
             />
             <Button
               type="button"

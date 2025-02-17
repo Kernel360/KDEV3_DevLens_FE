@@ -14,6 +14,7 @@ import {
   Label,
 } from "@ui";
 import { Plus } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -29,6 +30,8 @@ export default function CreateChecklistDialog({ stepId }: { stepId: number }) {
     checklistDescription: "",
   });
   const queryClient = useQueryClient();
+  const params = useParams();
+  const projectId = Number(params.projectId);
 
   const { mutate: createChecklist, isPending } = usePostProjectChecklist({
     mutation: {
@@ -65,6 +68,7 @@ export default function CreateChecklistDialog({ stepId }: { stepId: number }) {
     }
 
     createChecklist({
+      projectId,
       stepId,
       data: {
         checklistTitle: form.checklistName,

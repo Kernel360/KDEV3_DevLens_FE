@@ -28,10 +28,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useQueryClient } from "@tanstack/react-query";
 import { getGetChecklistApplicationQueryKey } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
+import { useParams } from "next/navigation";
 
-interface ChecklistDetailProps {
-  checklistId: number;
-}
 
 const getStatusBadge = (status: string) => {
   switch (status) {
@@ -46,9 +44,15 @@ const getStatusBadge = (status: string) => {
   }
 };
 
-export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
+export default function ChecklistDetail({
+  checklistId,
+}: {
+  checklistId: number;
+}) {
   const queryClient = useQueryClient();
-  const { data } = useGetChecklistApplication(checklistId) as {
+  const params = useParams();
+  const projectId = Number(params.projectId);
+  const { data } = useGetChecklistApplication(projectId, checklistId) as {
     // TODO: orval + axios 세팅 재확인
     data: {
       applications: {
@@ -90,7 +94,7 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
         setSelectedApplicationId(null);
         setRejectReason("");
         queryClient.invalidateQueries({
-          queryKey: getGetChecklistApplicationQueryKey(checklistId),
+          queryKey: getGetChecklistApplicationQueryKey(projectId, checklistId),
         });
       },
     },
@@ -101,7 +105,7 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
       onSuccess: () => {
         setSelectedApplicationId(null);
         queryClient.invalidateQueries({
-          queryKey: getGetChecklistApplicationQueryKey(checklistId),
+          queryKey: getGetChecklistApplicationQueryKey(projectId, checklistId),
         });
       },
     },
@@ -114,6 +118,7 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
   const handleRejectSubmit = () => {
     if (selectedApplicationId) {
       rejectMutation.mutate({
+        projectId,
         applicationId: selectedApplicationId,
         data: { rejectReason },
       });
@@ -121,7 +126,10 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
   };
 
   const handleAccept = (applicationId: number) => {
-    acceptMutation.mutate({ applicationId });
+    acceptMutation.mutate({
+      projectId,
+      applicationId,
+    });
   };
 
   if (!applications?.length) {
