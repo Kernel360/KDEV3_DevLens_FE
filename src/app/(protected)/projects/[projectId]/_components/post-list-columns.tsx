@@ -10,7 +10,6 @@ import {
   getStatusVariant,
 } from "@/lib/utils";
 import { ColumnDef } from "@/types/table";
-import { CornerDownRight } from "lucide-react";
 
 type PostListItem = PostListResponse & { id: number };
 
@@ -46,11 +45,16 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
     header: "제목",
     className: "min-w-[300px]",
     cell: ({ row }) => (
-      <span className="flex font-bold">
+      <span className="flex items-center font-bold">
         {row.original.parentPostId && (
           <span className="text-muted-foreground">
-            {/* {row.original.parentPostId} */}
-            <CornerDownRight className="w-4 h-4 mr-2" />
+            {/* <CornerDownRight className="w-4 h-4 mr-2" /> */}
+            <Badge
+              variant="secondary"
+              className="mr-2 p-1 text-xs text-muted-foreground"
+            >
+              답글
+            </Badge>
           </span>
         )}
         {row.original.title}

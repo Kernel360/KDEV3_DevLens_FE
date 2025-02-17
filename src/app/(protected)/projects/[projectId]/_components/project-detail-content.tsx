@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Plus } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { parseAsBoolean, useQueryState } from "nuqs";
-import { Suspense, useEffect, useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import { KanbanBoard } from "./kanban-board";
 import PostListTable from "./post-list-table";
 import { CreatePost } from "./post/create-post";
@@ -37,16 +37,14 @@ export default function ProjectDetailContent({
     [data?.projectStepInfo],
   );
 
-  // 첫 진입 시 또는 step이 없을 때 첫 번째 step으로 리다이렉트
-  useEffect(() => {
-    if (steps.length > 0 && !currentStepId) {
-      router.replace(`${pathname}?step=${steps[0].stepId}`);
-    }
-  }, [steps, currentStepId, pathname, router]);
+  // useEffect(() => {
+  //   router.replace(`${pathname}?isAllStages=true`);
+  // }, []);
 
   // steps가 없거나 로딩 중일 때는 렌더링하지 않음
   if (steps.length === 0) return null;
 
+  //새글 작성
   if (isNew) {
     return (
       <CreatePost
@@ -73,11 +71,14 @@ export default function ProjectDetailContent({
       <div className="flex items-center gap-4">
         <div className="min-w-0 flex-1">
           <ScrollableTabs
-            value={currentStepId || String(steps[0].stepId)}
-            items={steps.map((step) => ({
-              value: String(step.stepId),
-              label: step.stepName || "",
-            }))}
+            value={currentStepId || "all"}
+            items={[
+              { value: "all", label: "전체" },
+              ...steps.map((step) => ({
+                value: String(step.stepId),
+                label: step.stepName || "",
+              })),
+            ]}
             onValueChange={(value) => {
               router.replace(`${pathname}?step=${value}`, { scroll: false });
             }}
