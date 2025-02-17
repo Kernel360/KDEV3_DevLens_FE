@@ -311,9 +311,9 @@ function PostDetail({ id }: { id: number }) {
                     onClick={() => {
                       setPostId(String(post.id));
                     }}
-                    className="w-full"
                   >
-                    <h3>{post.title}</h3> <ChevronRight />
+                    <h3 className="w-full truncate">{post.title}</h3>
+                    <ChevronRight />
                   </Button>
                 ))}
               </div>
