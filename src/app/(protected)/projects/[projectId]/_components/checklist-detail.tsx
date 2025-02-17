@@ -26,12 +26,28 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { useQueryClient } from "@tanstack/react-query";
+import { getGetChecklistApplicationQueryKey } from "@/lib/api/generated/main/services/project-checklist-api/project-checklist-api";
 
 interface ChecklistDetailProps {
   checklistId: number;
 }
 
+const getStatusBadge = (status: string) => {
+  switch (status) {
+    case "승인":
+      return <Badge variant="success">승인</Badge>;
+    case "반려":
+      return <Badge variant="destructive">반려</Badge>;
+    case "승인대기":
+      return <Badge variant="secondary">대기중</Badge>;
+    default:
+      return <Badge variant="outline">{status}</Badge>;
+  }
+};
+
 export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
+  const queryClient = useQueryClient();
   const { data } = useGetChecklistApplication(checklistId) as {
     // TODO: orval + axios 세팅 재확인
     data: {
@@ -58,19 +74,6 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
     return dateB - dateA;
   });
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "승인":
-        return <Badge variant="success">승인</Badge>;
-      case "REJECTED":
-        return <Badge variant="destructive">반려</Badge>;
-      case "승인대기":
-        return <Badge variant="secondary">대기중</Badge>;
-      default:
-        return <Badge variant="outline">{status}</Badge>;
-    }
-  };
-
   const formatDate = (dateString: string) => {
     if (!dateString) return "";
     return format(new Date(dateString), "yy년 MM월 dd일 HH:mm");
@@ -81,8 +84,28 @@ export default function ChecklistDetail({ checklistId }: ChecklistDetailProps) {
     number | null
   >(null);
 
-  const rejectMutation = usePostProjectChecklistReject();
-  const acceptMutation = usePostProjectChecklistAccept();
+  const rejectMutation = usePostProjectChecklistReject({
+    mutation: {
+      onSuccess: () => {
+        setSelectedApplicationId(null);
+        setRejectReason("");
+        queryClient.invalidateQueries({
+          queryKey: getGetChecklistApplicationQueryKey(checklistId),
+        });
+      },
+    },
+  });
+
+  const acceptMutation = usePostProjectChecklistAccept({
+    mutation: {
+      onSuccess: () => {
+        setSelectedApplicationId(null);
+        queryClient.invalidateQueries({
+          queryKey: getGetChecklistApplicationQueryKey(checklistId),
+        });
+      },
+    },
+  });
 
   const handleReject = (applicationId: number) => {
     setSelectedApplicationId(applicationId);
