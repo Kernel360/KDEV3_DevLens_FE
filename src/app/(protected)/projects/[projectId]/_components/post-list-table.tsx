@@ -48,8 +48,8 @@ export default function PostListTable() {
         }))}
         content={PostDetail}
         totalPages={data.totalPages}
-        last={data.last}
-        pageNumber={data.pageNumber}
+        last={data?.last || false}
+        pageNumber={data?.pageNumber || 1}
       />
     </>
   );
