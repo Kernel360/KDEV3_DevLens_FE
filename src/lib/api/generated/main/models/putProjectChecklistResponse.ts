@@ -5,11 +5,10 @@
  * Devlens Admin API 문서
  * OpenAPI spec version: 1.0
  */
-import type { PutProjectChecklistResponseIsChecked } from './putProjectChecklistResponseIsChecked';
 
 export interface PutProjectChecklistResponse {
   id?: number;
   title?: string;
   description?: string;
-  isChecked?: PutProjectChecklistResponseIsChecked;
+  checklistStatus?: string;
 }

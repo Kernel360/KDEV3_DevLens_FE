@@ -9,6 +9,6 @@
 export interface GetProjectStepProjectChecklist {
   checklistId?: number;
   checklistName?: string;
-  checklistStatus?: boolean;
+  checklistStatus?: string;
   approvalTime?: string;
 }

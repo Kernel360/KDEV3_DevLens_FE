@@ -10,6 +10,5 @@ export interface PostProjectChecklistResponse {
   projectChecklistId?: number;
   checklistTitle?: string;
   checklistDescription?: string;
-  isActive?: boolean;
-  isChecked?: boolean;
+  checklistStatus?: string;
 }

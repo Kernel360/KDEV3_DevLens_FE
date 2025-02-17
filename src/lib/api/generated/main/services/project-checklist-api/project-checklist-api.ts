@@ -1747,3 +1747,60 @@ export function useGetProjectApplicationResult<TData = Awaited<ReturnType<typeof
 
 
 
+export const deleteChecklistApplication = (
+    checklistId: number,
+    applicationsId: number,
+ ) => {
+      
+      
+      return mainAxios<APIResponseSuccessCode>(
+      {url: `/api/projects/checklists/${checklistId}/applications/${applicationsId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteChecklistApplicationMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteChecklistApplication>>, TError,{checklistId: number;applicationsId: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteChecklistApplication>>, TError,{checklistId: number;applicationsId: number}, TContext> => {
+    
+const mutationKey = ['deleteChecklistApplication'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteChecklistApplication>>, {checklistId: number;applicationsId: number}> = (props) => {
+          const {checklistId,applicationsId} = props ?? {};
+
+          return  deleteChecklistApplication(checklistId,applicationsId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteChecklistApplicationMutationResult = NonNullable<Awaited<ReturnType<typeof deleteChecklistApplication>>>
+    
+    export type DeleteChecklistApplicationMutationError = unknown
+
+    export const useDeleteChecklistApplication = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteChecklistApplication>>, TError,{checklistId: number;applicationsId: number}, TContext>, }
+): UseMutationResult<
+        Awaited<ReturnType<typeof deleteChecklistApplication>>,
+        TError,
+        {checklistId: number;applicationsId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteChecklistApplicationMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    

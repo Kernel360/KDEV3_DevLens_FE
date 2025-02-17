@@ -1665,6 +1665,38 @@
         }
       }
     },
+    "/api/projects/checklists/{checklistId}/applications/{applicationsId}": {
+      "delete": {
+        "tags": ["Project Checklist API"],
+        "operationId": "deleteChecklistApplication",
+        "parameters": [
+          {
+            "name": "checklistId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationsId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseSuccessCode"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/posts/{postId}/links/{linkId}": {
       "delete": {
         "tags": ["Post API"],
@@ -1893,7 +1925,7 @@
           "id": { "type": "integer", "format": "int64" },
           "title": { "type": "string" },
           "description": { "type": "string" },
-          "isChecked": { "type": "string", "enum": ["YES", "NO"] }
+          "checklistStatus": { "type": "string" }
         }
       },
       "PutProjectChecklistRequest": {
@@ -1978,8 +2010,7 @@
           "projectChecklistId": { "type": "integer", "format": "int64" },
           "checklistTitle": { "type": "string" },
           "checklistDescription": { "type": "string" },
-          "isActive": { "type": "boolean" },
-          "isChecked": { "type": "boolean" }
+          "checklistStatus": { "type": "string" }
         }
       },
       "PostProjectChecklistRequest": {
@@ -2274,7 +2305,7 @@
         "properties": {
           "checklistId": { "type": "integer", "format": "int64" },
           "checklistName": { "type": "string" },
-          "checklistStatus": { "type": "boolean" },
+          "checklistStatus": { "type": "string" },
           "approvalTime": { "type": "string", "format": "date-time" }
         }
       },
@@ -2321,7 +2352,7 @@
         "properties": {
           "checklistId": { "type": "integer", "format": "int64" },
           "checklistName": { "type": "string" },
-          "checklistStatus": { "type": "boolean" },
+          "checklistStatus": { "type": "string" },
           "checkAcceptTime": { "type": "string", "format": "date-time" }
         }
       },
@@ -2764,7 +2795,7 @@
         "type": "object",
         "properties": {
           "checklistId": { "type": "integer", "format": "int64" },
-          "checklistStatus": { "type": "boolean" }
+          "checklistStatus": { "type": "string" }
         }
       }
     }

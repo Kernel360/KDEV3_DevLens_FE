@@ -8,5 +8,5 @@
 
 export interface DeleteProjectChecklistResponse {
   checklistId?: number;
-  checklistStatus?: boolean;
+  checklistStatus?: string;
 }
