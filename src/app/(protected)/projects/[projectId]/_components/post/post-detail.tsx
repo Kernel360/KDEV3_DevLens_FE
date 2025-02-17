@@ -30,6 +30,7 @@ import {
 } from "@ui";
 import {
   ArrowUpLeft,
+  ChevronRight,
   MoreVertical,
   Paperclip,
   Pencil,
@@ -45,7 +46,7 @@ import { useLinkStore } from "@/store/use-link-store";
 
 const initialPost: Required<PostResponse> = {
   postId: 0,
-  parentPostId: 0,
+  isParentPost: true,
   projectStepId: 0,
   title: "",
   content: "",
@@ -56,6 +57,7 @@ const initialPost: Required<PostResponse> = {
   updateDate: "",
   deadline: "",
   isAuthor: false,
+  relatedPosts: [],
   files: [],
   links: [],
   comments: [],
@@ -148,20 +150,23 @@ function PostDetail({ id }: { id: number }) {
 
   return (
     <>
-      {/* 제목 및 메타 정보 */}
       <div className="space-y-4">
-        {post.parentPostId && (
+        {!post.isParentPost && (
           <Button
             onClick={() => {
-              setPostId(String(post.parentPostId));
+              setPostId(String(post.relatedPosts[0].id));
             }}
             variant="outline"
             className="flex items-center gap-2"
           >
             <ArrowUpLeft className="h-4 w-4" />
-            원글로 이동
+            원글 :
+            <span className="text-muted-foreground">
+              {post.relatedPosts[0].title}
+            </span>
           </Button>
         )}
+        {/* 제목 및 메타 정보 */}
         <div className="flex items-start justify-between">
           <h1 className="text-2xl font-bold">{post.title}</h1>
           {post.isAuthor && (
@@ -236,16 +241,19 @@ function PostDetail({ id }: { id: number }) {
 
       <div className="space-y-6">
         {/* 본문 */}
-        <div className="prose prose-sm max-w-none whitespace-pre-wrap">
+        <div className="prose prose-sm mb-12 max-w-none whitespace-pre-wrap">
           {post.content}
         </div>
+
+        {post.files.length > 0 || post.links.length > 0 ? (
+          <Separator className="my-4" />
+        ) : null}
 
         {/* 첨부파일 */}
 
         {post.files && post.files.length > 0 && (
           <div>
-            <Separator className="my-4" />
-            <h3 className="mb-3 font-medium">첨부파일</h3>
+            <h3 className="mb-3 font-bold">첨부파일</h3>
             <div className="space-y-2">
               {post.files.map((file) => (
                 <div key={file.id} className="flex items-center gap-2 text-sm">
@@ -288,7 +296,31 @@ function PostDetail({ id }: { id: number }) {
           </div>
         )}
 
-        {!post.parentPostId && (
+        {post.isParentPost && (
+          <>
+            <Separator />
+            <div className="flex flex-col gap-2">
+              <h3 className="mb-3 font-medium">
+                답글 {post.relatedPosts.length}건
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {post.relatedPosts.map((post) => (
+                  <Button
+                    variant="secondary"
+                    key={post.id}
+                    onClick={() => {
+                      setPostId(String(post.id));
+                    }}
+                    className="w-full"
+                  >
+                    <h3>{post.title}</h3> <ChevronRight />
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+        {post.isParentPost && (
           <Button
             variant="outline"
             className="mt-4 w-full"
@@ -300,7 +332,6 @@ function PostDetail({ id }: { id: number }) {
             답글 작성
           </Button>
         )}
-
         {/* 댓글 */}
         <Separator />
         <CommentsSection comments={post.comments || []} postId={id} />

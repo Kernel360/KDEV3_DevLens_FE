@@ -10,6 +10,7 @@ import {
   getStatusVariant,
 } from "@/lib/utils";
 import { ColumnDef } from "@/types/table";
+import { CornerDownRight } from "lucide-react";
 
 type PostListItem = PostListResponse & { id: number };
 
@@ -46,6 +47,12 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
     className: "min-w-[300px]",
     cell: ({ row }) => (
       <span className="flex font-bold">
+        {row.original.parentPostId && (
+          <span className="text-muted-foreground">
+            {/* {row.original.parentPostId} */}
+            <CornerDownRight className="w-4 h-4 mr-2" />
+          </span>
+        )}
         {row.original.title}
         {row.original.commentCount !== undefined &&
           row.original.commentCount > 0 && (

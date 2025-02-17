@@ -4,7 +4,6 @@ import { ScrollableTabs } from "@/components/composites/scrollable-tabs";
 import SectionTitle from "@/components/composites/section-title";
 import { ErrorBoundary } from "@/components/error/error-boundary";
 import { KanbanBoardSkeleton } from "@/components/skeleton/kanban-skeleton";
-import TableSkeleton from "@/components/skeleton/table-skeleton";
 import { Button } from "@/components/ui";
 import { getProjectStepAndChecklist } from "@/lib/api/generated/main/services/project-step-api/project-step-api";
 import { useQuery } from "@tanstack/react-query";
@@ -90,13 +89,13 @@ export default function ProjectDetailContent({
           }}
           className="flex-none"
         >
-          <Plus className="mr-2 h-4 w-4" />새 게시물
+          <Plus className="mr-2 h-4 w-4" /> <span>새 게시물</span>
         </Button>
       </div>
       <ErrorBoundary>
-        <Suspense fallback={<TableSkeleton />}>
-          <PostListTable />
-        </Suspense>
+        {/* <Suspense fallback={<TableSkeleton />}> */}
+        <PostListTable />
+        {/* </Suspense> */}
       </ErrorBoundary>
     </div>
   );
