@@ -5,7 +5,7 @@ export const createProjectSchema = z
     projectName: z
       .string()
       .min(1, "프로젝트명은 필수입니다")
-      .max(50, "프로젝트명은 50자를 초과할 수 없습니다"),
+      .max(20, "프로젝트명은 20자를 초과할 수 없습니다"),
     customerId: z.number().min(1, "고객사를 선택해주세요"),
     developerId: z.number().min(1, "개발사를 선택해주세요"),
     projectDescription: z

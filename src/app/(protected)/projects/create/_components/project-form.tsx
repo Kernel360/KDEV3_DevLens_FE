@@ -112,13 +112,9 @@ export default function ProjectForm() {
               ],
             },
           });
-
-          toast.success("프로젝트 생성 및 멤버 배정이 완료되었습니다.", {
-            action: {
-              label: "프로젝트로 이동",
-              onClick: () => router.push(`/projects/${newProject.id}`),
-            },
-          });
+          form.reset();
+          toast.success("프로젝트 생성 및 멤버 배정이 완료되었습니다.");
+          router.push(`/projects/${newProject.id}`);
         } catch (memberError) {
           toast.warning("프로젝트는 생성되었으나 멤버 배정에 실패했습니다.", {
             action: {
@@ -148,7 +144,11 @@ export default function ProjectForm() {
                 <FormItem>
                   <FormLabel>프로젝트명</FormLabel>
                   <FormControl>
-                    <Input placeholder="프로젝트명을 입력하세요" {...field} />
+                    <Input
+                      max={20}
+                      placeholder="프로젝트명을 입력하세요"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

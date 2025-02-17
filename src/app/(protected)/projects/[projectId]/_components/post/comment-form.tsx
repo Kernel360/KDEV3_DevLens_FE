@@ -55,6 +55,7 @@ export default function CommentForm({
                     <Input
                       placeholder={placeholder}
                       className="h-[42px] min-h-0 resize-none"
+                      maxLength={300}
                       autoFocus={autoFocus}
                       {...field}
                     />
