@@ -30,7 +30,7 @@ export function DataTable<T extends { id: number | string }>({
 }: DataTableProps<T> & {
   onRowClick?: (row: T) => void;
 }) {
-  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(0));
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
   return (
     <>

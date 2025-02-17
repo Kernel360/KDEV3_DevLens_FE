@@ -8,6 +8,7 @@ import PostDetail from "./post/post-detail";
 import { useSelectPosts } from "@/lib/api/generated/main/services/post-api/post-api";
 import { useParams } from "next/navigation";
 import { PostListResponse } from "@/lib/api/generated/main/models";
+import TableSkeleton from "@/components/skeleton/table-skeleton";
 
 export default function PostListTable() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -17,9 +18,11 @@ export default function PostListTable() {
   const [sortType] = useQueryState("sortType");
   const [step] = useQueryState("step", parseAsInteger);
 
-  const { data } = useSelectPosts<{
+  const { data, isLoading } = useSelectPosts<{
     content: PostListResponse[];
     totalPages: number;
+    last: boolean;
+    pageNumber: number;
   }>(Number(projectId), {
     projectStepId: step ?? undefined,
     isAllStages: step ? false : true,
@@ -28,6 +31,9 @@ export default function PostListTable() {
     keyword: search ?? "",
     sortType: sortType as "NEWEST" | "OLDEST" | undefined,
   });
+  if (isLoading) {
+    return <TableSkeleton />;
+  }
 
   if (!data) return null;
 
@@ -42,6 +48,8 @@ export default function PostListTable() {
         }))}
         content={PostDetail}
         totalPages={data.totalPages}
+        last={data.last}
+        pageNumber={data.pageNumber}
       />
     </>
   );

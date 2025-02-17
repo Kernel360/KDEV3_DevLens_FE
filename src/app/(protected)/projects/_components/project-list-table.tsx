@@ -22,6 +22,8 @@ export default function ProjectListTable() {
       content={ProjectDetail}
       totalPages={data?.totalPages || 0}
       isLoading={isLoading}
+      last={data?.last || false}
+      pageNumber={data?.pageNumber || 1}
     />
   );
 }
