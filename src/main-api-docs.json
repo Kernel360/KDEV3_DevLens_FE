@@ -30,6 +30,84 @@
     { "name": "Login Page API", "description": "APIs Related to Login Page" }
   ],
   "paths": {
+    "/api/projects/{projectId}/checklists/{checklistId}": {
+      "put": {
+        "tags": ["Project Checklist API"],
+        "summary": "체크리스트 수정",
+        "description": "기존 체크리스트를 수정합니다.",
+        "operationId": "putProjectChecklist",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "checklistId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PutProjectChecklistRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "체크리스트가 성공적으로 수정되었습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutProjectChecklistResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Project Checklist API"],
+        "summary": "체크리스트 삭제",
+        "description": "특정 체크리스트를 삭제합니다.",
+        "operationId": "deleteProjectChecklist",
+        "parameters": [
+          {
+            "name": "checklistId",
+            "in": "path",
+            "description": "삭제할 체크리스트의 ID",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "체크리스트가 성공적으로 삭제되었습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteProjectChecklistResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/authorizations": {
       "get": {
         "tags": ["project-authorization-controller"],
@@ -119,72 +197,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PutProjectStepResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/checklists/{checklistId}": {
-      "put": {
-        "tags": ["Project Checklist API"],
-        "summary": "체크리스트 수정",
-        "description": "기존 체크리스트를 수정합니다.",
-        "operationId": "putProjectChecklist",
-        "parameters": [
-          {
-            "name": "checklistId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PutProjectChecklistRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "체크리스트가 성공적으로 수정되었습니다.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PutProjectChecklistResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": ["Project Checklist API"],
-        "summary": "체크리스트 삭제",
-        "description": "특정 체크리스트를 삭제합니다.",
-        "operationId": "deleteProjectChecklist",
-        "parameters": [
-          {
-            "name": "checklistId",
-            "in": "path",
-            "description": "삭제할 체크리스트의 ID",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" },
-            "example": 1
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "체크리스트가 성공적으로 삭제되었습니다.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteProjectChecklistResponse"
                 }
               }
             }
@@ -360,13 +372,53 @@
         }
       }
     },
-    "/api/projects/steps/{stepId}/checklists": {
+    "/api/projects/{projectId}/steps/{stepId}/checklists": {
+      "get": {
+        "tags": ["Project Checklist API"],
+        "summary": "체크리스트 조회",
+        "description": "특정 단계의 체크리스트를 조회합니다.",
+        "operationId": "getProjectChecklist",
+        "parameters": [
+          {
+            "name": "stepId",
+            "in": "path",
+            "description": "체크리스트를 조회할 단계의 ID",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" },
+            "example": 1
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "성공적으로 체크리스트를 반환했습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetStepChecklistResponse"
+                }
+              }
+            }
+          }
+        }
+      },
       "post": {
         "tags": ["Project Checklist API"],
         "summary": "체크리스트 생성",
         "description": "새로운 체크리스트를 생성합니다.",
         "operationId": "postProjectChecklist",
         "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
           {
             "name": "stepId",
             "in": "path",
@@ -398,11 +450,17 @@
         }
       }
     },
-    "/api/projects/reject/{applicationId}/files": {
+    "/api/projects/{projectId}/reject/{applicationId}/files": {
       "get": {
         "tags": ["Project Checklist API"],
         "operationId": "getProjectChecklistRejectFiles",
         "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
           {
             "name": "applicationId",
             "in": "path",
@@ -427,6 +485,12 @@
         "tags": ["Project Checklist API"],
         "operationId": "postProjectChecklistRejectFile",
         "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
           {
             "name": "applicationId",
             "in": "path",
@@ -464,11 +528,17 @@
         }
       }
     },
-    "/api/projects/checklists/{checklistId}/applications": {
+    "/api/projects/{projectId}/checklists/{checklistId}/applications": {
       "get": {
         "tags": ["Project Checklist API"],
         "operationId": "getChecklistApplication",
         "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
           {
             "name": "checklistId",
             "in": "path",
@@ -495,6 +565,12 @@
         "description": "체크리스트에 새로운 신청을 생성합니다.",
         "operationId": "postProjectChecklistApplication",
         "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
           {
             "name": "checklistId",
             "in": "path",
@@ -526,11 +602,17 @@
         }
       }
     },
-    "/api/projects/checklists/{checklistId}/applications/{applicationId}/files": {
+    "/api/projects/{projectId}/checklists/{checklistId}/applications/{applicationId}/files": {
       "post": {
         "tags": ["Project Checklist API"],
         "operationId": "postProjectChecklistApplication_1",
         "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
           {
             "name": "checklistId",
             "in": "path",
@@ -574,7 +656,7 @@
         }
       }
     },
-    "/api/projects/applications/{applicationId}/reject": {
+    "/api/projects/{projectId}/applications/{applicationId}/reject": {
       "post": {
         "tags": ["Project Checklist API"],
         "summary": "체크리스트 신청 거절",
@@ -588,6 +670,12 @@
             "required": true,
             "schema": { "type": "integer", "format": "int64" },
             "example": 1
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "requestBody": {
@@ -614,7 +702,7 @@
         }
       }
     },
-    "/api/projects/accept/{applicationId}": {
+    "/api/projects/{projectId}/accept/{applicationId}": {
       "post": {
         "tags": ["Project Checklist API"],
         "summary": "체크리스트 신청 승인",
@@ -628,6 +716,12 @@
             "required": true,
             "schema": { "type": "integer", "format": "int64" },
             "example": 1
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -1287,23 +1381,19 @@
         }
       }
     },
-    "/api/projects/{projectId}/steps/{stepId}/checklists": {
+    "/api/projects/{projectId}/reject/{applicationId}/links": {
       "get": {
         "tags": ["Project Checklist API"],
-        "summary": "체크리스트 조회",
-        "description": "특정 단계의 체크리스트를 조회합니다.",
-        "operationId": "getProjectChecklist",
+        "operationId": "getProjectChecklistRejectLinks",
         "parameters": [
           {
-            "name": "stepId",
+            "name": "projectId",
             "in": "path",
-            "description": "체크리스트를 조회할 단계의 ID",
             "required": true,
-            "schema": { "type": "integer", "format": "int64" },
-            "example": 1
+            "schema": { "type": "integer", "format": "int64" }
           },
           {
-            "name": "projectId",
+            "name": "applicationId",
             "in": "path",
             "required": true,
             "schema": { "type": "integer", "format": "int64" }
@@ -1311,11 +1401,11 @@
         ],
         "responses": {
           "200": {
-            "description": "성공적으로 체크리스트를 반환했습니다.",
+            "description": "OK",
             "content": {
-              "application/json": {
+              "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetStepChecklistResponse"
+                  "$ref": "#/components/schemas/APIResponseListLinkResponse"
                 }
               }
             }
@@ -1353,6 +1443,102 @@
         }
       }
     },
+    "/api/projects/{projectId}/checklists/applications/{applicationId}": {
+      "get": {
+        "tags": ["Project Checklist API"],
+        "operationId": "getProjectChecklistApplication",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseGetApplicationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects/{projectId}/checklists/applications/{applicationId}/links": {
+      "get": {
+        "tags": ["Project Checklist API"],
+        "operationId": "getProjectChecklistApplicationLinks",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseListLinkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/projects/{projectId}/checklists/applications/{applicationId}/files": {
+      "get": {
+        "tags": ["Project Checklist API"],
+        "operationId": "getProjectChecklistApplicationFiles",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "applicationId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/authorizations/members": {
       "get": {
         "tags": ["project-authorization-controller"],
@@ -1379,111 +1565,7 @@
         }
       }
     },
-    "/api/projects/reject/{applicationId}/links": {
-      "get": {
-        "tags": ["Project Checklist API"],
-        "operationId": "getProjectChecklistRejectLinks",
-        "parameters": [
-          {
-            "name": "applicationId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseListLinkResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/checklists/applications/{applicationId}": {
-      "get": {
-        "tags": ["Project Checklist API"],
-        "operationId": "getProjectChecklistApplication",
-        "parameters": [
-          {
-            "name": "applicationId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseGetApplicationResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/checklists/applications/{applicationId}/links": {
-      "get": {
-        "tags": ["Project Checklist API"],
-        "operationId": "getProjectChecklistApplicationLinks",
-        "parameters": [
-          {
-            "name": "applicationId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseListLinkResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/checklists/applications/{applicationId}/files": {
-      "get": {
-        "tags": ["Project Checklist API"],
-        "operationId": "getProjectChecklistApplicationFiles",
-        "parameters": [
-          {
-            "name": "applicationId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseListFileMetadataResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/application/{applicationId}/result": {
+    "/api/projects/{projectId}/application/{applicationId}/result": {
       "get": {
         "tags": ["Project Checklist API"],
         "summary": "프로젝트 신청 결과 조회",
@@ -1497,6 +1579,12 @@
             "required": true,
             "schema": { "type": "integer", "format": "int64" },
             "example": 1
+          },
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
           }
         ],
         "responses": {
@@ -1665,38 +1753,6 @@
         }
       }
     },
-    "/api/projects/checklists/{checklistId}/applications/{applicationsId}": {
-      "delete": {
-        "tags": ["Project Checklist API"],
-        "operationId": "deleteChecklistApplication",
-        "parameters": [
-          {
-            "name": "checklistId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          },
-          {
-            "name": "applicationsId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/APIResponseSuccessCode"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/posts/{postId}/links/{linkId}": {
       "delete": {
         "tags": ["Post API"],
@@ -1764,6 +1820,22 @@
   },
   "components": {
     "schemas": {
+      "PutProjectChecklistResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "checklistStatus": { "type": "string" }
+        }
+      },
+      "PutProjectChecklistRequest": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
       "PostProjectAuthorizationCustomerMemberAuthorization": {
         "type": "object",
         "properties": {
@@ -1919,22 +1991,6 @@
           "stepOrder": { "type": "integer", "format": "int32" }
         }
       },
-      "PutProjectChecklistResponse": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "title": { "type": "string" },
-          "description": { "type": "string" },
-          "checklistStatus": { "type": "string" }
-        }
-      },
-      "PutProjectChecklistRequest": {
-        "type": "object",
-        "properties": {
-          "title": { "type": "string" },
-          "description": { "type": "string" }
-        }
-      },
       "APIResponse": {
         "type": "object",
         "properties": {
@@ -2070,22 +2126,9 @@
           "rejectReason": { "type": "string" }
         }
       },
-      "LinkInput": {
-        "type": "object",
-        "properties": {
-          "linkTitle": { "type": "string" },
-          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
-        }
-      },
       "PostProjectChecklistRejectRequest": {
         "type": "object",
-        "properties": {
-          "rejectReason": { "type": "string" },
-          "linkInputs": {
-            "type": "array",
-            "items": { "$ref": "#/components/schemas/LinkInput" }
-          }
-        }
+        "properties": { "rejectReason": { "type": "string" } }
       },
       "PostProjectChecklistAcceptResponse": {
         "type": "object",
@@ -2095,6 +2138,13 @@
             "type": "string",
             "enum": ["WAITING", "APPROVED", "REJECTED"]
           }
+        }
+      },
+      "LinkInput": {
+        "type": "object",
+        "properties": {
+          "linkTitle": { "type": "string" },
+          "link": { "maxLength": 1000, "minLength": 1, "type": "string" }
         }
       },
       "PostCreateRequest": {
@@ -2497,68 +2547,6 @@
           "useStatus": { "type": "string", "enum": ["YES", "NO"] }
         }
       },
-      "APIResponseGetProjectAuthorizationResponse": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "message": { "type": "string" },
-          "data": {
-            "$ref": "#/components/schemas/GetProjectAuthorizationResponse"
-          }
-        }
-      },
-      "GetProjectAuthorizationCustomerMemberAuthorization": {
-        "type": "object",
-        "properties": {
-          "projectAuthorization": { "type": "string" },
-          "memberId": { "type": "integer", "format": "int64" },
-          "memberName": { "type": "string" }
-        }
-      },
-      "GetProjectAuthorizationDeveloperMemberAuthorization": {
-        "type": "object",
-        "properties": {
-          "projectAuthorization": { "type": "string" },
-          "memberId": { "type": "integer", "format": "int64" },
-          "memberName": { "type": "string" }
-        }
-      },
-      "GetProjectAuthorizationResponse": {
-        "type": "object",
-        "properties": {
-          "projectId": { "type": "integer", "format": "int64" },
-          "customerMemberAuthorizations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GetProjectAuthorizationCustomerMemberAuthorization"
-            }
-          },
-          "developerMemberAuthorizations": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/GetProjectAuthorizationDeveloperMemberAuthorization"
-            }
-          }
-        }
-      },
-      "APIResponseGetMemberAuthorizationResponse": {
-        "type": "object",
-        "properties": {
-          "code": { "type": "integer", "format": "int32" },
-          "message": { "type": "string" },
-          "data": {
-            "$ref": "#/components/schemas/GetMemberAuthorizationResponse"
-          }
-        }
-      },
-      "GetMemberAuthorizationResponse": {
-        "type": "object",
-        "properties": {
-          "memberId": { "type": "integer", "format": "int64" },
-          "authorization": { "type": "string" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] }
-        }
-      },
       "APIResponseGetChecklistApplicationResponse": {
         "type": "object",
         "properties": {
@@ -2621,6 +2609,68 @@
           "id": { "type": "integer", "format": "int64" },
           "title": { "type": "string" },
           "content": { "type": "string" }
+        }
+      },
+      "APIResponseGetProjectAuthorizationResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "$ref": "#/components/schemas/GetProjectAuthorizationResponse"
+          }
+        }
+      },
+      "GetProjectAuthorizationCustomerMemberAuthorization": {
+        "type": "object",
+        "properties": {
+          "projectAuthorization": { "type": "string" },
+          "memberId": { "type": "integer", "format": "int64" },
+          "memberName": { "type": "string" }
+        }
+      },
+      "GetProjectAuthorizationDeveloperMemberAuthorization": {
+        "type": "object",
+        "properties": {
+          "projectAuthorization": { "type": "string" },
+          "memberId": { "type": "integer", "format": "int64" },
+          "memberName": { "type": "string" }
+        }
+      },
+      "GetProjectAuthorizationResponse": {
+        "type": "object",
+        "properties": {
+          "projectId": { "type": "integer", "format": "int64" },
+          "customerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectAuthorizationCustomerMemberAuthorization"
+            }
+          },
+          "developerMemberAuthorizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetProjectAuthorizationDeveloperMemberAuthorization"
+            }
+          }
+        }
+      },
+      "APIResponseGetMemberAuthorizationResponse": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "$ref": "#/components/schemas/GetMemberAuthorizationResponse"
+          }
+        }
+      },
+      "GetMemberAuthorizationResponse": {
+        "type": "object",
+        "properties": {
+          "memberId": { "type": "integer", "format": "int64" },
+          "authorization": { "type": "string" },
+          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] }
         }
       },
       "GetApplicationResultResponse": {
