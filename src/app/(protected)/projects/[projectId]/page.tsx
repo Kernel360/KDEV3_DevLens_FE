@@ -5,7 +5,6 @@ import ProjectHeader from "./_components/project-header";
 import { APIError } from "@/types/common";
 import { Button } from "@/components/ui";
 import Link from "next/link";
-import { useAuthorizationStore } from "@/store/authorizationStore";
 import type { APIResponseGetMemberAuthorizationResponse } from "@/lib/api/generated/main/models";
 
 type PageProps = {
@@ -34,22 +33,14 @@ export default async function ProjectDetailPage({
         Cookie: cookieHeader.toString(), // 쿠키를 헤더에 포함
       },
     });
-
-    if (memberAuthorization) {
-      // authorization 값 가져오기
-
-      // zustand 스토어에 authorization 값 설정
-      const setAuthorization =
-        useAuthorizationStore.getState().setAuthorization;
-      setAuthorization(memberAuthorization.authorization!);
-    } else {
-      // memberAuthorization이 undefined인 경우 처리
-      console.error("Authorization data is undefined");
-    }
+    const authorization = memberAuthorization?.authorization;
 
     return (
       <>
-        <ProjectHeader projectId={projectId} />
+        <ProjectHeader
+          projectId={projectId}
+          authorization={authorization as "APPROVER" | "PARTICIPANT"}
+        />
         {/* <HydrationBoundary state={dehydratedState}> */}
         <ProjectDetailContent projectId={projectId} currentStepId={stepParam} />
         {/* </HydrationBoundary> */}

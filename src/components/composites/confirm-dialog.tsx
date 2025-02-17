@@ -14,10 +14,12 @@ import { ReactNode } from "react";
 interface ConfirmDialogProps {
   title: string;
   description: string;
-  trigger: ReactNode;
+  trigger?: ReactNode;
   onConfirm: () => void | Promise<void>;
   confirmText?: string;
   cancelText?: string;
+  open?: boolean;
+  onOpenChange?: (isOpen: boolean) => void;
 }
 
 export function ConfirmDialog({
@@ -27,10 +29,12 @@ export function ConfirmDialog({
   onConfirm,
   confirmText = "확인",
   cancelText = "취소",
+  open,
+  onOpenChange,
 }: ConfirmDialogProps) {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      {trigger && <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

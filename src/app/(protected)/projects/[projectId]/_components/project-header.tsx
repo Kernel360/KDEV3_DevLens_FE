@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmDialog } from "@/components/composites/confirm-dialog";
 import {
   Badge,
   Card,
@@ -9,6 +10,7 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
+  Label,
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -16,26 +18,79 @@ import {
 } from "@/components/ui";
 import {
   Select,
-  // SelectContent,
-  // SelectItem,
+  SelectItem,
+  SelectContent,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useGetProjectDetail } from "@/lib/api/generated/main/services/project-api/project-api";
+import {
+  useGetProjectDetail,
+  usePatchProjectCurrentStep,
+  getGetProjectDetailQueryKey,
+} from "@/lib/api/generated/main/services/project-api/project-api";
+import { useQueryClient } from "@tanstack/react-query";
 import { ChevronsUpDown } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export default function ProjectHeader({ projectId }: { projectId: number }) {
+export default function ProjectHeader({
+  projectId,
+  authorization,
+}: {
+  projectId: number;
+  authorization: "APPROVER" | "PARTICIPANT";
+}) {
+  const [selectedStepId, setSelectedStepId] = useState<number>();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { data: projectDetail } = useGetProjectDetail(projectId);
+  const queryClient = useQueryClient();
 
   const {
     projectName,
     projectDescription,
     projectTypeName,
-    currentStep,
+    projectSteps = [],
+    customerCompanyName,
     customerMemberAuthorizations,
+    developerCompanyName,
     developerMemberAuthorizations,
     projectTags,
   } = projectDetail ?? {};
+
+  const currentStep = projectSteps?.find(
+    (step) => step.isCurrentStep,
+  )?.stepName;
+
+  const mutation = usePatchProjectCurrentStep({
+    mutation: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: getGetProjectDetailQueryKey(projectId),
+        });
+        toast.success("현재 프로젝트 단계가 변경되었습니다. ");
+      },
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      onError: (error) => {
+        toast.error("현재 프로젝트 단계 변경 중 오류가 발생했습니다. ");
+      },
+    },
+  });
+
+  const handleStepChange = (stepId: number) => {
+    setSelectedStepId(stepId);
+    setIsDialogOpen(true);
+  };
+
+  const handleConfirmChange = () => {
+    const step = projectSteps.find((s) => s.stepId === selectedStepId);
+    if (step) {
+      mutation.mutate({ projectId, stepId: step.stepId! });
+    }
+    setIsDialogOpen(false);
+    queryClient.invalidateQueries({
+      queryKey: getGetProjectDetailQueryKey(projectId),
+    });
+  };
 
   return (
     <>
@@ -58,23 +113,42 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
               <div className="text-sm text-muted-foreground">Manager</div>
               <div className="font-medium">{bnsManager}</div>
             </div> */}
-              <Select>
-                <SelectTrigger className="border-1 w-fit min-w-32 rounded-full border border-primary">
-                  {/* 현재 프로젝트 단계 동적으로 받아오기 */}
-                  <SelectValue placeholder={currentStep} />
-                </SelectTrigger>
-                {/* <SelectContent>
-                  {projectStep?.map((step) => (
-                    <SelectItem
-                      key={step.stepId}
-                      value={step.stepName ?? ""}
-                      className="truncate"
-                    >
-                      {step.stepName}
-                    </SelectItem>
-                  ))}
-                </SelectContent> */}
-              </Select>
+              {currentStep && authorization === "PARTICIPANT" && (
+                <div className="border-1 w-fit min-w-32 rounded-full border border-primary">
+                  <span>{currentStep}</span>
+                </div>
+              )}
+              {authorization === "APPROVER" && (
+                <Select
+                  value={currentStep}
+                  onValueChange={(value) => {
+                    const step = projectSteps.find((s) => s.stepName === value);
+                    if (step) {
+                      handleStepChange(step.stepId!);
+                    }
+                  }}
+                >
+                  <div className="space-y-1">
+                    <Label className="text-xs text-muted-foreground">
+                      현재 단계
+                    </Label>
+                    <SelectTrigger className="border-1 w-fit min-w-32 rounded-full border border-primary">
+                      <SelectValue placeholder={currentStep} />
+                    </SelectTrigger>
+                  </div>
+                  <SelectContent>
+                    {projectSteps?.map((step) => (
+                      <SelectItem
+                        key={step.stepId}
+                        value={step.stepName ?? ""}
+                        className="truncate"
+                      >
+                        {step.stepName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
           </CardHeader>
 
@@ -85,10 +159,11 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
                 <div className="flex gap-8 text-xs">
                   <Tooltip>
                     <TooltipTrigger className="flex items-center gap-2 text-muted-foreground">
-                      <span className="font-bold">
-                        고객사({customerMemberAuthorizations?.length})
+                      <span className="font-bold">고객사</span>
+                      <span>
+                        {customerCompanyName} (
+                        {customerMemberAuthorizations?.length})
                       </span>
-                      {/* <span>카카오(3)</span> */}
                     </TooltipTrigger>
                     <TooltipContent>
                       {customerMemberAuthorizations?.map((member) => (
@@ -102,10 +177,11 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger className="flex items-center gap-2 text-muted-foreground">
-                      <span className="font-bold">
-                        개발사({developerMemberAuthorizations?.length})
+                      <span className="font-bold">개발사</span>
+                      <span>
+                        {developerCompanyName} (
+                        {developerMemberAuthorizations?.length})
                       </span>
-                      {/* <span>데브렌즈(5)</span> */}
                     </TooltipTrigger>
                     <TooltipContent>
                       {developerMemberAuthorizations?.map((member) => (
@@ -134,6 +210,15 @@ export default function ProjectHeader({ projectId }: { projectId: number }) {
           </CollapsibleContent>
         </Collapsible>
       </Card>
+      <ConfirmDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        title="단계 변경 확인"
+        description="현재 진행 단계를 변경하시겠습니까?"
+        onConfirm={handleConfirmChange}
+        confirmText="확인"
+        cancelText="취소"
+      />
     </>
   );
 }
