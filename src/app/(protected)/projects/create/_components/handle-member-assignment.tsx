@@ -8,39 +8,25 @@ import {
   Button,
 } from "@ui";
 import Heading from "@/components/ui/heading";
-import {
-  CompanyType,
-  MemberSection,
-  MemberState,
-  ExtendedMember,
-  MemberRole,
-} from "@/types/project";
-
-interface StoreType extends MemberState {
-  setMembers: (type: CompanyType, members: ExtendedMember[]) => void;
-  setLoading: (type: CompanyType, isLoading: boolean) => void;
-  selectMember: (type: CompanyType, member: ExtendedMember) => void;
-  removeMember: (type: CompanyType, role: MemberRole, memberId: string) => void;
-  setActiveRole: (type: CompanyType, role: MemberRole) => void;
-  reset: (type: CompanyType) => void;
-  formatMemberLabel: (member: ExtendedMember) => string;
-}
+import { useMemberStore } from "@/store/useMemberAssignStore";
 
 interface HandleMemberAssignmentProps {
-  type: CompanyType;
+  type: "developer" | "customer";
   title: string;
-  section: MemberSection;
-  store: StoreType;
 }
 
 export function HandleMemberAssignment({
   type,
   title,
-  section,
-  store,
 }: HandleMemberAssignmentProps) {
+  const store = useMemberStore();
+
+  const section = type === "customer" ? store.customer : store.developer;
   const { members, selectedApprovers, selectedNormal, activeRole, isLoading } =
     section;
+
+  console.log("selectedApprovers", selectedApprovers);
+  console.log("selectedNormal", selectedNormal);
 
   return (
     <div>
@@ -74,9 +60,7 @@ export function HandleMemberAssignment({
                   const isNormal = selectedNormal.some(
                     (m) => m.memberId === member.memberId,
                   );
-                  const isDisabled =
-                    (activeRole === "approver" && isNormal) ||
-                    (activeRole === "normal" && isApprover);
+                  const isDisabled = isApprover || isNormal;
 
                   return (
                     <Badge
@@ -117,9 +101,9 @@ export function HandleMemberAssignment({
           {/* 상단: 승인권자 */}
           <Card
             className={`cursor-pointer ${
-              activeRole === "approver" ? "border-primary" : ""
+              activeRole === "APPROVER" ? "border-primary" : ""
             }`}
-            onClick={() => store.setActiveRole(type, "approver")}
+            onClick={() => store.setActiveRole(type, "APPROVER")}
           >
             <CardHeader>
               <CardTitle>승인권자</CardTitle>
@@ -134,7 +118,7 @@ export function HandleMemberAssignment({
                       className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
                       onClick={(e) => {
                         e.stopPropagation();
-                        store.removeMember(type, "approver", member.memberId);
+                        store.removeMember(type, "APPROVER", member.memberId);
                       }}
                     >
                       {store.formatMemberLabel(member)}{" "}
@@ -153,9 +137,9 @@ export function HandleMemberAssignment({
           {/* 하단: 일반 참여 멤버 */}
           <Card
             className={`cursor-pointer ${
-              activeRole === "normal" ? "border-primary" : ""
+              activeRole === "NORMAL" ? "border-primary" : ""
             }`}
-            onClick={() => store.setActiveRole(type, "normal")}
+            onClick={() => store.setActiveRole(type, "NORMAL")}
           >
             <CardHeader>
               <CardTitle>일반참여멤버</CardTitle>
@@ -170,7 +154,7 @@ export function HandleMemberAssignment({
                       className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
                       onClick={(e) => {
                         e.stopPropagation();
-                        store.removeMember(type, "normal", member.memberId);
+                        store.removeMember(type, "NORMAL", member.memberId);
                       }}
                     >
                       {store.formatMemberLabel(member)}{" "}

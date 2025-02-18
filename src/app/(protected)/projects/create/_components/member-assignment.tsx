@@ -16,7 +16,6 @@ export function MemberAssignment({
 
   useEffect(() => {
     if (customerId) {
-      store.reset("customer");
       store.fetchMembers("customer", customerId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -24,7 +23,6 @@ export function MemberAssignment({
 
   useEffect(() => {
     if (developerId) {
-      store.reset("developer");
       store.fetchMembers("developer", developerId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,19 +32,9 @@ export function MemberAssignment({
     <div className="space-y-8">
       <SectionTitle>프로젝트 멤버 할당</SectionTitle>
 
-      <HandleMemberAssignment
-        type="customer"
-        title="고객사"
-        section={store.customer}
-        store={store}
-      />
+      <HandleMemberAssignment type="customer" title="고객사" />
 
-      <HandleMemberAssignment
-        type="developer"
-        title="개발사"
-        section={store.developer}
-        store={store}
-      />
+      <HandleMemberAssignment type="developer" title="개발사" />
     </div>
   );
 }

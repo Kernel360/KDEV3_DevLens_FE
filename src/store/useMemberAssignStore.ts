@@ -1,41 +1,74 @@
 import { GetCompanyMemberResponse } from "@/lib/api/generated/admin/models";
-import { adminAxios } from "@/lib/axiosClient";
 import {
-  CompanyType,
-  ExtendedMember,
-  MemberRole,
-  MemberState,
-} from "@/types/project";
+  PostProjectAuthorizationCustomerMemberAuthorization,
+  PostProjectAuthorizationDeveloperMemberAuthorization,
+} from "@/lib/api/generated/main/models";
+import { adminAxios } from "@/lib/axiosClient";
 import { create } from "zustand";
 
-const createInitialSection = () => ({
+type CompanyType = "customer" | "developer";
+type MemberRole = "APPROVER" | "NORMAL";
+
+interface CompanyMember {
+  memberId: number;
+  memberName: string;
+  department?: string;
+  position?: string;
+  email?: string;
+}
+
+interface MemberSection {
+  members: CompanyMember[];
+  selectedApprovers: CompanyMember[];
+  selectedNormal: CompanyMember[];
+  activeRole: MemberRole;
+  isLoading: boolean;
+  companyId?: number;
+}
+
+interface MemberState {
+  customer: MemberSection;
+  developer: MemberSection;
+}
+
+const createInitialSection = (): MemberSection => ({
   members: [],
   selectedApprovers: [],
   selectedNormal: [],
-  activeRole: "approver" as const,
+  activeRole: "APPROVER",
   isLoading: false,
-  companyId: undefined as number | undefined,
+  companyId: undefined,
 });
 
 export const useMemberStore = create<
   MemberState & {
-    setMembers: (type: CompanyType, members: ExtendedMember[]) => void;
+    setMembers: (
+      type: CompanyType,
+      members: GetCompanyMemberResponse["companyMemberList"],
+    ) => void;
     setLoading: (type: CompanyType, isLoading: boolean) => void;
-    selectMember: (type: CompanyType, member: ExtendedMember) => void;
+    selectMember: (
+      type: CompanyType,
+      member: CompanyMember,
+      role?: MemberRole,
+    ) => void;
     removeMember: (
       type: CompanyType,
       role: MemberRole,
-      memberId: string,
+      memberId: number,
     ) => void;
     setActiveRole: (type: CompanyType, role: MemberRole) => void;
     reset: (type: CompanyType) => void;
-    formatMemberLabel: (member: ExtendedMember) => string;
+    formatMemberLabel: (member: CompanyMember) => string;
     fetchMembers: (type: CompanyType, companyId: number) => Promise<void>;
+    getAuthorizations: () => {
+      customerAuthorizations: PostProjectAuthorizationCustomerMemberAuthorization[];
+      developerAuthorizations: PostProjectAuthorizationDeveloperMemberAuthorization[];
+    };
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 >((set, get) => ({
-  developer: createInitialSection(),
   customer: createInitialSection(),
+  developer: createInitialSection(),
 
   setMembers: (type, members) =>
     set((state) => ({
@@ -47,12 +80,10 @@ export const useMemberStore = create<
       [type]: { ...state[type], isLoading },
     })),
 
-  selectMember: (type, member) =>
+  selectMember: (type: CompanyType, member: CompanyMember, role?: MemberRole) =>
     set((state) => {
       const section = state[type];
-      const { activeRole } = section;
-
-      if (!activeRole) return state;
+      const targetRole = role || section.activeRole;
 
       const isApprover = section.selectedApprovers.some(
         (m) => m.memberId === member.memberId,
@@ -62,14 +93,14 @@ export const useMemberStore = create<
       );
 
       if (
-        (activeRole === "approver" && isNormal) ||
-        (activeRole === "normal" && isApprover)
+        (targetRole === "APPROVER" && isNormal) ||
+        (targetRole === "NORMAL" && isApprover)
       ) {
         return state;
       }
 
       const targetArray =
-        activeRole === "approver" ? "selectedApprovers" : "selectedNormal";
+        targetRole === "APPROVER" ? "selectedApprovers" : "selectedNormal";
       const exists = section[targetArray].find(
         (m) => m.memberId === member.memberId,
       );
@@ -84,17 +115,21 @@ export const useMemberStore = create<
       };
     }),
 
-  removeMember: (type, role, memberId) =>
-    set((state) => ({
-      [type]: {
-        ...state[type],
-        [role === "approver" ? "selectedApprovers" : "selectedNormal"]: state[
-          type
-        ][role === "approver" ? "selectedApprovers" : "selectedNormal"].filter(
-          (m) => m.memberId !== memberId,
-        ),
-      },
-    })),
+  removeMember: (type: CompanyType, role: MemberRole, memberId: number) =>
+    set((state) => {
+      const section = state[type] as MemberSection;
+      const targetArray =
+        role === "APPROVER" ? "selectedApprovers" : "selectedNormal";
+
+      return {
+        [type]: {
+          ...section,
+          [targetArray]: section[targetArray].filter(
+            (m) => m.memberId !== memberId,
+          ),
+        },
+      };
+    }),
 
   setActiveRole: (type, role) =>
     set((state) => ({
@@ -107,7 +142,7 @@ export const useMemberStore = create<
         ...state[type],
         selectedApprovers: [],
         selectedNormal: [],
-        activeRole: "approver",
+        activeRole: "APPROVER",
         companyId: undefined,
       },
     })),
@@ -121,7 +156,7 @@ export const useMemberStore = create<
       : member.memberName;
   },
 
-  fetchMembers: async (type, companyId) => {
+  fetchMembers: async (type: CompanyType, companyId: number) => {
     set((state) => ({
       [type]: { ...state[type], companyId, isLoading: true },
     }));
@@ -139,18 +174,53 @@ export const useMemberStore = create<
         method: "GET",
       });
 
-      set((state) => ({
-        [type]: {
-          ...state[type],
-          members: response.companyMemberList || [],
-          isLoading: false,
-        },
-      }));
+      set((state) => {
+        const section = state[type];
+
+        const members = response.companyMemberList || [];
+
+        return {
+          [type]: {
+            ...section,
+            members,
+            isLoading: false,
+          },
+        };
+      });
     } catch (error) {
       set((state) => ({
         [type]: { ...state[type], members: [], isLoading: false },
       }));
       console.error(`Failed to fetch ${type} members:`, error);
     }
+  },
+
+  getAuthorizations: () => {
+    const state = get();
+
+    const formatAuthorizations = (type: CompanyType) => {
+      const section = state[type];
+      return [
+        ...section.selectedApprovers.map((member) => ({
+          memberId: member.memberId,
+          memberName: member.memberName,
+          memberType:
+            type === "customer" ? ("CLIENT" as const) : ("DEVELOPER" as const),
+          projectAuthorization: "APPROVER" as const,
+        })),
+        ...section.selectedNormal.map((member) => ({
+          memberId: member.memberId,
+          memberName: member.memberName,
+          memberType:
+            type === "customer" ? ("CLIENT" as const) : ("DEVELOPER" as const),
+          projectAuthorization: "NORMAL" as const,
+        })),
+      ];
+    };
+
+    return {
+      customerAuthorizations: formatAuthorizations("customer"),
+      developerAuthorizations: formatAuthorizations("developer"),
+    };
   },
 }));
