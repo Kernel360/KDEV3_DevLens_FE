@@ -1685,6 +1685,24 @@
         }
       }
     },
+    "/api/notification/subscribe": {
+      "get": {
+        "tags": ["notification-controller"],
+        "operationId": "subscribe",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/APIResponseSseEmitter"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/companies/{companyId}/projects": {
       "get": {
         "tags": ["Project Dashboard API"],
@@ -2777,6 +2795,18 @@
           "deadline": { "type": "string", "format": "date" },
           "commentCount": { "type": "integer", "format": "int64" }
         }
+      },
+      "APIResponseSseEmitter": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/SseEmitter" }
+        }
+      },
+      "SseEmitter": {
+        "type": "object",
+        "properties": { "timeout": { "type": "integer", "format": "int64" } }
       },
       "MyPageGetMember": {
         "type": "object",

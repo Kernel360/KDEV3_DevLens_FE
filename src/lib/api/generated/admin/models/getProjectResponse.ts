@@ -18,7 +18,9 @@ export interface GetProjectResponse {
   authorizations?: ProjectAuthorization[];
   id?: number;
   projectName?: string;
+  customerCompanyId?: number;
   customerCompanyName?: string;
+  developerCompanyId?: number;
   developerCompanyName?: string;
   projectDescription?: string;
   projectTypeName?: string;
