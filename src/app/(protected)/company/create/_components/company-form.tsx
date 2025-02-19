@@ -6,7 +6,7 @@ import {
   handlePhoneNumberChange,
   handleRegistrationNumberChange,
 } from "@/lib/utils";
-import { createCompanySchema, type CompanyFormData } from "@/schemas/company";
+import { CreateCompanyFormData, createCompanySchema } from "@/schemas/company";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
@@ -25,7 +25,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 export function CompanyForm() {
-  const form = useForm<CompanyFormData>({
+  const form = useForm<CreateCompanyFormData>({
     resolver: zodResolver(createCompanySchema),
     defaultValues: {
       companyName: "",
@@ -41,7 +41,7 @@ export function CompanyForm() {
   const router = useRouter();
   // const departmentInputRef = useRef<HTMLInputElement>(null);
 
-  const onSubmit = async (data: CompanyFormData) => {
+  const onSubmit = async (data: CreateCompanyFormData) => {
     try {
       const requestData = {
         companyName: data.companyName,
@@ -53,13 +53,10 @@ export function CompanyForm() {
         address: data.address,
         // departments: data.departments,
       } as const;
-      await adminCompanyApi.create(requestData);
-      toast.success("회사 생성이 완료되었습니다.", {
-        action: {
-          label: "회사 목록으로 이동",
-          onClick: () => router.push("/company"),
-        },
-      });
+      form.reset();
+      const newCompany = await adminCompanyApi.create(requestData);
+      toast.success("회사 생성이 완료되었습니다.");
+      // router.push(`/company?id=${newCompany.id}`);
     } catch (error) {
       toast.error(`회사 생성중 오류가 발생했습니다. ${error}`);
     }
@@ -125,12 +122,17 @@ export function CompanyForm() {
                       defaultValue={field.value}
                       className="flex gap-4 pt-2"
                     >
-                      {Object.entries(BUSINESS_TYPE_OPTIONS).map(([key, value]) => (
-                        <div key={key} className="flex items-center space-x-2">
-                          <RadioGroupItem value={key} id={key} />
-                          <FormLabel htmlFor={key}>{value}</FormLabel>
-                        </div>
-                      ))}
+                      {Object.entries(BUSINESS_TYPE_OPTIONS).map(
+                        ([key, value]) => (
+                          <div
+                            key={key}
+                            className="flex items-center space-x-2"
+                          >
+                            <RadioGroupItem value={key} id={key} />
+                            <FormLabel htmlFor={key}>{value}</FormLabel>
+                          </div>
+                        ),
+                      )}
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />

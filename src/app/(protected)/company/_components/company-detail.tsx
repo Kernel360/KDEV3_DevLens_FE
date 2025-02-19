@@ -34,7 +34,7 @@ import {
   handlePhoneNumberChange,
   handleRegistrationNumberChange,
 } from "@/lib/utils";
-import { createCompanySchema } from "@/schemas/company";
+import { updateCompanySchema } from "@/schemas/company";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -69,7 +69,7 @@ export default function CompanyDetail({ id }: { id: number }) {
   });
 
   const form = useForm({
-    resolver: zodResolver(createCompanySchema),
+    resolver: zodResolver(updateCompanySchema),
     defaultValues: {
       companyName: data?.companyName || "",
       businessType: data?.businessType || "CORPORATION",

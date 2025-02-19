@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-export const createCompanySchema = z.object({
+// 기본 회사 스키마 (공통 필드)
+const baseCompanySchema = z.object({
   companyName: z
     .string()
     .min(1, { message: "회사명은 필수입니다" })
@@ -21,7 +22,7 @@ export const createCompanySchema = z.object({
   representativeContact: z
     .string()
     .min(1, { message: "대표번호는 필수입니다" })
-    .regex(/^\d{2,3}-\d{4}-\d{4}$/, {
+    .regex(/^\d{2,3}-\d{3,4}-\d{4}$/, {
       message: "올바른 전화번호 형식이 아닙니다 (예: 02-1234-5678)",
     }),
   email: z
@@ -32,6 +33,13 @@ export const createCompanySchema = z.object({
     .string()
     .min(1, { message: "주소는 필수입니다" })
     .max(200, { message: "주소는 200자 이내로 입력해주세요" }),
+});
+
+// 회사 생성 스키마
+export const createCompanySchema = baseCompanySchema;
+
+// 회사 수정 스키마
+export const updateCompanySchema = baseCompanySchema.extend({
   isActive: z.enum(["Y", "N"], {
     required_error: "활성화 상태를 선택해주세요",
   }),
@@ -40,14 +48,6 @@ export const createCompanySchema = z.object({
   //   .min(1, { message: "최소 1개 이상의 부서를 입력해주세요" }),
 });
 
-export type CompanyFormData = {
-  companyName: string;
-  businessType: "CORPORATION" | "INDIVIDUAL";
-  registrationNumber: string;
-  representativeName: string;
-  representativeContact: string;
-  email: string;
-  address: string;
-  isActive: "Y" | "N";
-  // departments: string[];
-};
+// 타입 정의
+export type CreateCompanyFormData = z.infer<typeof createCompanySchema>;
+export type UpdateCompanyFormData = z.infer<typeof updateCompanySchema>;
