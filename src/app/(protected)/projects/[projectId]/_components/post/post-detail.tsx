@@ -48,6 +48,7 @@ const initialPost: Required<PostResponse> = {
   postId: 0,
   isParentPost: true,
   projectStepId: 0,
+  writerImage: "",
   title: "",
   content: "",
   writer: "",
@@ -201,7 +202,7 @@ function PostDetail({ id }: { id: number }) {
               <UserAvatar
                 className="size-6"
                 name={post.writer!}
-                imageSrc={""}
+                imageSrc={post.writerImage}
               />
               <span>{post.writer}</span>
             </div>
