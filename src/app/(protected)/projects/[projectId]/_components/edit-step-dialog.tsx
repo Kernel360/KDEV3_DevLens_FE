@@ -83,7 +83,7 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
   const isLoading = isUpdating || isDeleting;
 
   return (
-    <>
+    <div onClick={(e) => e.stopPropagation()}>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button variant="ghost" size="icon">
@@ -180,6 +180,6 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 }
