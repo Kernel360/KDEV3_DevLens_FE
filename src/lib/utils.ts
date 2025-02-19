@@ -75,14 +75,20 @@ export function handlePhoneNumberChange(
 
 // 회사 사업자등록번호
 export function formatRegistrationNumber(value: string) {
-  if (!value) return value;
+  // 숫자만 추출
   const numbers = value.replace(/[^\d]/g, "");
 
-  return numbers.replace(/^(\d{0,3})(\d{0,2})(\d{0,5})$/g, (_, p1, p2, p3) => {
-    if (!p2) return p1;
-    if (!p3) return `${p1}-${p2}`;
-    return `${p1}-${p2}-${p3}`;
-  });
+  // 10자리로 제한
+  const limitedNumbers = numbers.slice(0, 10);
+
+  // 포맷팅
+  if (limitedNumbers.length <= 3) {
+    return limitedNumbers;
+  }
+  if (limitedNumbers.length <= 5) {
+    return `${limitedNumbers.slice(0, 3)}-${limitedNumbers.slice(3)}`;
+  }
+  return `${limitedNumbers.slice(0, 3)}-${limitedNumbers.slice(3, 5)}-${limitedNumbers.slice(5)}`;
 }
 
 export function handleRegistrationNumberChange(
