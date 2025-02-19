@@ -66,9 +66,15 @@ export default function ProjectForm() {
   const { mutateAsync: assignMembers } = usePostProjectAuthorization();
   const { customer, developer } = useMemberStore();
 
+  // form 상태 디버깅을 위한 코드 추가
+  console.log("Form errors:", form.formState.errors);
+
   const onSubmit = async (data: ProjectFormData) => {
+    console.log("Form data:", data);
+    console.log("onSubmit");
     try {
       // 1. 프로젝트 생성
+      console.log("생성요청");
       const newProject = await createProject({
         data: {
           projectName: data.projectName,
@@ -114,7 +120,7 @@ export default function ProjectForm() {
           });
           form.reset();
           toast.success("프로젝트 생성 및 멤버 배정이 완료되었습니다.");
-          router.push(`/projects/${newProject.id}`);
+          router.push(`/projects/?id=${newProject.id}`);
         } catch (memberError) {
           toast.warning("프로젝트는 생성되었으나 멤버 배정에 실패했습니다.", {
             action: {
@@ -222,7 +228,7 @@ export default function ProjectForm() {
               name="bnsManager"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>BNS 매니저</FormLabel>
+                  <FormLabel>시스템 담당자</FormLabel>
                   <FormControl>
                     <Input placeholder="BNS 매니저명을 입력하세요" {...field} />
                   </FormControl>
@@ -307,7 +313,7 @@ export default function ProjectForm() {
               <FormItem>
                 <FormLabel>프로젝트 태그</FormLabel>
                 <FormControl>
-                  <div className="space-y-4">
+                  <div className="w-full space-y-4">
                     <div className="flex flex-wrap gap-2">
                       {field.value?.map((tag, index) => (
                         <Badge
@@ -328,7 +334,7 @@ export default function ProjectForm() {
                       ))}
                     </div>
 
-                    <div className="flex gap-1.5">
+                    <div className="flex flex-wrap gap-1.5">
                       {SUGGESTED_PROJECT_TAGS.map((tag) => (
                         <Badge
                           key={tag}
@@ -343,32 +349,32 @@ export default function ProjectForm() {
                           {tag}
                         </Badge>
                       ))}
-
-                      <Input
-                        placeholder="직접 입력: 태그를 입력하고 Enter를 누르세요"
-                        onCompositionEnd={(e) => {
-                          const target = e.target as HTMLInputElement;
-                          target.dataset.composing = "false";
-                        }}
-                        onCompositionStart={(e) => {
-                          const target = e.target as HTMLInputElement;
-                          target.dataset.composing = "true";
-                        }}
-                        onKeyDown={(e) => {
-                          const target = e.target as HTMLInputElement;
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            if (target.dataset.composing === "true") return;
-
-                            const value = target.value.trim();
-                            if (value && !field.value?.includes(value)) {
-                              field.onChange([...(field.value ?? []), value]);
-                              target.value = "";
-                            }
-                          }
-                        }}
-                      />
                     </div>
+                    <Input
+                      className="w-full"
+                      placeholder="직접 입력: 태그를 입력하고 Enter를 누르세요"
+                      onCompositionEnd={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        target.dataset.composing = "false";
+                      }}
+                      onCompositionStart={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        target.dataset.composing = "true";
+                      }}
+                      onKeyDown={(e) => {
+                        const target = e.target as HTMLInputElement;
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          if (target.dataset.composing === "true") return;
+
+                          const value = target.value.trim();
+                          if (value && !field.value?.includes(value)) {
+                            field.onChange([...(field.value ?? []), value]);
+                            target.value = "";
+                          }
+                        }
+                      }}
+                    />
                   </div>
                 </FormControl>
                 <FormMessage />

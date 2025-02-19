@@ -91,22 +91,21 @@ export interface GetMemberByCompanyResponse {
 }
 
 export type MemberRole = "approver" | "normal";
-export type CompanyType = "developer" | "customer";
 
-export type ExtendedMember = GetMemberByCompanyResponse & {
-  company: CompanyType;
-};
+// export type ExtendedMember = GetMemberByCompanyResponse & {
+//   company: CompanyType;
+// };
 
-export interface MemberSection {
-  members: ExtendedMember[];
-  companyId?: number;
-  selectedApprovers: ExtendedMember[];
-  selectedNormal: ExtendedMember[];
-  activeRole: MemberRole;
-  isLoading: boolean;
-}
+// export interface MemberSection {
+//   members: ExtendedMember[];
+//   companyId?: number;
+//   selectedApprovers: ExtendedMember[];
+//   selectedNormal: ExtendedMember[];
+//   activeRole: MemberRole;
+//   isLoading: boolean;
+// }
 
-export interface MemberState {
-  developer: MemberSection;
-  customer: MemberSection;
-}
+// export interface MemberState {
+//   developer: MemberSection;
+//   customer: MemberSection;
+// }

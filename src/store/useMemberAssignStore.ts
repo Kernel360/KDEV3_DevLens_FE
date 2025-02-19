@@ -7,7 +7,7 @@ import { adminAxios } from "@/lib/axiosClient";
 import { create } from "zustand";
 
 type CompanyType = "customer" | "developer";
-type MemberRole = "APPROVER" | "NORMAL";
+type MemberRole = "APPROVER" | "PARTICIPANT";
 
 interface CompanyMember {
   memberId: number;
@@ -94,7 +94,7 @@ export const useMemberStore = create<
 
       if (
         (targetRole === "APPROVER" && isNormal) ||
-        (targetRole === "NORMAL" && isApprover)
+        (targetRole === "PARTICIPANT" && isApprover)
       ) {
         return state;
       }
@@ -213,7 +213,7 @@ export const useMemberStore = create<
           memberName: member.memberName,
           memberType:
             type === "customer" ? ("CLIENT" as const) : ("DEVELOPER" as const),
-          projectAuthorization: "NORMAL" as const,
+          projectAuthorization: "PARTICIPANT" as const,
         })),
       ];
     };

@@ -137,9 +137,9 @@ export function HandleMemberAssignment({
           {/* 하단: 일반 참여 멤버 */}
           <Card
             className={`cursor-pointer ${
-              activeRole === "NORMAL" ? "border-primary" : ""
+              activeRole === "PARTICIPANT" ? "border-primary" : ""
             }`}
-            onClick={() => store.setActiveRole(type, "NORMAL")}
+            onClick={() => store.setActiveRole(type, "PARTICIPANT")}
           >
             <CardHeader>
               <CardTitle>일반참여멤버</CardTitle>
@@ -154,7 +154,7 @@ export function HandleMemberAssignment({
                       className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
                       onClick={(e) => {
                         e.stopPropagation();
-                        store.removeMember(type, "NORMAL", member.memberId);
+                        store.removeMember(type, "PARTICIPANT", member.memberId);
                       }}
                     >
                       {store.formatMemberLabel(member)}{" "}

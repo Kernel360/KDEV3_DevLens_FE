@@ -46,3 +46,12 @@ export const DEFAULT_ROLE_OPTIONS: {
   { value: "SUPER", label: "슈퍼관리자" },
   { value: "USER", label: "일반사용자" },
 ];
+
+export const PROJECT_STATUS = {
+  PREPARED: "준비중",
+  IN_PROGRESS: "진행중",
+  COMPLETED: "완료",
+  CLOSED: "종료",
+  CANCELLED: "취소",
+  DELETED: "삭제",
+} as const;

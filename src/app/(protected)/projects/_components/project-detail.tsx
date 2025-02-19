@@ -38,11 +38,11 @@ import { PROJECT_STATUS, PROJECT_TYPES } from "@/lib/constants/selects";
 import { X } from "lucide-react";
 import { MemberAssignment } from "../create/_components/member-assignment";
 import { SUGGESTED_PROJECT_TAGS } from "../create/_components/project-form";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMemberStore } from "@/store/useMemberAssignStore";
-import { GetProjectResponse } from "@/lib/api/generated/admin/models";
+// import { GetProjectResponse } from "@/lib/api/generated/admin/models";
 
-type RequiredProject = Required<GetProjectResponse>;
+// type RequiredProject = Required<GetProjectResponse>;
 
 export default function ProjectDetail() {
   const [isEditing, setIsEditing] = useState(false);
@@ -91,6 +91,13 @@ export default function ProjectDetail() {
 
   const store = useMemberStore();
 
+  const projectTypeId = useMemo(
+    () =>
+      PROJECT_TYPES.find((type) => type.label === project?.projectTypeName)
+        ?.id ?? 1,
+    [project?.projectTypeName],
+  );
+
   useEffect(() => {
     if (project) {
       form.reset({
@@ -127,7 +134,9 @@ export default function ProjectDetail() {
     project.customerMemberAuthorizations?.forEach((member) => {
       if (member.memberId && member.memberName) {
         const role =
-          member.projectAuthorization === "APPROVER" ? "APPROVER" : "NORMAL";
+          member.projectAuthorization === "APPROVER"
+            ? "APPROVER"
+            : "PARTICIPANT";
         store.selectMember(
           "customer",
           {
@@ -143,7 +152,9 @@ export default function ProjectDetail() {
     project.developerMemberAuthorizations?.forEach((member) => {
       if (member.memberId && member.memberName) {
         const role =
-          member.projectAuthorization === "APPROVER" ? "APPROVER" : "NORMAL";
+          member.projectAuthorization === "APPROVER"
+            ? "APPROVER"
+            : "PARTICIPANT";
         store.selectMember(
           "developer",
           {
@@ -163,7 +174,8 @@ export default function ProjectDetail() {
   }, [project?.id]);
 
   const onSubmit = async (data: UpdateProjectFormData) => {
-    console.log("Submit attempted with data:", data);
+    const { customerAuthorizations, developerAuthorizations } =
+      store.getAuthorizations();
     try {
       await updateProjectMutation.mutateAsync({
         id: projectId,
@@ -178,15 +190,13 @@ export default function ProjectDetail() {
           startDate: data.startDate,
           endDate: data.endDate,
           projectTags: data.projectTags,
-          // customerCompanyId: data.customerCompanyId,
-          // developerCompanyId: data.developerCompanyId,
+          customerAuthorizations,
+          developerAuthorizations,
         },
       });
 
-      
       toast.success("프로젝트 정보가 수정되었습니다");
       setIsEditing(false);
-      
     } catch (error) {
       console.error("Mutation error:", error);
       toast.error(`프로젝트 수정 중 오류가 발생했습니다. ${error}`);
@@ -317,7 +327,7 @@ export default function ProjectDetail() {
 
             <FormField
               control={form.control}
-              name="projectTypeId"
+              name="projectTypeName"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>프로젝트 유형</FormLabel>
@@ -393,7 +403,7 @@ export default function ProjectDetail() {
                     <Input
                       {...field}
                       disabled={!isEditing}
-                      className={!isEditing ? "bg-muted" : ""}
+                      // className={!isEditing ? "bg-muted" : ""}
                     />
                   </FormControl>
                   <FormMessage />
@@ -412,7 +422,7 @@ export default function ProjectDetail() {
                   <Textarea
                     {...field}
                     disabled={!isEditing}
-                    className={`h-32 ${!isEditing ? "bg-muted" : ""}`}
+                    // className={`h-32 ${!isEditing ? "bg-muted" : ""}`}
                   />
                 </FormControl>
                 <FormMessage />
@@ -526,7 +536,7 @@ export default function ProjectDetail() {
                         {project.customerMemberAuthorizations
                           ?.filter(
                             (member) =>
-                              member.projectAuthorization === "MEMBER",
+                              member.projectAuthorization === "PARTICIPANT",
                           )
                           .map((member) => (
                             <Badge key={member.memberId} variant="secondary">
@@ -570,7 +580,7 @@ export default function ProjectDetail() {
                         {project.developerMemberAuthorizations
                           ?.filter(
                             (member) =>
-                              member.projectAuthorization === "MEMBER",
+                              member.projectAuthorization === "PARTICIPANT",
                           )
                           .map((member) => (
                             <Badge key={member.memberId} variant="secondary">
