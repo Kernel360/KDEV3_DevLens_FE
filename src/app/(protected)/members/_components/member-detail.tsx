@@ -140,7 +140,7 @@ export function MemberDetail({ id }: MemberDetailProps) {
   return (
     <div className="mx-auto w-full max-w-4xl p-6">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">회원 상세</h2>
+        <h2 className="text-2xl font-bold">회원 상세 {isEditing && "수정"}</h2>
         <div className="flex gap-2">
           <Button
             variant={isEditing ? "outline" : "default"}
@@ -202,7 +202,7 @@ export function MemberDetail({ id }: MemberDetailProps) {
                 <FormItem>
                   <FormLabel>이름</FormLabel>
                   <FormControl>
-                    <Input {...field} disabled={!isEditing} />
+                    <Input {...field} disabled={true} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

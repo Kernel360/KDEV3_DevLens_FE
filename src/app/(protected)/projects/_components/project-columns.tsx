@@ -40,7 +40,7 @@ export const projectColumns: ColumnDef<Project>[] = [
   },
   {
     id: "bnsManager",
-    header: "BNS 담당자",
+    header: "시스템 담당자",
     cell: ({ row }) => row.original.bnsManager,
   },
   {
