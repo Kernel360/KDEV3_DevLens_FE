@@ -101,8 +101,6 @@ export function handleRegistrationNumberChange(
 // 상태 관련 헬퍼 함수들
 export function getStatusVariant(status: string) {
   switch (status) {
-    case "DEFAULT":
-      return "outline";
     case "PREPARED":
       return "secondary";
     case "IN_PROGRESS":
@@ -115,14 +113,12 @@ export function getStatusVariant(status: string) {
     case "DELETED":
       return "destructive";
     default:
-      return "secondary";
+      return null;
   }
 }
 
 export function getStatusLabel(status: string) {
   switch (status) {
-    case "DEFAULT":
-      return "기본";
     case "PREPARED":
       return "준비";
     case "IN_PROGRESS":
@@ -136,7 +132,7 @@ export function getStatusLabel(status: string) {
     case "DELETED":
       return "삭제";
     default:
-      return status;
+      return null;
   }
 }
 
@@ -167,7 +163,7 @@ export function getPriorityVariant(priority: string) {
       return "secondary";
     case "DEFAULT":
     default:
-      return "outline";
+      return null;
   }
 }
 
@@ -181,7 +177,7 @@ export function getPriorityLabel(priority: string) {
       return "낮음";
     case "DEFAULT":
     default:
-      return "기본";
+      return null;
   }
 }
 

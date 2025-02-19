@@ -25,21 +25,25 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
     id: "priority",
     header: "우선순위",
     className: "w-20",
-    cell: ({ row }) => (
-      <Badge variant={getPriorityVariant(row.original.priority ?? "NONE")}>
-        {getPriorityLabel(row.original.priority ?? "NONE")}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const priority = row.original.priority;
+      const variant = priority ? getPriorityVariant(priority) : null;
+      const label = priority ? getPriorityLabel(priority) : null;
+
+      return variant && label ? <Badge variant={variant}>{label}</Badge> : null;
+    },
   },
   {
     id: "status",
     header: "상태",
     className: "w-20",
-    cell: ({ row }) => (
-      <Badge variant={getStatusVariant(row.original.status ?? "NONE")}>
-        {getStatusLabel(row.original.status ?? "NONE")}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status;
+      const variant = status ? getStatusVariant(status) : null;
+      const label = status ? getStatusLabel(status) : null;
+
+      return variant && label ? <Badge variant={variant}>{label}</Badge> : null;
+    },
   },
   {
     id: "title",
@@ -59,7 +63,9 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
           </span>
         )}
         <span className="w-fit truncate">{row.original.title}</span>
-        <Paperclip className="ml-2 h-3 w-3 text-muted-foreground" />
+        {row.original.fileExists && (
+          <Paperclip className="ml-2 h-3 w-3 text-muted-foreground" />
+        )}
         {row.original.commentCount !== undefined &&
           row.original.commentCount > 0 && (
             <span className="ml-2 font-normal text-muted-foreground hover:underline">
