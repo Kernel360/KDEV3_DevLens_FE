@@ -1,18 +1,24 @@
 "use client";
 
+import DatePickerInput from "@/components/composites/date-picker-input";
 import {
   useReadProject,
   useUpdateProject,
 } from "@/lib/api/generated/admin/services/administrator-project-management-api/administrator-project-management-api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { useSearchParams, useRouter } from "next/navigation";
+import { PROJECT_STATUS, PROJECT_TYPES } from "@/lib/constants/selects";
 import {
   updateProjectSchema,
   type UpdateProjectFormData,
 } from "@/schemas/project";
+import { useMemberStore } from "@/store/useMemberAssignStore";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
   Form,
   FormControl,
   FormField,
@@ -20,26 +26,20 @@ import {
   FormLabel,
   FormMessage,
   Input,
-  Button,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
   Textarea,
-  Badge,
-  CardContent,
-  CardHeader,
-  Card,
-  CardTitle,
 } from "@ui";
-import DatePickerInput from "@/components/composites/date-picker-input";
-import { PROJECT_STATUS, PROJECT_TYPES } from "@/lib/constants/selects";
-import { X } from "lucide-react";
+import { CircleArrowOutUpRight, X } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { MemberAssignment } from "../create/_components/member-assignment";
 import { SUGGESTED_PROJECT_TAGS } from "../create/_components/project-form";
-import { useEffect, useMemo, useState } from "react";
-import { useMemberStore } from "@/store/useMemberAssignStore";
 // import { GetProjectResponse } from "@/lib/api/generated/admin/models";
 
 // type RequiredProject = Required<GetProjectResponse>;
@@ -54,7 +54,6 @@ export default function ProjectDetail() {
     data: project,
     isLoading,
     isError,
-    error,
   } = useReadProject(projectId, {
     query: {
       enabled: !!projectId,
@@ -70,8 +69,7 @@ export default function ProjectDetail() {
     defaultValues: {
       projectName: "",
       projectDescription: "",
-      projectTypeId: 1,
-      projectTypeName: "",
+      projectTypeId: 0,
       projectStatusCode: "PREPARED",
       bnsManager: "",
       plannedStartDate: "",
@@ -90,13 +88,7 @@ export default function ProjectDetail() {
   });
 
   const store = useMemberStore();
-
-  const projectTypeId = useMemo(
-    () =>
-      PROJECT_TYPES.find((type) => type.label === project?.projectTypeName)
-        ?.id ?? 1,
-    [project?.projectTypeName],
-  );
+  console.log(project?.projectTypeId);
 
   useEffect(() => {
     if (project) {
@@ -107,8 +99,7 @@ export default function ProjectDetail() {
         customerCompanyName: project.customerCompanyName ?? "",
         developerCompanyName: project.developerCompanyName ?? "",
         projectDescription: project.projectDescription ?? "",
-        projectTypeId: Number(project.project?.projectType) ?? 1,
-        projectTypeName: project.projectTypeName ?? "",
+        projectTypeId: Number(project.projectTypeId) ?? 1,
         projectStatusCode: project.projectStatusCode || "PREPARED",
         bnsManager: project.bnsManager ?? "",
         contractNumber: project.contractNumber ?? "",
@@ -217,13 +208,44 @@ export default function ProjectDetail() {
 
   return (
     <div className="mx-auto w-full max-w-4xl p-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">
-          {isEditing ? "프로젝트 수정" : "프로젝트 상세"}
+      <div className="mb-6 flex items-center gap-2">
+        <h2 className="mr-auto text-2xl font-bold">
+          프로젝트 정보
+          {isEditing ? " 수정" : ""}
         </h2>
         <Button
+          variant="outline"
+          onClick={() => router.push(`/projects/${projectId}`)}
+        >
+          <CircleArrowOutUpRight />
+          프로젝트 바로가기
+        </Button>
+        <Button
           variant={isEditing ? "outline" : "default"}
-          onClick={() => setIsEditing(!isEditing)}
+          onClick={() => {
+            if (isEditing && project) {
+              form.reset({
+                projectName: project.projectName ?? "",
+                customerCompanyId: project.customerCompanyId ?? 0,
+                developerCompanyId: project.developerCompanyId ?? 0,
+                customerCompanyName: project.customerCompanyName ?? "",
+                developerCompanyName: project.developerCompanyName ?? "",
+                projectDescription: project.projectDescription ?? "",
+                projectTypeId: Number(project.projectTypeId) ?? 1,
+                projectStatusCode: project.projectStatusCode || "PREPARED",
+                bnsManager: project.bnsManager ?? "",
+                contractNumber: project.contractNumber ?? "",
+                plannedStartDate: project.plannedStartDate ?? "",
+                plannedEndDate: project.plannedEndDate ?? "",
+                startDate: project.startDate ?? "",
+                endDate: project.endDate ?? "",
+                finalApprover: project.finalApprover ?? "",
+                finalApprovalDate: project.finalApprovalDate ?? null,
+                projectTags: project.projectTags || [],
+              });
+            }
+            setIsEditing(!isEditing);
+          }}
         >
           {isEditing ? "취소" : "수정"}
         </Button>
@@ -327,14 +349,14 @@ export default function ProjectDetail() {
 
             <FormField
               control={form.control}
-              name="projectTypeName"
+              name="projectTypeId"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>프로젝트 유형</FormLabel>
                   <Select
-                    onValueChange={(value) => field.onChange(Number(value))}
-                    value={field.value?.toString()}
                     disabled={!isEditing}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    defaultValue={project?.projectTypeId?.toString()}
                   >
                     <FormControl>
                       <SelectTrigger className={!isEditing ? "bg-muted" : ""}>

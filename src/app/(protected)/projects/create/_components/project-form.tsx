@@ -103,7 +103,7 @@ export default function ProjectForm() {
                 })),
                 ...customer.selectedNormal.map((member) => ({
                   memberId: Number(member.memberId),
-                  projectAuthorization: "MEMBER" as const,
+                  projectAuthorization: "PARTICIPANT" as const,
                 })),
               ],
               developerAuthorizations: [
@@ -113,7 +113,7 @@ export default function ProjectForm() {
                 })),
                 ...developer.selectedNormal.map((member) => ({
                   memberId: Number(member.memberId),
-                  projectAuthorization: "MEMBER" as const,
+                  projectAuthorization: "PARTICIPANT" as const,
                 })),
               ],
             },
