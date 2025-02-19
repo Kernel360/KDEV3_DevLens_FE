@@ -45,7 +45,7 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
     header: "제목",
     className: "min-w-[300px]",
     cell: ({ row }) => (
-      <span className="flex items-center font-bold">
+      <span className="flex w-full items-center font-bold">
         {row.original.parentPostId && (
           <span className="text-muted-foreground">
             {/* <CornerDownRight className="w-4 h-4 mr-2" /> */}
@@ -57,7 +57,7 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
             </Badge>
           </span>
         )}
-        {row.original.title}
+        <span className="w-fit truncate">{row.original.title}</span>
         {row.original.commentCount !== undefined &&
           row.original.commentCount > 0 && (
             <span className="ml-2 font-normal text-muted-foreground hover:underline">
