@@ -20,32 +20,12 @@ export async function loginAction(data: LoginRequest) {
     const setCookieHeader = response.headers.get("set-cookie");
 
     if (setCookieHeader) {
-      const cookies = setCookieHeader.split(",");
-      cookies.forEach((cookie) => {
-        const [cookieMain] = cookie.split(";");
-        const [cookieName, cookieValue] = cookieMain.split("=");
-
-        if (
-          cookieName.trim() === "X-Access-Token" ||
-          cookieName.trim() === "X-Refresh-Token"
-        ) {
-          cookieStore.set(cookieName.trim(), cookieValue, {
-            path: "/",
-            // access token 1시간, refresh token 24시간
-            maxAge:
-              cookieName.trim() === "X-Access-Token" ? 60 * 60 : 60 * 60 * 24,
-            expires: new Date(
-              Date.now() +
-                (cookieName.trim() === "X-Access-Token"
-                  ? 60 * 60
-                  : 60 * 60 * 24),
-            ),
-            domain: ".devlens.work",
-            secure: true,
-            httpOnly: true,
-            sameSite: "none",
-          });
-        }
+      response.headers.getSetCookie().forEach((cookie) => {
+        const [cookiePart] = cookie.split(";");
+        const [cookieName, cookieValue] = cookiePart.split("=");
+        cookieStore.set(cookieName.trim(), cookieValue, {
+          domain: ".devlens.work",
+        });
       });
     }
 
