@@ -1,6 +1,5 @@
 "use client";
 
-import { adminCompanyApi } from "@/lib/apis/admin/adminCompanyApi";
 import { BUSINESS_TYPE_OPTIONS } from "@/lib/constants/selects";
 import {
   handlePhoneNumberChange,
@@ -23,6 +22,8 @@ import {
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { PostCompanyResponse } from "@/lib/api/generated/admin/models";
+import { useCreateCompany } from "@/lib/api/generated/admin/services/administrator-company-management-api/administrator-company-management-api";
 
 export function CompanyForm() {
   const form = useForm<CreateCompanyFormData>({
@@ -41,6 +42,19 @@ export function CompanyForm() {
   const router = useRouter();
   // const departmentInputRef = useRef<HTMLInputElement>(null);
 
+  const { mutate: createCompany } = useCreateCompany({
+    mutation: {
+      onSuccess: (data: PostCompanyResponse) => {
+        toast.success("회사 생성이 완료되었습니다.");
+        form.reset();
+        router.push(`/company?id=${data.id}`);
+      },
+      onError: (error) => {
+        toast.error(`회사 생성중 오류가 발생했습니다. ${error}`);
+      },
+    },
+  });
+
   const onSubmit = async (data: CreateCompanyFormData) => {
     try {
       const requestData = {
@@ -51,12 +65,9 @@ export function CompanyForm() {
         representativeContact: data.representativeContact,
         representativeEmail: data.email,
         address: data.address,
-        // departments: data.departments,
       } as const;
-      form.reset();
-      const newCompany = await adminCompanyApi.create(requestData);
-      toast.success("회사 생성이 완료되었습니다.");
-      // router.push(`/company?id=${newCompany.id}`);
+
+      createCompany({ data: requestData });
     } catch (error) {
       toast.error(`회사 생성중 오류가 발생했습니다. ${error}`);
     }
