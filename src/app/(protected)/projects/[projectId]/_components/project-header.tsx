@@ -3,6 +3,7 @@
 import { ConfirmDialog } from "@/components/composites/confirm-dialog";
 import {
   Badge,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -38,7 +39,7 @@ export default function ProjectHeader({
   authorization,
 }: {
   projectId: number;
-  authorization: "APPROVER" | "PARTICIPANT";
+  authorization: "APPROVER" | "PARTICIPANT" | "ADMIN";
 }) {
   const [selectedStepId, setSelectedStepId] = useState<number>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -129,9 +130,6 @@ export default function ProjectHeader({
                   }}
                 >
                   <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">
-                      현재 단계
-                    </Label>
                     <SelectTrigger className="border-1 w-fit min-w-32 rounded-full border border-primary">
                       <SelectValue placeholder={currentStep} />
                     </SelectTrigger>
@@ -148,6 +146,20 @@ export default function ProjectHeader({
                     ))}
                   </SelectContent>
                 </Select>
+              )}
+              {(authorization === "PARTICIPANT" ||
+                authorization === "ADMIN") && (
+                <div className="flex flex-col items-center space-y-1">
+                  <Label className="text-xs text-muted-foreground">
+                    현재 단계
+                  </Label>
+                  <Button
+                    variant="outline"
+                    className="cursor-default hover:bg-transparent"
+                  >
+                    <span>{currentStep}</span>
+                  </Button>
+                </div>
               )}
             </div>
           </CardHeader>
