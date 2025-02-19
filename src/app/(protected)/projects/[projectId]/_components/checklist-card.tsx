@@ -7,15 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui";
-import { ProjectChecklist } from "@/types/project";
 import ChecklistDetail from "./checklist-detail";
 import ChecklistRequestForm from "./checklist-request-form";
+import { GetStepChecklistprojectChecklist } from "@/lib/api/generated/main/models";
+import { getChecklistStatusVariant } from "@/lib/utils";
 
-interface ChecklistCardProps {
-  checklist: ProjectChecklist;
-}
-
-export default function ChecklistCard({ checklist }: ChecklistCardProps) {
+export default function ChecklistCard({
+  checklist,
+}: {
+  checklist: GetStepChecklistprojectChecklist;
+}) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -27,8 +28,10 @@ export default function ChecklistCard({ checklist }: ChecklistCardProps) {
             {checklist.checklistName}
           </h2>
           <div className="flex w-full justify-end">
-            {checklist.approvalTime && (
-              <Badge className="hover:bg-primary">승인요청</Badge>
+          {checklist.checklistStatus && (
+              <Badge variant={getChecklistStatusVariant(checklist.checklistStatus).variant}>
+                {getChecklistStatusVariant(checklist.checklistStatus).label}
+              </Badge>
             )}
           </div>
         </Card>
@@ -36,10 +39,10 @@ export default function ChecklistCard({ checklist }: ChecklistCardProps) {
       <DialogContent className="flex max-h-[90vh] min-h-[50vh] max-w-3xl flex-col">
         <DialogHeader className="flex flex-row items-center justify-between pr-4">
           <DialogTitle>{checklist.checklistName}</DialogTitle>
-          <ChecklistRequestForm checklistId={checklist.checklistId} />
+          <ChecklistRequestForm checklistId={checklist.checklistId ?? 0} />
         </DialogHeader>
         <div className="h-full overflow-y-auto">
-          <ChecklistDetail checklistId={checklist.checklistId} />
+          <ChecklistDetail checklistId={checklist.checklistId ?? 0} />
         </div>
       </DialogContent>
     </Dialog>

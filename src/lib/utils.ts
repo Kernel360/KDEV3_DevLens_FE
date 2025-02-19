@@ -190,3 +190,33 @@ export function isValidFileType(
     fileType === "image" ? ALLOWED_IMAGE_TYPES : ALLOWED_FILE_TYPES;
   return allowedTypes.includes(extension);
 }
+
+export function getChecklistStatusVariant(status: string) {
+  switch (status) {
+    case "APPLICATION_WAITING":
+      return {
+        variant: "secondary" as const,
+        label: "신청 대기중",
+      };
+    case "APPROVE_WAITING":
+      return {
+        variant: "warning" as const,
+        label: "승인 대기중",
+      };
+    case "APPROVED":
+      return {
+        variant: "success" as const,
+        label: "승인됨",
+      };
+    case "REJECTED":
+      return {
+        variant: "destructive" as const,
+        label: "반려됨",
+      };
+    default:
+      return {
+        variant: "secondary" as const,
+        label: "상태 없음",
+      };
+  }
+}
