@@ -30,6 +30,80 @@
     { "name": "Login Page API", "description": "APIs Related to Login Page" }
   ],
   "paths": {
+    "/api/projects/{projectId}/steps/{stepId}": {
+      "put": {
+        "tags": ["Project Step API"],
+        "summary": "프로젝트 단계 수정",
+        "description": "특정 프로젝트의 단계를 수정합니다.",
+        "operationId": "putProjectStep",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PutProjectStepRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "프로젝트 단계가 성공적으로 수정되었습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutProjectStepResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Project Step API"],
+        "summary": "프로젝트 단계 삭제",
+        "description": "특정 프로젝트 단계를 삭제합니다.",
+        "operationId": "deleteProjectStep",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          },
+          {
+            "name": "stepId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "integer", "format": "int64" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "프로젝트 단계가 성공적으로 삭제되었습니다.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteProjectStepResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/projects/{projectId}/checklists/{checklistId}": {
       "put": {
         "tags": ["Project Checklist API"],
@@ -161,42 +235,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/APIResponsePostProjectAuthorizationResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/projects/steps/{stepId}": {
-      "put": {
-        "tags": ["Project Step API"],
-        "summary": "프로젝트 단계 수정",
-        "description": "특정 프로젝트의 단계를 수정합니다.",
-        "operationId": "putProjectStep",
-        "parameters": [
-          {
-            "name": "stepId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/PutProjectStepRequest" }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "프로젝트 단계가 성공적으로 수정되었습니다.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PutProjectStepResponse"
                 }
               }
             }
@@ -1737,40 +1775,6 @@
         }
       }
     },
-    "/api/projects/{projectId}/steps/{stepId}": {
-      "delete": {
-        "tags": ["Project Step API"],
-        "summary": "프로젝트 단계 삭제",
-        "description": "특정 프로젝트 단계를 삭제합니다.",
-        "operationId": "deleteProjectStep",
-        "parameters": [
-          {
-            "name": "projectId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          },
-          {
-            "name": "stepId",
-            "in": "path",
-            "required": true,
-            "schema": { "type": "integer", "format": "int64" }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "프로젝트 단계가 성공적으로 삭제되었습니다.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteProjectStepResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/posts/{postId}/links/{linkId}": {
       "delete": {
         "tags": ["Post API"],
@@ -1838,6 +1842,23 @@
   },
   "components": {
     "schemas": {
+      "PutProjectStepResponse": {
+        "type": "object",
+        "properties": {
+          "stepId": { "type": "integer", "format": "int64" },
+          "stepName": { "type": "string" },
+          "stepDescription": { "type": "string" },
+          "stepOrder": { "type": "integer", "format": "int32" }
+        }
+      },
+      "PutProjectStepRequest": {
+        "type": "object",
+        "properties": {
+          "stepName": { "type": "string" },
+          "stepDescription": { "type": "string" },
+          "stepOrder": { "type": "integer", "format": "int32" }
+        }
+      },
       "PutProjectChecklistResponse": {
         "type": "object",
         "properties": {
@@ -2008,23 +2029,6 @@
               "$ref": "#/components/schemas/PostProjectAuthorizationFailList"
             }
           }
-        }
-      },
-      "PutProjectStepResponse": {
-        "type": "object",
-        "properties": {
-          "stepId": { "type": "integer", "format": "int64" },
-          "stepName": { "type": "string" },
-          "stepDescription": { "type": "string" },
-          "stepOrder": { "type": "integer", "format": "int32" }
-        }
-      },
-      "PutProjectStepRequest": {
-        "type": "object",
-        "properties": {
-          "stepName": { "type": "string" },
-          "stepDescription": { "type": "string" },
-          "stepOrder": { "type": "integer", "format": "int32" }
         }
       },
       "APIResponse": {
@@ -2817,7 +2821,9 @@
           "writer": { "type": "string" },
           "createDate": { "type": "string", "format": "date-time" },
           "deadline": { "type": "string", "format": "date" },
-          "commentCount": { "type": "integer", "format": "int64" }
+          "commentCount": { "type": "integer", "format": "int64" },
+          "fileExists": { "type": "boolean" },
+          "fileExist": { "type": "boolean", "writeOnly": true }
         }
       },
       "APIResponseSseEmitter": {

@@ -10,6 +10,7 @@ import {
   getStatusVariant,
 } from "@/lib/utils";
 import { ColumnDef } from "@/types/table";
+import { Paperclip } from "lucide-react";
 
 type PostListItem = PostListResponse & { id: number };
 
@@ -58,6 +59,7 @@ export const postListColumns: ColumnDef<PostListItem>[] = [
           </span>
         )}
         <span className="w-fit truncate">{row.original.title}</span>
+        <Paperclip className="ml-2 h-3 w-3 text-muted-foreground" />
         {row.original.commentCount !== undefined &&
           row.original.commentCount > 0 && (
             <span className="ml-2 font-normal text-muted-foreground hover:underline">

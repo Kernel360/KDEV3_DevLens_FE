@@ -19,4 +19,6 @@ export interface PostListResponse {
   createDate?: string;
   deadline?: string;
   commentCount?: number;
+  fileExists?: boolean;
+  fileExist?: boolean;
 }
