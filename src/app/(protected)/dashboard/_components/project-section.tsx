@@ -1,7 +1,6 @@
 "use client";
 
 import { ProjectListSkeleton } from "@/components/skeleton/project-list-skeleton";
-import { Separator } from "@/components/ui";
 import {
   getGetMyProjectQueryKey,
   getMyProject,
@@ -26,7 +25,7 @@ export default function ProjectSection() {
   return (
     <div className="space-y-6">
       <ProjectList projects={data?.myProjects} title="내 프로젝트" />
-      <Separator />
+      {/* <Separator /> */}
       {/* <ProjectList projects={companyProjects} title="회사 프로젝트" /> */}
     </div>
   );
