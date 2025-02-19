@@ -37,6 +37,25 @@ export function formatPhoneNumber(value: string) {
   // 11자리로 제한
   const limitedNumbers = numbers.slice(0, 11);
 
+  // 02 지역번호 처리
+  if (limitedNumbers.startsWith("02")) {
+    if (limitedNumbers.length <= 2) return limitedNumbers;
+    if (limitedNumbers.length <= 5) {
+      return `${limitedNumbers.slice(0, 2)}-${limitedNumbers.slice(2)}`;
+    }
+    // 10자리로 제한 (02-XXXX-XXXX 또는 02-XXX-XXXX)
+    const truncatedNumbers = limitedNumbers.slice(0, 10);
+
+    // 길이에 따라 다른 포맷팅 적용
+    if (truncatedNumbers.length <= 9) {
+      // 02-XXX-XXXX 형식 (9자리 이하)
+      return `${truncatedNumbers.slice(0, 2)}-${truncatedNumbers.slice(2, 5)}-${truncatedNumbers.slice(5)}`;
+    } else {
+      // 02-XXXX-XXXX 형식 (10자리)
+      return `${truncatedNumbers.slice(0, 2)}-${truncatedNumbers.slice(2, 6)}-${truncatedNumbers.slice(6)}`;
+    }
+  }
+
   // 포맷팅
   if (limitedNumbers.length <= 3) {
     return limitedNumbers;
