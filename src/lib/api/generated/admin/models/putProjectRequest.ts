@@ -17,7 +17,6 @@ export interface PutProjectRequest {
   projectTypeId?: number;
   projectStatusCode?: PutProjectRequestProjectStatusCode;
   bnsManager?: string;
-  contractNumber?: string;
   plannedStartDate?: string;
   plannedEndDate?: string;
   startDate?: string;

@@ -11,6 +11,7 @@ export type PostProjectAuthorizationFailListMemberType = typeof PostProjectAutho
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const PostProjectAuthorizationFailListMemberType = {
+  ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
   DEVELOPER: 'DEVELOPER',
 } as const;

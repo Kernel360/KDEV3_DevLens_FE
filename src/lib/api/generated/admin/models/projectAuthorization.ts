@@ -9,6 +9,7 @@ import type { MemberProjectStepId } from './memberProjectStepId';
 import type { Member } from './member';
 import type { Project } from './project';
 import type { ProjectAuthorizationMemberType } from './projectAuthorizationMemberType';
+import type { ProjectAuthorizationAuthorizationCode } from './projectAuthorizationAuthorizationCode';
 import type { ProjectAuthorizationIsActive } from './projectAuthorizationIsActive';
 
 export interface ProjectAuthorization {
@@ -20,6 +21,7 @@ export interface ProjectAuthorization {
   member?: Member;
   project?: Project;
   memberType?: ProjectAuthorizationMemberType;
-  authorizationCode?: string;
+  authorizationCode?: ProjectAuthorizationAuthorizationCode;
   isActive?: ProjectAuthorizationIsActive;
+  authorization?: string;
 }

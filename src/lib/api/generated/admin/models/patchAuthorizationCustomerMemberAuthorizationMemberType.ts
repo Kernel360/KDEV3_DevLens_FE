@@ -11,6 +11,7 @@ export type PatchAuthorizationCustomerMemberAuthorizationMemberType = typeof Pat
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const PatchAuthorizationCustomerMemberAuthorizationMemberType = {
+  ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
   DEVELOPER: 'DEVELOPER',
 } as const;

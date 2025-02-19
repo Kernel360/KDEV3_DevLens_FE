@@ -11,6 +11,7 @@ export type ProjectAuthorizationMemberType = typeof ProjectAuthorizationMemberTy
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const ProjectAuthorizationMemberType = {
+  ADMIN: 'ADMIN',
   CLIENT: 'CLIENT',
   DEVELOPER: 'DEVELOPER',
 } as const;

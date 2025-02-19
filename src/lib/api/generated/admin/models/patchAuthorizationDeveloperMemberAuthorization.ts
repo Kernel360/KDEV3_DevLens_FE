@@ -6,10 +6,11 @@
  * OpenAPI spec version: 1.0
  */
 import type { PatchAuthorizationDeveloperMemberAuthorizationMemberType } from './patchAuthorizationDeveloperMemberAuthorizationMemberType';
+import type { PatchAuthorizationDeveloperMemberAuthorizationProjectAuthorization } from './patchAuthorizationDeveloperMemberAuthorizationProjectAuthorization';
 
 export interface PatchAuthorizationDeveloperMemberAuthorization {
   memberId?: number;
   memberName?: string;
   memberType?: PatchAuthorizationDeveloperMemberAuthorizationMemberType;
-  projectAuthorization?: string;
+  projectAuthorization?: PatchAuthorizationDeveloperMemberAuthorizationProjectAuthorization;
 }

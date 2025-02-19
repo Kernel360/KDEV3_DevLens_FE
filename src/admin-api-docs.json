@@ -943,8 +943,14 @@
         "properties": {
           "memberId": { "type": "integer", "format": "int64" },
           "memberName": { "type": "string" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
-          "projectAuthorization": { "type": "string" }
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          },
+          "projectAuthorization": {
+            "type": "string",
+            "enum": ["APPROVER", "PARTICIPANT"]
+          }
         }
       },
       "PatchAuthorizationDeveloperMemberAuthorization": {
@@ -952,8 +958,14 @@
         "properties": {
           "memberId": { "type": "integer", "format": "int64" },
           "memberName": { "type": "string" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
-          "projectAuthorization": { "type": "string" }
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          },
+          "projectAuthorization": {
+            "type": "string",
+            "enum": ["APPROVER", "PARTICIPANT"]
+          }
         }
       },
       "Project": {
@@ -1001,9 +1013,16 @@
           "id": { "$ref": "#/components/schemas/MemberProjectStepId" },
           "member": { "$ref": "#/components/schemas/Member" },
           "project": { "$ref": "#/components/schemas/Project" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
-          "authorizationCode": { "type": "string" },
-          "isActive": { "type": "string", "enum": ["YES", "NO"] }
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          },
+          "authorizationCode": {
+            "type": "string",
+            "enum": ["APPROVER", "PARTICIPANT"]
+          },
+          "isActive": { "type": "string", "enum": ["YES", "NO"] },
+          "authorization": { "type": "string" }
         }
       },
       "ProjectTag": {
@@ -1064,7 +1083,6 @@
             ]
           },
           "bnsManager": { "type": "string" },
-          "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
           "plannedEndDate": { "type": "string", "format": "date" },
           "startDate": { "type": "string", "format": "date" },
@@ -1106,7 +1124,6 @@
             ]
           },
           "bnsManager": { "type": "string" },
-          "contractNumber": { "type": "string" },
           "plannedStartDate": { "type": "string", "format": "date" },
           "plannedEndDate": { "type": "string", "format": "date" },
           "startDate": { "type": "string", "format": "date" },
@@ -1402,7 +1419,7 @@
           "developerCompanyId": { "type": "integer", "format": "int64" },
           "developerCompanyName": { "type": "string" },
           "projectDescription": { "type": "string" },
-          "projectTypeName": { "type": "string" },
+          "projectTypeId": { "type": "integer", "format": "int64" },
           "projectStatusCode": {
             "type": "string",
             "enum": [

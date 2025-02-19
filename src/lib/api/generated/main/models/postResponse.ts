@@ -7,7 +7,7 @@
  */
 import type { PostResponsePriority } from './postResponsePriority';
 import type { PostResponseStatus } from './postResponseStatus';
-import type { GetCommentResponse } from './getCommentResponse';
+import type { GetCommentDetailResponse } from './getCommentDetailResponse';
 import type { LinkResponse } from './linkResponse';
 import type { FileMetadataResponse } from './fileMetadataResponse';
 import type { RelatedPostResponse } from './relatedPostResponse';
@@ -21,10 +21,11 @@ export interface PostResponse {
   content?: string;
   deadline?: string;
   writer?: string;
+  writerImage?: string;
   isAuthor?: boolean;
   createDate?: string;
   updateDate?: string;
-  comments?: GetCommentResponse[];
+  comments?: GetCommentDetailResponse[];
   links?: LinkResponse[];
   files?: FileMetadataResponse[];
   isParentPost?: boolean;

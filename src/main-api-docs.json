@@ -1858,16 +1858,28 @@
         "type": "object",
         "properties": {
           "memberId": { "type": "integer", "format": "int64" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
-          "projectAuthorization": { "type": "string" }
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          },
+          "projectAuthorization": {
+            "type": "string",
+            "enum": ["APPROVER", "PARTICIPANT"]
+          }
         }
       },
       "PostProjectAuthorizationDeveloperMemberAuthorization": {
         "type": "object",
         "properties": {
           "memberId": { "type": "integer", "format": "int64" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
-          "projectAuthorization": { "type": "string" }
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          },
+          "projectAuthorization": {
+            "type": "string",
+            "enum": ["APPROVER", "PARTICIPANT"]
+          }
         }
       },
       "PostProjectAuthorizationRequest": {
@@ -1901,8 +1913,14 @@
         "type": "object",
         "properties": {
           "memberId": { "type": "integer", "format": "int64" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] },
-          "projectAuthorization": { "type": "string" },
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          },
+          "projectAuthorization": {
+            "type": "string",
+            "enum": ["APPROVER", "PARTICIPANT"]
+          },
           "status": {
             "type": "string",
             "enum": [
@@ -2688,7 +2706,10 @@
         "properties": {
           "memberId": { "type": "integer", "format": "int64" },
           "authorization": { "type": "string" },
-          "memberType": { "type": "string", "enum": ["CLIENT", "DEVELOPER"] }
+          "memberType": {
+            "type": "string",
+            "enum": ["ADMIN", "CLIENT", "DEVELOPER"]
+          }
         }
       },
       "GetApplicationResultResponse": {
@@ -2704,14 +2725,16 @@
           "rejectReason": { "type": "string" }
         }
       },
-      "GetCommentResponse": {
+      "GetCommentDetailResponse": {
         "type": "object",
         "properties": {
           "commentId": { "type": "integer", "format": "int64" },
           "parentCommentId": { "type": "integer", "format": "int64" },
           "registerId": { "type": "integer", "format": "int64" },
           "writer": { "type": "string" },
+          "writerImage": { "type": "string" },
           "content": { "type": "string" },
+          "createdBy": { "type": "integer", "format": "int64" },
           "createdAt": { "type": "string", "format": "date-time" },
           "isEdited": { "type": "boolean" },
           "isAuthor": { "type": "boolean" }
@@ -2740,12 +2763,13 @@
           "content": { "type": "string" },
           "deadline": { "type": "string", "format": "date" },
           "writer": { "type": "string" },
+          "writerImage": { "type": "string" },
           "isAuthor": { "type": "boolean" },
           "createDate": { "type": "string", "format": "date-time" },
           "updateDate": { "type": "string", "format": "date-time" },
           "comments": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/GetCommentResponse" }
+            "items": { "$ref": "#/components/schemas/GetCommentDetailResponse" }
           },
           "links": {
             "type": "array",

@@ -6,12 +6,13 @@
  * OpenAPI spec version: 1.0
  */
 import type { PostProjectAuthorizationFailListMemberType } from './postProjectAuthorizationFailListMemberType';
+import type { PostProjectAuthorizationFailListProjectAuthorization } from './postProjectAuthorizationFailListProjectAuthorization';
 import type { PostProjectAuthorizationFailListStatus } from './postProjectAuthorizationFailListStatus';
 
 export interface PostProjectAuthorizationFailList {
   memberId?: number;
   memberType?: PostProjectAuthorizationFailListMemberType;
-  projectAuthorization?: string;
+  projectAuthorization?: PostProjectAuthorizationFailListProjectAuthorization;
   status?: PostProjectAuthorizationFailListStatus;
   message?: string;
 }

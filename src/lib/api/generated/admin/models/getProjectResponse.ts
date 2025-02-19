@@ -23,7 +23,7 @@ export interface GetProjectResponse {
   developerCompanyId?: number;
   developerCompanyName?: string;
   projectDescription?: string;
-  projectTypeName?: string;
+  projectTypeId?: number;
   projectStatusCode?: GetProjectResponseProjectStatusCode;
   bnsManager?: string;
   contractNumber?: string;

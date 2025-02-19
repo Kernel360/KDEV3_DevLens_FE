@@ -6,9 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 import type { PostProjectAuthorizationCustomerMemberAuthorizationMemberType } from './postProjectAuthorizationCustomerMemberAuthorizationMemberType';
+import type { PostProjectAuthorizationCustomerMemberAuthorizationProjectAuthorization } from './postProjectAuthorizationCustomerMemberAuthorizationProjectAuthorization';
 
 export interface PostProjectAuthorizationCustomerMemberAuthorization {
   memberId?: number;
   memberType?: PostProjectAuthorizationCustomerMemberAuthorizationMemberType;
-  projectAuthorization?: string;
+  projectAuthorization?: PostProjectAuthorizationCustomerMemberAuthorizationProjectAuthorization;
 }
