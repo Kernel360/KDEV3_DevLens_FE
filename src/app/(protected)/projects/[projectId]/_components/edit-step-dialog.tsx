@@ -1,6 +1,7 @@
 "use client";
 
 import NumberStepperInput from "@/components/composites/number-stepper-input";
+import { usePutProjectStep } from "@/lib/api/generated/main/services/project-step-api/project-step-api";
 import { ProjectApi } from "@/lib/apis/main/projectApi";
 import { ProjectStep } from "@/types/project";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -40,22 +41,18 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const queryClient = useQueryClient();
 
-  const { mutate: updateStep, isPending: isUpdating } = useMutation({
-    mutationFn: () =>
-      ProjectApi.steps.update(step.stepId, {
-        stepName: step.stepName,
-        stepDescription: step.description || "",
-        stepOrder: step.stepOrder,
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["projectSteps"] });
-      toast.success("단계가 수정되었습니다.");
-      setIsOpen(false);
-    },
-    onError: (error) => {
-      toast.error(
-        `단계 수정에 실패했습니다. ${error instanceof Error ? error.message : ""}`,
-      );
+  const { mutate: updateStep, isPending: isUpdating } = usePutProjectStep({
+    mutation: {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["projectSteps"] });
+        toast.success("단계가 수정되었습니다.");
+        setIsOpen(false);
+      },
+      onError: (error) => {
+        toast.error(
+          `단계 수정에 실패했습니다. ${error instanceof Error ? error.message : ""}`,
+        );
+      },
     },
   });
 
@@ -77,7 +74,15 @@ export default function EditStepDialog({ stepInfo }: EditStepDialogProps) {
 
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
-    updateStep();
+    updateStep({
+      projectId: Number(params.projectId),
+      stepId: step.stepId,
+      data: {
+        stepName: step.stepName,
+        stepDescription: step.description || "",
+        stepOrder: step.stepOrder,
+      },
+    });
   };
 
   const isLoading = isUpdating || isDeleting;

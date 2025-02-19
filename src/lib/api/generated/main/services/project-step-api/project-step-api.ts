@@ -44,13 +44,14 @@ import { mainAxios } from '../../../../../axiosClient';
  * @summary 프로젝트 단계 수정
  */
 export const putProjectStep = (
+    projectId: number,
     stepId: number,
     putProjectStepRequest: PutProjectStepRequest,
  ) => {
       
       
       return mainAxios<PutProjectStepResponse>(
-      {url: `/api/projects/steps/${stepId}`, method: 'PUT',
+      {url: `/api/projects/${projectId}/steps/${stepId}`, method: 'PUT',
       headers: {'Content-Type': 'application/json', },
       data: putProjectStepRequest
     },
@@ -60,8 +61,8 @@ export const putProjectStep = (
 
 
 export const getPutProjectStepMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putProjectStep>>, TError,{stepId: number;data: PutProjectStepRequest}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof putProjectStep>>, TError,{stepId: number;data: PutProjectStepRequest}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putProjectStep>>, TError,{projectId: number;stepId: number;data: PutProjectStepRequest}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof putProjectStep>>, TError,{projectId: number;stepId: number;data: PutProjectStepRequest}, TContext> => {
     
 const mutationKey = ['putProjectStep'];
 const {mutation: mutationOptions} = options ?
@@ -73,10 +74,10 @@ const {mutation: mutationOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putProjectStep>>, {stepId: number;data: PutProjectStepRequest}> = (props) => {
-          const {stepId,data} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putProjectStep>>, {projectId: number;stepId: number;data: PutProjectStepRequest}> = (props) => {
+          const {projectId,stepId,data} = props ?? {};
 
-          return  putProjectStep(stepId,data,)
+          return  putProjectStep(projectId,stepId,data,)
         }
 
         
@@ -92,15 +93,78 @@ const {mutation: mutationOptions} = options ?
  * @summary 프로젝트 단계 수정
  */
 export const usePutProjectStep = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putProjectStep>>, TError,{stepId: number;data: PutProjectStepRequest}, TContext>, }
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putProjectStep>>, TError,{projectId: number;stepId: number;data: PutProjectStepRequest}, TContext>, }
 ): UseMutationResult<
         Awaited<ReturnType<typeof putProjectStep>>,
         TError,
-        {stepId: number;data: PutProjectStepRequest},
+        {projectId: number;stepId: number;data: PutProjectStepRequest},
         TContext
       > => {
 
       const mutationOptions = getPutProjectStepMutationOptions(options);
+
+      return useMutation(mutationOptions);
+    }
+    /**
+ * 특정 프로젝트 단계를 삭제합니다.
+ * @summary 프로젝트 단계 삭제
+ */
+export const deleteProjectStep = (
+    projectId: number,
+    stepId: number,
+ ) => {
+      
+      
+      return mainAxios<DeleteProjectStepResponse>(
+      {url: `/api/projects/${projectId}/steps/${stepId}`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getDeleteProjectStepMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProjectStep>>, TError,{projectId: number;stepId: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof deleteProjectStep>>, TError,{projectId: number;stepId: number}, TContext> => {
+    
+const mutationKey = ['deleteProjectStep'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProjectStep>>, {projectId: number;stepId: number}> = (props) => {
+          const {projectId,stepId} = props ?? {};
+
+          return  deleteProjectStep(projectId,stepId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type DeleteProjectStepMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProjectStep>>>
+    
+    export type DeleteProjectStepMutationError = unknown
+
+    /**
+ * @summary 프로젝트 단계 삭제
+ */
+export const useDeleteProjectStep = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProjectStep>>, TError,{projectId: number;stepId: number}, TContext>, }
+): UseMutationResult<
+        Awaited<ReturnType<typeof deleteProjectStep>>,
+        TError,
+        {projectId: number;stepId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getDeleteProjectStepMutationOptions(options);
 
       return useMutation(mutationOptions);
     }
@@ -321,69 +385,6 @@ export const usePostProjectStep = <TError = unknown,
       > => {
 
       const mutationOptions = getPostProjectStepMutationOptions(options);
-
-      return useMutation(mutationOptions);
-    }
-    /**
- * 특정 프로젝트 단계를 삭제합니다.
- * @summary 프로젝트 단계 삭제
- */
-export const deleteProjectStep = (
-    projectId: number,
-    stepId: number,
- ) => {
-      
-      
-      return mainAxios<DeleteProjectStepResponse>(
-      {url: `/api/projects/${projectId}/steps/${stepId}`, method: 'DELETE'
-    },
-      );
-    }
-  
-
-
-export const getDeleteProjectStepMutationOptions = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProjectStep>>, TError,{projectId: number;stepId: number}, TContext>, }
-): UseMutationOptions<Awaited<ReturnType<typeof deleteProjectStep>>, TError,{projectId: number;stepId: number}, TContext> => {
-    
-const mutationKey = ['deleteProjectStep'];
-const {mutation: mutationOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof deleteProjectStep>>, {projectId: number;stepId: number}> = (props) => {
-          const {projectId,stepId} = props ?? {};
-
-          return  deleteProjectStep(projectId,stepId,)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type DeleteProjectStepMutationResult = NonNullable<Awaited<ReturnType<typeof deleteProjectStep>>>
-    
-    export type DeleteProjectStepMutationError = unknown
-
-    /**
- * @summary 프로젝트 단계 삭제
- */
-export const useDeleteProjectStep = <TError = unknown,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof deleteProjectStep>>, TError,{projectId: number;stepId: number}, TContext>, }
-): UseMutationResult<
-        Awaited<ReturnType<typeof deleteProjectStep>>,
-        TError,
-        {projectId: number;stepId: number},
-        TContext
-      > => {
-
-      const mutationOptions = getDeleteProjectStepMutationOptions(options);
 
       return useMutation(mutationOptions);
     }

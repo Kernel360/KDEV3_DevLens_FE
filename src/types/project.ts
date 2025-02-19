@@ -89,23 +89,3 @@ export interface GetMemberByCompanyResponse {
   department?: string;
   position?: string;
 }
-
-export type MemberRole = "approver" | "normal";
-
-// export type ExtendedMember = GetMemberByCompanyResponse & {
-//   company: CompanyType;
-// };
-
-// export interface MemberSection {
-//   members: ExtendedMember[];
-//   companyId?: number;
-//   selectedApprovers: ExtendedMember[];
-//   selectedNormal: ExtendedMember[];
-//   activeRole: MemberRole;
-//   isLoading: boolean;
-// }
-
-// export interface MemberState {
-//   developer: MemberSection;
-//   customer: MemberSection;
-// }
