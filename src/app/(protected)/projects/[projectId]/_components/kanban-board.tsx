@@ -9,9 +9,12 @@ import AddStepDialog from "./add-step-dialog";
 import CreateChecklistDialog from "./create-checklist-dialog";
 import EditStepDialog from "./edit-step-dialog";
 import ChecklistCard from "./checklist-card";
+import { useDraggableScroll } from "@/hooks/useDraggableScroll";
 
 export function KanbanBoard({ projectId }: { projectId: number }) {
   const [isExpanded, setIsExpanded] = useState(true);
+  const { ref, onMouseDown, onMouseMove, onMouseUp, onMouseLeave, style } =
+    useDraggableScroll();
   const { data } = useSuspenseQuery({
     queryKey: ["projectSteps", projectId],
     queryFn: () => ProjectApi.steps.getSteps(Number(projectId)),
@@ -52,7 +55,14 @@ export function KanbanBoard({ projectId }: { projectId: number }) {
         }`}
       >
         <div
-          className={`flex gap-4 overflow-x-auto pb-4 scrollbar-hide ${isExpanded ? "" : "hidden"}`}
+          className={`flex gap-4 overflow-x-auto pb-4 scrollbar-hide ${style} ${
+            isExpanded ? "" : "hidden"
+          }`}
+          ref={ref}
+          onMouseDown={onMouseDown}
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseLeave={onMouseLeave}
         >
           {[...steps]
             .sort((a, b) => a.stepOrder - b.stepOrder)
