@@ -1,6 +1,5 @@
 "use client";
 
-import { Command, GalleryVerticalEnd, Building2, User } from "lucide-react";
 import * as React from "react";
 
 import { NavMain } from "@/components/layout/nav-main";
@@ -9,77 +8,31 @@ import { NavUser } from "@/components/layout/nav-user";
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { ProjectApi } from "@/lib/apis/main/projectApi";
+import { NAV_LIST } from "@/lib/constants/nav-list";
+import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const data = {
-  user: {
-    name: "관리자",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMain: [
-    {
-      title: "계정관리",
-      url: "#",
-      icon: User,
-      items: [
-        {
-          title: "계정 목록",
-          url: "/members",
-        },
-        {
-          title: "계정 생성",
-          url: "/members/create",
-        },
-      ],
-    },
-    {
-      title: "회사관리",
-      url: "#",
-      icon: Building2,
-      items: [
-        {
-          title: "회사 목록",
-          url: "/company",
-        },
-        {
-          title: "회사 생성",
-          url: "/company/create",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "프로젝트1",
-      id: "/projectid1",
-    },
-    {
-      name: "프로젝트2",
-      id: "/projectid2",
-    },
-  ],
-};
+export const dynamic = "force-dynamic";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const user = useAuthStore((state) => state.user);
   const pathname = usePathname();
   const hideSidebarRoutes = ["/login", "/forgot"];
+
+  // const queryClient = useQueryClient();
+
+  const { data: projects } = useQuery({
+    queryKey: ["projects"],
+    queryFn: () => ProjectApi.getList(),
+    enabled: user?.role === "USER",
+  });
 
   if (hideSidebarRoutes.includes(pathname)) {
     return null;
@@ -88,14 +41,25 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <h1 className="py-4 font-mono text-2xl font-bold">DevLens</h1>
-        <NavUser user={data.user} />
+        <Link href="/dashboard">
+          <h1
+            className={cn(
+              "logo py-4 text-center font-mono text-2xl font-bold",
+              "group-data-[collapsible=icon]:hidden",
+              "group-data-[state=expanded]:block",
+            )}
+          >
+            DevLens
+          </h1>
+        </Link>
+        <NavUser user={user ?? null} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {user?.role === "ADMIN" && <NavMain items={NAV_LIST} />}
+        {user?.role === "USER" && projects && (
+          <NavProjects projects={projects.myProjects || []} />
+        )}
       </SidebarContent>
-      <SidebarFooter>{/* <TeamSwitcher teams={data.teams} /> */}</SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );

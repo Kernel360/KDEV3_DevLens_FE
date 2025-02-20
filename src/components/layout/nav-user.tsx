@@ -1,15 +1,7 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { BadgeCheck, Bell, ChevronsUpDown, LogOut } from "lucide-react";
+import { LoginResponse } from "@/lib/api/generated/main/models";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,25 +10,30 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@ui";
 import Link from "next/link";
+import { UserAvatar } from "../composites/user-avatar";
+import { logoutAction } from "@/lib/actions/logoutAction";
+import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser({ user }: { user: LoginResponse | null }) {
   const { isMobile } = useSidebar();
+  const { name = "", email, profileUrl } = user || {};
+
+  const handleLogout = async () => {
+    const res = await logoutAction();
+    if (res.message) {
+      toast.info(res.message);
+      redirect("/login");
+    } else {
+      toast.error(res.message);
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -47,13 +44,14 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                className="size-8"
+                name={name}
+                imageSrc={profileUrl || undefined}
+              />
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{name}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -66,13 +64,14 @@ export function NavUser({
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  className="size-8"
+                  name={name}
+                  imageSrc={profileUrl || undefined}
+                />
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{name}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
@@ -84,13 +83,13 @@ export function NavUser({
                   기본 정보
                 </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem>
+              <DropdownMenuItem className="line-through">
                 <Bell />
                 알림
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               로그아웃
             </DropdownMenuItem>
