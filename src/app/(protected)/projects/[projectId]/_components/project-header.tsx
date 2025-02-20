@@ -143,8 +143,7 @@ export default function ProjectHeader({
                   </SelectContent>
                 </Select>
               )}
-              {(authorization === "PARTICIPANT" ||
-                authorization === "ADMIN") && (
+              {authorization === "PARTICIPANT" && (
                 <div className="flex flex-col items-center space-y-1">
                   <Label className="text-xs text-muted-foreground">
                     현재 단계
