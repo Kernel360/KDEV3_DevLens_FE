@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 import { ChevronLeft } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
-import { ScheduleItem } from "@/store/useScheduleStore";
+import { SCHEDULE_TYPE_COLORS, ScheduleItem } from "@/store/useScheduleStore";
 
 export default function ScheduleCalendar({
   scheduleData,
@@ -49,6 +49,8 @@ export default function ScheduleCalendar({
   };
 
   const handleDateClick = (day: Date) => {
+    const schedule = getScheduleForDate(day);
+    if (!schedule) return; // 스케줄이 없으면 선택하지 않음
     setSelectedDate(selectedDate && isSameDay(day, selectedDate) ? null : day);
   };
 
@@ -94,52 +96,61 @@ export default function ScheduleCalendar({
           const schedule = getScheduleForDate(day);
           const isCurrentMonth = isSameMonth(day, currentDate);
           const isSelected = selectedDate && isSameDay(day, selectedDate);
+          const isToday = isSameDay(day, new Date());
 
           return (
             <button
               key={dayIdx}
               onClick={() => handleDateClick(day)}
+              disabled={!schedule}
               className={cn(
-                "relative flex min-h-[50px] flex-col rounded-lg p-2 text-left transition-colors",
-                "hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "relative flex min-h-[40px] flex-col rounded-lg p-2 text-left transition-colors",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 isCurrentMonth ? "text-foreground" : "text-muted-foreground",
                 isSelected && "border-1 border-primary",
+                isToday && "border-1 border-primary",
+                !schedule && "cursor-default opacity-50",
               )}
             >
               <time
                 dateTime={format(day, "yyyy-MM-dd")}
                 className={cn(
-                  "mx-auto flex h-6 w-6 items-center justify-center text-xs",
-                  schedule && "rounded-full bg-indigo-100",
+                  "mx-auto flex flex-col items-center justify-center text-xs",
                 )}
               >
                 {format(day, "d")}
-              </time>
-              {schedule && (
-                <div
+                <span
                   className={cn(
-                    "mt-auto line-clamp-2 w-full text-xs text-foreground",
+                    "rounded-full p-1",
+                    schedule && SCHEDULE_TYPE_COLORS[schedule.type].bg,
                   )}
-                >
-                  {schedule.label}
-                </div>
-              )}
+                />
+              </time>
             </button>
           );
         })}
       </div>
 
-      {/* Selected Date Display */}
-      {selectedDate && (
+      {/* Selected Date Display - 스케줄이 있는 경우에만 표시 */}
+      {selectedDate && getScheduleForDate(selectedDate) && (
         <div className="mt-3 rounded-lg border p-2 text-sm">
           <p className="font-medium">
             {format(selectedDate, "PPP", { locale: ko })}
+            <span
+              className={cn(
+                "ml-2 shrink-0 rounded-lg p-1 text-xs",
+                SCHEDULE_TYPE_COLORS[getScheduleForDate(selectedDate)!.type]
+                  .text,
+                SCHEDULE_TYPE_COLORS[getScheduleForDate(selectedDate)!.type]
+                  .bgLight,
+              )}
+            >
+              {getScheduleForDate(selectedDate)?.type}
+            </span>
           </p>
-          {getScheduleForDate(selectedDate) && (
-            <p className="mt-1 text-muted-foreground">
-              {getScheduleForDate(selectedDate)?.label}
-            </p>
-          )}
+          <p className="mt-1 text-muted-foreground">
+            {getScheduleForDate(selectedDate)?.label}
+          </p>
         </div>
       )}
     </>

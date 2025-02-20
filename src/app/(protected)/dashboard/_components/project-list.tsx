@@ -14,7 +14,7 @@ import { useScheduleStore } from "@/store/useScheduleStore";
 
 interface ProjectListProps {
   projects: GetMyProjectListGetMyProjectResponseInfo[];
-  title: "내 프로젝트" | "회사 프로젝트";
+  title: "내 프로젝트" | "진행 중";
 }
 
 export default function ProjectList({ projects, title }: ProjectListProps) {
@@ -32,16 +32,14 @@ export default function ProjectList({ projects, title }: ProjectListProps) {
     );
   }, [projects]);
 
-  const setProjectSchedules = useScheduleStore((state) => state.setProjectSchedules);
+  const setProjectSchedules = useScheduleStore(
+    (state) => state.setProjectSchedules,
+  );
 
   // projects가 변경될 때마다 스케줄 업데이트
-  useEffect
-    (() => {
-    if (title === "내 프로젝트") {
-      setProjectSchedules(projects);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projects]);
+  useEffect(() => {
+    setProjectSchedules(projects);
+  }, [projects, setProjectSchedules]);
 
   if (!projects?.length) {
     return (
@@ -78,7 +76,7 @@ export default function ProjectList({ projects, title }: ProjectListProps) {
         >
           {projectPages.map((pageProjects, pageIndex) => (
             <SwiperSlide key={pageIndex}>
-              <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2">
+              <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
                 {pageProjects.map((project) => (
                   <ProjectCard key={project.id} {...project} />
                 ))}

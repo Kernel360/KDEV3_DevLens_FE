@@ -40,7 +40,7 @@ export default function ScheduleList({
   }, [scheduleData]);
 
   return (
-    <div className="max-h-[50vh] space-y-2 overflow-y-scroll scrollbar-hide">
+    <div className="max-h-[80vh] space-y-2 overflow-y-scroll scrollbar-hide">
       {groupedSchedules.map(({ date, schedules }) => (
         <div key={date.toISOString()}>
           <div className="sticky top-0 z-10 bg-background pb-1">
@@ -65,14 +65,16 @@ export default function ScheduleList({
                 <div className="flex items-center gap-2">
                   <span
                     className={cn(
-                      "rounded-lg p-1 text-xs",
+                      "shrink-0 rounded-lg p-1 text-xs bg-emerald-500/10",
                       SCHEDULE_TYPE_COLORS[schedule.type].text,
                       SCHEDULE_TYPE_COLORS[schedule.type].bgLight,
                     )}
                   >
                     {schedule.type}
                   </span>
-                  <h4 className="text-sm font-medium">{schedule.label}</h4>
+                  <h4 className="truncate text-sm font-medium">
+                    {schedule.label}
+                  </h4>
                 </div>
               </Card>
             ))}

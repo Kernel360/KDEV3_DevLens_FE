@@ -13,11 +13,10 @@ import useGetHolidays from "@/hooks/useGetHolidays";
 export function ScheduleView({ className }: { className?: string }) {
   const [view, setView] = useState<"calendar" | "list">("list");
   const scheduleData = useScheduleStore((state) => state.schedules);
-  const { holidays } = useGetHolidays(new Date().getFullYear());
-  console.log(holidays);
+  useGetHolidays(new Date().getFullYear());
 
   return (
-    <Card className={cn("h-fit max-w-md space-y-2 p-4", className)}>
+    <Card className={cn("h-fit space-y-2 p-4", className)}>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">일정</h2>
         <div className="flex gap-2">

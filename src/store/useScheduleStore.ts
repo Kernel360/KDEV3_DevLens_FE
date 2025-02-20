@@ -7,9 +7,9 @@ export const SCHEDULE_TYPE_COLORS = {
     bgLight: "bg-emerald-500/10",
   },
   마감: {
-    bg: "bg-primary-500",
-    text: "text-primary-foreground",
-    bgLight: "bg-primary",
+    bg: "bg-primary",
+    text: "text-primary-500",
+    bgLight: "bg-primary-500/10",
   },
   기타: {
     bg: "bg-blue-500",
