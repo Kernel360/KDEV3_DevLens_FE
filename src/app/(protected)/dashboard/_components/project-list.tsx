@@ -4,31 +4,31 @@ import { useMemo } from "react";
 import { Navigation, Pagination, Mousewheel } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProjectCard from "./project-card";
-import { GetProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
 
 // Swiper 스타일 import
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
+import { GetMyProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
 
 interface ProjectListProps {
-  projects: GetProjectListGetMyProjectResponseInfo[];
+  projects: GetMyProjectListGetMyProjectResponseInfo[];
   title: "내 프로젝트" | "회사 프로젝트";
 }
 
-export default function ProjectList({
-  projects = [],
-  title,
-}: ProjectListProps) {
+export default function ProjectList({ projects, title }: ProjectListProps) {
   // 6개씩 페이지 나누기
   const projectPages = useMemo(() => {
     const itemsPerPage = 6;
-    return projects.reduce((acc, curr, i) => {
-      const pageIndex = Math.floor(i / itemsPerPage);
-      acc[pageIndex] = acc[pageIndex] || [];
-      acc[pageIndex].push(curr);
-      return acc;
-    }, [] as GetProjectListGetMyProjectResponseInfo[][]);
+    return projects.reduce<GetMyProjectListGetMyProjectResponseInfo[][]>(
+      (acc, curr, i) => {
+        const pageIndex = Math.floor(i / itemsPerPage);
+        acc[pageIndex] = acc[pageIndex] || [];
+        acc[pageIndex].push(curr);
+        return acc;
+      },
+      [],
+    );
   }, [projects]);
 
   if (!projects?.length) {

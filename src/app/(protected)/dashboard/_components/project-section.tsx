@@ -1,18 +1,11 @@
 "use client";
 
 import { ProjectListSkeleton } from "@/components/skeleton/project-list-skeleton";
-import {
-  getGetMyProjectQueryKey,
-  getMyProject,
-} from "@/lib/api/generated/main/services/project-dashboard-api/project-dashboard-api";
-import { useQuery } from "@tanstack/react-query";
+import { useGetMyProject } from "@/lib/api/generated/main/services/project-dashboard-api/project-dashboard-api";
 import ProjectList from "./project-list";
 
 export default function ProjectSection() {
-  const { data, isLoading } = useQuery({
-    queryKey: getGetMyProjectQueryKey(),
-    queryFn: () => getMyProject(),
-  });
+  const { data, isLoading } = useGetMyProject();
 
   if (isLoading) {
     return <ProjectListSkeleton />;
