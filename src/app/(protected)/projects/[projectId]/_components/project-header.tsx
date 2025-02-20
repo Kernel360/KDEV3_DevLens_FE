@@ -114,12 +114,8 @@ export default function ProjectHeader({
               <div className="text-sm text-muted-foreground">Manager</div>
               <div className="font-medium">{bnsManager}</div>
             </div> */}
-              {currentStep && authorization === "PARTICIPANT" && (
-                <div className="border-1 w-fit min-w-32 rounded-full border border-primary">
-                  <span>{currentStep}</span>
-                </div>
-              )}
-              {authorization === "APPROVER" && (
+
+              {(authorization === "APPROVER" || authorization === "ADMIN") && (
                 <Select
                   value={currentStep}
                   onValueChange={(value) => {
