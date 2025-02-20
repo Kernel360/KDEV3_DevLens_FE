@@ -200,7 +200,7 @@ export default function ProjectHeader({
                         <p key={member.memberId}>
                           {member.memberName} {member.department}{" "}
                           {member.position}
-                          {member.projectAuthorization === "APPROVER" && "*"}
+                          {member.projectAuthorization === "APPROVER" && " *"}
                         </p>
                       ))}
                     </TooltipContent>

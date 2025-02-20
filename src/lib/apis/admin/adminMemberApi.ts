@@ -4,11 +4,29 @@ import { PaginatedResponse, PaginationParams } from "@/types/common";
 import { Member, MemberUpdateRequest } from "@/types/member";
 import { MemberFormValues } from "@/schemas/member";
 
+interface MemberListParams extends PaginationParams {
+  name?: string;
+  status?: Member["status"];
+  role?: Member["role"];
+  loginId?: string;
+  sort?: string[];
+  direction?: "asc" | "desc";
+}
+
 export const adminMemberApi = {
   /*
   @description 계정 목록 조회
   */
-  getList: ({ page, size = 10, sort }: PaginationParams) =>
+  getList: ({
+    page,
+    size = 10,
+    sort,
+    name,
+    status,
+    role,
+    loginId,
+    direction,
+  }: MemberListParams) =>
     restClient.get<PaginatedResponse<Member>>(
       `${API_PATH.ADMIN}${ADMIN_ENDPOINTS.MEMBER.BASE}`,
       {
@@ -16,6 +34,11 @@ export const adminMemberApi = {
           page: page - 1,
           size,
           ...(sort && { sort: sort.join(",") }),
+          ...(name && { name }),
+          ...(status && { status }),
+          ...(role && { role }),
+          ...(loginId && { loginId }),
+          ...(direction && { direction }),
         },
       },
     ),

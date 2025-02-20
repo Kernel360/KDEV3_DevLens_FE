@@ -1,7 +1,7 @@
 import { useCreateComment } from "@/lib/api/generated/main/services/comment-api/comment-api";
 import {
+  GetCommentDetailResponse,
   PostCommentRequest,
-  GetCommentResponse,
 } from "@/lib/api/generated/main/models";
 import { useState } from "react";
 import CommentForm from "./comment-form";
@@ -12,7 +12,7 @@ import { getSelectPostQueryKey } from "@/lib/api/generated/main/services/post-ap
 
 interface CommentsSectionProps {
   postId: number;
-  comments: GetCommentResponse[];
+  comments: GetCommentDetailResponse[];
   onCommentUpdate?: () => void;
 }
 
