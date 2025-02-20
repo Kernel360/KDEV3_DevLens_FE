@@ -28,6 +28,7 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query'
 import type {
+  APIResponseListGetAdminDashboardResponse,
   APIResponseString,
   APIResponseVoid,
   CheckProjectNameParams,
@@ -690,6 +691,150 @@ export function useGetProjectHistory<TData = Awaited<ReturnType<typeof getProjec
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetProjectHistoryQueryOptions(id,options)
+
+  const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getAdminMain = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return adminAxios<APIResponseListGetAdminDashboardResponse>(
+      {url: `/api/admin/projects/main`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+export const getGetAdminMainQueryKey = () => {
+    return [`/api/admin/projects/main`] as const;
+    }
+
+    
+export const getGetAdminMainInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getAdminMain>>>, TError = unknown>( options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminMainQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminMain>>> = ({ signal }) => getAdminMain(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAdminMainInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminMain>>>
+export type GetAdminMainInfiniteQueryError = unknown
+
+
+export function useGetAdminMainInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getAdminMain>>>, TError = unknown>(
+  options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAdminMain>>,
+          TError,
+          Awaited<ReturnType<typeof getAdminMain>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAdminMainInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getAdminMain>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAdminMain>>,
+          TError,
+          Awaited<ReturnType<typeof getAdminMain>>
+        > , 'initialData'
+      >, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAdminMainInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getAdminMain>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetAdminMainInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getAdminMain>>>, TError = unknown>(
+  options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>>, }
+
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAdminMainInfiniteQueryOptions(options)
+
+  const query = useInfiniteQuery(queryOptions) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+export const getGetAdminMainQueryOptions = <TData = Awaited<ReturnType<typeof getAdminMain>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetAdminMainQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getAdminMain>>> = ({ signal }) => getAdminMain(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetAdminMainQueryResult = NonNullable<Awaited<ReturnType<typeof getAdminMain>>>
+export type GetAdminMainQueryError = unknown
+
+
+export function useGetAdminMain<TData = Awaited<ReturnType<typeof getAdminMain>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAdminMain>>,
+          TError,
+          Awaited<ReturnType<typeof getAdminMain>>
+        > , 'initialData'
+      >, }
+
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAdminMain<TData = Awaited<ReturnType<typeof getAdminMain>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getAdminMain>>,
+          TError,
+          Awaited<ReturnType<typeof getAdminMain>>
+        > , 'initialData'
+      >, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetAdminMain<TData = Awaited<ReturnType<typeof getAdminMain>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+
+export function useGetAdminMain<TData = Awaited<ReturnType<typeof getAdminMain>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getAdminMain>>, TError, TData>>, }
+
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetAdminMainQueryOptions(options)
 
   const query = useQuery(queryOptions) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
