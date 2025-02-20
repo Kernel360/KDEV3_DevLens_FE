@@ -66,12 +66,7 @@ export default function ProjectForm() {
   const { mutateAsync: assignMembers } = usePostProjectAuthorization();
   const { customer, developer } = useMemberStore();
 
-  // form 상태 디버깅을 위한 코드 추가
-  console.log("Form errors:", form.formState.errors);
-
   const onSubmit = async (data: ProjectFormData) => {
-    console.log("Form data:", data);
-    console.log("onSubmit");
     try {
       // 1. 프로젝트 생성
       console.log("생성요청");

@@ -12,7 +12,6 @@ export async function logoutAction(): Promise<{
     const cookieStore = await cookies();
     const accessCookie = cookieStore.get("X-Access-Token");
     const refreshCookie = cookieStore.get("X-Refresh-Token");
-    console.log(`cookieStore: ${cookieStore}`);
     const cookieHeaderParts = [];
     if (accessCookie?.value) {
       cookieHeaderParts.push(`X-Access-Token=${accessCookie.value}`);

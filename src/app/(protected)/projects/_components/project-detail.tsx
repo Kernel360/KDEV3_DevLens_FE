@@ -88,7 +88,6 @@ export default function ProjectDetail() {
   });
 
   const store = useMemberStore();
-  console.log(project?.projectTypeId);
 
   useEffect(() => {
     if (project) {
@@ -157,10 +156,6 @@ export default function ProjectDetail() {
       }
     });
 
-    console.log("Store after:", {
-      customer: store.customer,
-      developer: store.developer,
-    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id]);
 
@@ -254,7 +249,6 @@ export default function ProjectDetail() {
       <Form {...form}>
         <form
           onSubmit={(e) => {
-            console.log("Form submission triggered");
             form.handleSubmit(onSubmit)(e);
           }}
           className="w-full space-y-6"

@@ -17,7 +17,6 @@ import { toast } from "sonner";
 export default function WithdrawAlert() {
   const handleWithdraw = () => {
     // TODO: API 호출하여 회원 탈퇴 처리
-    // console.log("회원 탈퇴 처리");
     toast.error("기능 업데이트 예정입니다.");
   };
 

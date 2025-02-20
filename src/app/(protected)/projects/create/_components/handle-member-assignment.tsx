@@ -25,9 +25,6 @@ export function HandleMemberAssignment({
   const { members, selectedApprovers, selectedNormal, activeRole, isLoading } =
     section;
 
-  console.log("selectedApprovers", selectedApprovers);
-  console.log("selectedNormal", selectedNormal);
-
   return (
     <div>
       <div className="flex items-center justify-between">
