@@ -12,7 +12,7 @@ export default function ProtectedLayout({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <SidebarInset className="inset h-full w-full overflow-hidden">
+        <SidebarInset className="inset h-full w-full overflow-hidden px-6 py-2">
           {children}
         </SidebarInset>
       </SidebarProvider>

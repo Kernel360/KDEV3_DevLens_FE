@@ -1,26 +1,32 @@
-import { Card, CardContent, CardHeader, Separator } from "@/components/ui";
+import Image from "next/image";
 import { LoginForm } from "./_components/login-form";
+import logo from "/public/logo.png";
+import background from "/public/background.png";
 
 export default function LoginPage() {
   return (
-    <div className="flex grow flex-col items-center justify-center">
-      <div className="flex w-full flex-col">
-        <Card className="max-w-30 p-2">
-          <CardHeader>Test Accounts pw:asdf123!</CardHeader>
-          <CardContent>
-            user : taek123, kyo123, seung123, jeong123, jeong321, dae123,
-            seung321,
-            <Separator />
-            admin : test
-          </CardContent>
-        </Card>
-        <h1
-          id="logo"
-          className="mx-auto w-fit cursor-default select-none py-4 font-mono text-3xl font-bold"
-        >
-          DevLens
-        </h1>
+    <div className="grid min-h-svh w-dvw lg:grid-cols-2">
+      <div className="flex h-full items-center justify-center gap-4 p-6 md:p-10">
         <LoginForm />
+      </div>
+      <div className="relative hidden flex-col justify-center bg-muted lg:flex">
+        <Image
+          src={background}
+          alt="데브렌즈 소개 이미지"
+          quality={75}
+          className="absolute inset-0 h-full w-full object-cover object-bottom brightness-50 dark:brightness-[0.2]"
+          priority
+        />
+        <div className="relative z-10 space-y-10 break-keep p-12 pt-24">
+          <h1 className="drop-shadow-xs w-full text-wrap text-4xl font-bold leading-relaxed text-white">
+            고객사와 개발사를 하나로,
+            <span className="md:block">프로젝트 관리 플랫폼</span>
+          </h1>
+          <p className="mt-2 text-xl text-white/90">
+            데브렌즈는 프로젝트 진행 상황을 한눈에 파악하고, <br />
+            소통과 피드백을 간편하게 관리할 수 있는 서비스입니다.
+          </p>
+        </div>
       </div>
     </div>
   );

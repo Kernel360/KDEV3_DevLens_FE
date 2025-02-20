@@ -26,13 +26,13 @@ export default function RootLayout({
       <body className={`${pretendard.variable} flex h-full min-h-dvh flex-col`}>
         <QueryProvider>
           <NuqsAdapter>
-            <section className="flex w-full grow overflow-hidden px-6 py-2">
+            <section className="flex w-full grow overflow-hidden">
               {children}
               <Toaster richColors position="top-center" />
             </section>
           </NuqsAdapter>
         </QueryProvider>
-      </body> 
+      </body>
     </html>
   );
 }

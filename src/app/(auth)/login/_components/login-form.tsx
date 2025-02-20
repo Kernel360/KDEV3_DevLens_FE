@@ -102,11 +102,11 @@ export function LoginForm({
             </form>
           </Form>
 
-          <div className="mt-4 text-center text-sm">
+          {/* <div className="mt-4 text-center text-sm">
             <a href="/forgot" className="underline underline-offset-4">
               비밀번호 찾기
             </a>
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </div>
