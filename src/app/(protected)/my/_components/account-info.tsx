@@ -7,8 +7,9 @@ import { Button, Card, Skeleton } from "@ui";
 import { useState } from "react";
 import EditAccountInfoDialog from "./edit-account-info-dialog";
 import EditAvatarButton from "./edit-avatar-button";
-import WithdrawAlert from "./withdraw-alert";
+// import WithdrawAlert from "./withdraw-alert";
 import { useMemberDetail } from "@/lib/api/generated/main/services/my-page-api/my-page-api";
+import PasswordResetDialog from "./password-reset-dialog";
 
 export default function AccountInfo() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -88,7 +89,10 @@ export default function AccountInfo() {
 
       {/* 내 프로젝트 */}
       {/* 회원 탈퇴 */}
-      <WithdrawAlert />
+      {/* <WithdrawAlert /> */}
+
+      {/* 비밀번호 재설정 */}
+      <PasswordResetDialog />
     </section>
   );
 }
