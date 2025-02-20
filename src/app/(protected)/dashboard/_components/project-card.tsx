@@ -1,4 +1,6 @@
+import { GetAdminDashboardResponse } from "@/lib/api/generated/admin/models";
 import { GetMyProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
+import { formatDate, getProjectStatusVariant } from "@/lib/utils";
 import {
   Badge,
   Card,
@@ -11,9 +13,10 @@ import {
 import { Calendar, Circle } from "lucide-react";
 import Link from "next/link";
 
-export default function ProjectCard(
-  props: GetMyProjectListGetMyProjectResponseInfo,
-) {
+type ProjectCardProps = GetMyProjectListGetMyProjectResponseInfo &
+  GetAdminDashboardResponse;
+
+export default function ProjectCard(props: ProjectCardProps) {
   const {
     id,
     projectName,
@@ -21,8 +24,9 @@ export default function ProjectCard(
     startDate,
     endDate,
     customerCompanyName,
-    // developerCompanyName,
+    developerCompanyName,
     projectTags,
+    projectStatus,
   } = props;
 
   const getStatusColor = () =>
@@ -44,7 +48,7 @@ export default function ProjectCard(
 
   return (
     <Link href={`/projects/${id}`}>
-      <Card>
+      <Card className="h-full">
         <CardHeader>
           <CardTitle>
             <div className="flex items-start justify-between gap-2">
@@ -52,32 +56,58 @@ export default function ProjectCard(
                 <h3 className="truncate font-semibold leading-normal">
                   {projectName}
                 </h3>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {customerCompanyName}
-                </p>
+                <div className="mt-4 flex flex-col gap-1 text-sm text-muted-foreground">
+                  {projectStatus ? (
+                    <>
+                      <div className="flex items-center gap-2">
+                        <p>고객사 :</p>
+                        <p className="text-primary">{customerCompanyName}</p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <p>개발사 :</p>
+                        <p className="text-primary">{developerCompanyName}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <p>{customerCompanyName}</p>
+                  )}
+                </div>
               </div>
-              {currentStepName && (
-                <Badge
-                  variant="successOutline"
-                  className={`${getStatusColor()} shrink-0`}
-                >
-                  <Circle className="mr-2 h-2 w-2" />
-                  {currentStepName}
-                </Badge>
-              )}
+              <div className="flex flex-col place-items-end gap-2">
+                {projectStatus && (
+                  <Badge
+                    variant={getProjectStatusVariant(projectStatus)}
+                    className="shrink-0"
+                  >
+                    {projectStatus}
+                  </Badge>
+                )}
+                {currentStepName && (
+                  <Badge
+                    variant="successOutline"
+                    className={`${getStatusColor()} w-fit shrink-0`}
+                  >
+                    <Circle className="mr-2 h-2 w-2" />
+                    {currentStepName}
+                  </Badge>
+                )}
+              </div>
             </div>
           </CardTitle>
           {/* <CardDescription className="truncate"></CardDescription> */}
         </CardHeader>
         <CardContent className="flex justify-between text-sm">
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              <span>{startDate}</span>
+          {startDate && endDate && (
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
+                <Calendar className="h-4 w-4" />
+                <span>{formatDate(startDate)}</span>
+              </div>
+              <span>-</span>
+              <span>{formatDate(endDate)}</span>
             </div>
-            <span>-</span>
-            <span>{endDate}</span>
-          </div>
+          )}
         </CardContent>
         {projectTags && projectTags.length > 0 && (
           <CardFooter>
