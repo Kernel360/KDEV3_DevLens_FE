@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { LoginForm } from "./_components/login-form";
-import logo from "/public/logo.png";
 import background from "/public/background.png";
 
 export default function LoginPage() {

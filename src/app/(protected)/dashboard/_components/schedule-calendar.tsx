@@ -1,24 +1,24 @@
 "use client";
 
-import { ko } from "date-fns/locale";
+import { Badge } from "@/components/ui/badge";
+import { cn, getScheduleTypeVariant } from "@/lib/utils";
+import { ScheduleItem } from "@/store/useScheduleStore";
 import {
   addMonths,
   eachDayOfInterval,
+  endOfMonth,
   endOfWeek,
-  subMonths,
   format,
   isSameDay,
-  startOfWeek,
   isSameMonth,
   startOfMonth,
-  endOfMonth,
+  startOfWeek,
+  subMonths,
 } from "date-fns";
+import { ko } from "date-fns/locale";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { ChevronRight } from "lucide-react";
-import { ChevronLeft } from "lucide-react";
 import { Button } from "../../../../components/ui/button";
-import { SCHEDULE_TYPE_COLORS, ScheduleItem } from "@/store/useScheduleStore";
 
 export default function ScheduleCalendar({
   scheduleData,
@@ -120,10 +120,13 @@ export default function ScheduleCalendar({
               >
                 {format(day, "d")}
                 <span
-                  className={cn(
-                    "rounded-full p-1",
-                    schedule && SCHEDULE_TYPE_COLORS[schedule.type].bg,
-                  )}
+                  className={cn("h-2 w-2 rounded-full", {
+                    "bg-emerald-500": schedule?.type === "시작",
+                    "bg-primary": schedule?.type === "마감",
+                    "bg-secondary": schedule?.type === "기타",
+                    "bg-destructive": schedule?.type === "공휴일",
+                    "bg-muted": !schedule?.type,
+                  })}
                 />
               </time>
             </button>
@@ -134,20 +137,18 @@ export default function ScheduleCalendar({
       {/* Selected Date Display - 스케줄이 있는 경우에만 표시 */}
       {selectedDate && getScheduleForDate(selectedDate) && (
         <div className="mt-3 rounded-lg border p-2 text-sm">
-          <p className="font-medium">
-            {format(selectedDate, "PPP", { locale: ko })}
-            <span
-              className={cn(
-                "ml-2 shrink-0 rounded-lg p-1 text-xs",
-                SCHEDULE_TYPE_COLORS[getScheduleForDate(selectedDate)!.type]
-                  .text,
-                SCHEDULE_TYPE_COLORS[getScheduleForDate(selectedDate)!.type]
-                  .bgLight,
-              )}
-            >
-              {getScheduleForDate(selectedDate)?.type}
-            </span>
+          <p className="inline-block font-medium">
+            {format(selectedDate, "PPP", { locale: ko })}{" "}
           </p>
+          <Badge
+            className="ml-2 inline-block"
+            variant={getScheduleTypeVariant(
+              getScheduleForDate(selectedDate)!.type,
+            )}
+          >
+            {getScheduleForDate(selectedDate)?.type}
+          </Badge>
+
           <p className="mt-1 text-muted-foreground">
             {getScheduleForDate(selectedDate)?.label}
           </p>

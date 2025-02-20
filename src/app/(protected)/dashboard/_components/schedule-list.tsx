@@ -1,12 +1,12 @@
 "use client";
 
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { getScheduleTypeVariant } from "@/lib/utils";
+import { ScheduleItem } from "@/store/useScheduleStore";
 import { format, isToday } from "date-fns";
-import { useMemo } from "react";
-import { ScheduleItem, SCHEDULE_TYPE_COLORS } from "@/store/useScheduleStore";
 import { ko } from "date-fns/locale";
-import { cn } from "@/lib/utils";
+import { useMemo } from "react";
 
 export default function ScheduleList({
   scheduleData,
@@ -63,14 +63,10 @@ export default function ScheduleList({
                   <div className="text-sm font-medium">{schedule.time}</div>
                 )}
                 <div className="flex items-center gap-2">
-                  <span
-                    className={cn(
-                      "shrink-0 rounded-lg p-1 text-xs bg-emerald-500/10",
-                      SCHEDULE_TYPE_COLORS[schedule.type].text,
-                      SCHEDULE_TYPE_COLORS[schedule.type].bgLight,
-                    )}
-                  >
-                    {schedule.type}
+                  <span className="shrink-0 rounded-lg p-1 text-xs">
+                    <Badge variant={getScheduleTypeVariant(schedule.type)}>
+                      {schedule.type}
+                    </Badge>
                   </span>
                   <h4 className="truncate text-sm font-medium">
                     {schedule.label}

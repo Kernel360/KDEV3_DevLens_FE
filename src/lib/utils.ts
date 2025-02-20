@@ -238,3 +238,18 @@ export function getProjectStatusVariant(status: string) {
       return "outline" as const;
   }
 }
+
+export function getScheduleTypeVariant(type: string) {
+  switch (type) {
+    case "시작":
+      return "success" as const;
+    case "마감":
+      return "default" as const;
+    case "기타":
+      return "secondary" as const;
+    case "공휴일":
+      return "destructiveOutline" as const;
+    default:
+      return "outline" as const;
+  }
+}
