@@ -13,7 +13,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Button,
-  Calendar,
+  CalendarCustom,
   Card,
   CardContent,
   CardHeader,
@@ -354,7 +354,7 @@ export default function PostForm({
                           </FormControl>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
-                          <Calendar
+                          <CalendarCustom
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
