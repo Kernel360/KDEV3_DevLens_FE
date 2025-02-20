@@ -15,7 +15,16 @@ export function MemberAssignment({
   const store = useMemberStore();
 
   useEffect(() => {
+    // 컴포넌트 마운트 시 초기화
+    store.reset("customer");
+    store.reset("developer");
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // 마운트 시 한 번만 실행
+
+  useEffect(() => {
     if (customerId) {
+      // customerId가 변경될 때마다 해당 타입만 초기화 후 데이터 조회
+      store.reset("customer");
       store.fetchMembers("customer", customerId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -23,6 +32,8 @@ export function MemberAssignment({
 
   useEffect(() => {
     if (developerId) {
+      // developerId가 변경될 때마다 해당 타입만 초기화 후 데이터 조회
+      store.reset("developer");
       store.fetchMembers("developer", developerId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
