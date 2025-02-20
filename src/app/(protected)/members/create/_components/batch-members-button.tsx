@@ -1,8 +1,6 @@
 "use client";
 
 import { Input } from "@ui";
-import { adminMemberApi } from "@/lib/apis/admin/adminMemberApi";
-import type { BatchMemberFormValues } from "@/types/member";
 import {
   Button,
   Dialog,
@@ -17,10 +15,14 @@ import { Download, FileSpreadsheet } from "lucide-react";
 import Papa from "papaparse";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useCreateMembers } from "@/lib/api/generated/admin/services/administrator-member-management-api/administrator-member-management-api";
+import type { MemberDtoRequest } from "@/lib/api/generated/admin/models";
 
-const SAMPLE_DATA: BatchMemberFormValues[] = [
+const SAMPLE_DATA = [
   {
+    companyId: 1,
     loginId: "testuser1",
+    password: "test1234!",
     name: "테스트유저1",
     email: "test1@example.com",
     role: "USER",
@@ -28,14 +30,37 @@ const SAMPLE_DATA: BatchMemberFormValues[] = [
     birthDate: "2000-01-01",
     department: "개발팀",
     position: "사원",
-    companyId: 1,
   },
 ];
 
+interface CSVRow {
+  companyId: string;
+  loginId: string;
+  password: string;
+  name: string;
+  email: string;
+  role: string;
+  phoneNumber: string;
+  birthDate: string;
+  department?: string;
+  position?: string;
+}
+
+const TABLE_COLUMNS = [
+  { key: "companyId" as const, label: "회사ID", width: "w-[10%]" },
+  { key: "name" as const, label: "이름", width: "w-[12%]" },
+  { key: "loginId" as const, label: "로그인ID", width: "w-[15%]" },
+  { key: "password" as const, label: "초기 비밀번호", width: "w-[18%]" },
+  { key: "email" as const, label: "이메일", width: "w-[20%]" },
+  { key: "phoneNumber" as const, label: "전화번호", width: "w-[15%]" },
+  { key: "role" as const, label: "권한", width: "w-[10%]" },
+] as const;
 export default function BatchMembersButton() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [previewData, setPreviewData] = useState<BatchMemberFormValues[]>([]);
+  const [previewData, setPreviewData] = useState<MemberDtoRequest[]>([]);
+
+  const createMembersMutation = useCreateMembers();
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
@@ -52,23 +77,29 @@ export default function BatchMembersButton() {
       header: true,
       complete: (results) => {
         try {
-          // CSV 데이터 검증 및 companyId를 숫자로 변환
-          const parsedData = (results.data as BatchMemberFormValues[]).map(
-            (item) => ({
-              ...item,
-              companyId: Number(item.companyId),
-            }),
-          );
+          const parsedData = (results.data as CSVRow[]).map((item) => ({
+            companyId: Number(item.companyId),
+            loginId: item.loginId,
+            password: item.password,
+            name: item.name,
+            email: item.email,
+            role: item.role,
+            phoneNumber: item.phoneNumber,
+            birthDate: item.birthDate,
+            department: item.department || undefined,
+            position: item.position || undefined,
+          })) as MemberDtoRequest[];
 
           const isValid = parsedData.every(
             (item) =>
               item.loginId &&
+              item.password &&
               item.name &&
               item.email &&
               item.role &&
               item.phoneNumber &&
               item.birthDate &&
-              !isNaN(item.companyId), // companyId가 유효한 숫자인지 확인
+              item.companyId,
           );
 
           if (!isValid) {
@@ -95,7 +126,7 @@ export default function BatchMembersButton() {
 
     setIsLoading(true);
     try {
-      await adminMemberApi.batchMembers(previewData);
+      await createMembersMutation.mutateAsync({ data: previewData });
       toast.success("사용자가 성공적으로 생성되었습니다.");
       setOpen(false);
       setPreviewData([]);
@@ -134,12 +165,12 @@ export default function BatchMembersButton() {
           일괄 생성
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="w-full sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>유저 일괄생성</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="w-full">
             CSV 파일을 업로드하여 여러 유저를 한번에 생성합니다. 필수 필드:
-            로그인ID, 이름, 이메일, 역할, 전화번호, 생년월일
+            로그인ID, 초기 비밀번호, 이름, 이메일, 역할, 전화번호, 생년월일
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
@@ -161,37 +192,36 @@ export default function BatchMembersButton() {
           </div>
         </div>
         {previewData.length > 0 && (
-          <div className="mt-4">
+          <div className="mt-4 w-full overflow-y-scroll">
             <h3 className="mb-2 text-sm font-medium">
               미리보기 ({previewData.length}명)
             </h3>
-            <div className="max-h-60 overflow-auto rounded border">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto overflow-y-auto rounded border">
+              <table className="w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      이름
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      이메일
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">
-                      로그인ID
-                    </th>
+                    {TABLE_COLUMNS.map(({ label, width }) => (
+                      <th
+                        key={label}
+                        className={`${width} flex-1 truncate px-3 py-2 text-left text-xs font-medium text-gray-500`}
+                      >
+                        {label}
+                      </th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200 bg-white">
                   {previewData.map((user, index) => (
                     <tr key={index}>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm">
-                        {user.name}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm">
-                        {user.email}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-sm">
-                        {user.loginId}
-                      </td>
+                      {TABLE_COLUMNS.map(({ key, width }) => (
+                        <td
+                          key={key}
+                          className={`${width} flex-1 truncate px-3 py-2 text-sm`}
+                          title={user[key]?.toString()}
+                        >
+                          {user[key]}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
