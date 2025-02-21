@@ -1,6 +1,6 @@
 import { GetAdminDashboardResponse } from "@/lib/api/generated/admin/models";
 import { GetMyProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
-import { formatDate, getProjectStatusVariant } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import {
   Badge,
   Card,
@@ -75,14 +75,14 @@ export default function ProjectCard(props: ProjectCardProps) {
                 </div>
               </div>
               <div className="flex flex-col place-items-end gap-2">
-                {projectStatus && (
+                {/* {projectStatus && (
                   <Badge
                     variant={getProjectStatusVariant(projectStatus)}
                     className="shrink-0"
                   >
                     {projectStatus}
                   </Badge>
-                )}
+                )} */}
                 {currentStepName && (
                   <Badge
                     variant="successOutline"

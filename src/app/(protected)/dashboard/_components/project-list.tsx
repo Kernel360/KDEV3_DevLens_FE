@@ -14,7 +14,7 @@ import { useScheduleStore } from "@/store/useScheduleStore";
 
 interface ProjectListProps {
   projects: GetMyProjectListGetMyProjectResponseInfo[];
-  title: "내 프로젝트" | "진행 중";
+  title: "내 프로젝트" | "진행 중 프로젝트";
 }
 
 export default function ProjectList({ projects, title }: ProjectListProps) {
@@ -70,7 +70,11 @@ export default function ProjectList({ projects, title }: ProjectListProps) {
             el: ".project-pagination",
             clickable: true,
           }}
-          mousewheel={true}
+          mousewheel={{
+            forceToAxis: true,
+            sensitivity: 1,
+            releaseOnEdges: true,
+          }}
           spaceBetween={16}
           className="project-swiper !pb-8"
         >
@@ -80,19 +84,21 @@ export default function ProjectList({ projects, title }: ProjectListProps) {
                 {pageProjects.map((project) => (
                   <ProjectCard key={project.id} {...project} />
                 ))}
-                {[...Array(6 - pageProjects.length)].map((_, i) => (
-                  <div
-                    key={`empty-${i}`}
-                    className="invisible"
-                    aria-hidden="true"
-                  >
-                    <Card className="opacity-0">
-                      <CardHeader>
-                        <CardTitle>빈 카드</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </div>
-                ))}
+                <div className="hidden lg:contents">
+                  {[...Array(6 - pageProjects.length)].map((_, i) => (
+                    <div
+                      key={`empty-${i}`}
+                      className="invisible"
+                      aria-hidden="true"
+                    >
+                      <Card className="opacity-0">
+                        <CardHeader>
+                          <CardTitle>빈 카드</CardTitle>
+                        </CardHeader>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
               </div>
             </SwiperSlide>
           ))}

@@ -62,7 +62,7 @@ export default function ScheduleList({
                 {schedule.time && (
                   <div className="text-sm font-medium">{schedule.time}</div>
                 )}
-                <div className="flex items-center gap-2">
+                <div className="flex w-full items-center gap-2">
                   <span className="shrink-0 rounded-lg p-1 text-xs">
                     <Badge variant={getScheduleTypeVariant(schedule.type)}>
                       {schedule.type}

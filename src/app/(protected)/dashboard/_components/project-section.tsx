@@ -43,7 +43,7 @@ export default function ProjectSection() {
     <div className="space-y-6">
       <ProjectList
         projects={projects}
-        title={user?.role === "ADMIN" ? "진행 중" : "내 프로젝트"}
+        title={user?.role === "ADMIN" ? "진행 중 프로젝트" : "내 프로젝트"}
       />
     </div>
   );

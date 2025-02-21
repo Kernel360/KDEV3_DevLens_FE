@@ -19,7 +19,7 @@ export function ScheduleView({ className }: { className?: string }) {
     <Card className={cn("h-fit space-y-2 p-4", className)}>
       <div className="flex items-center justify-between">
         <h2 className="font-semibold">일정</h2>
-        <div className="flex gap-2">
+        <div className="hidden gap-2 md:flex">
           <Toggle
             pressed={view === "list"}
             onPressedChange={() => setView("list")}
@@ -37,11 +37,17 @@ export function ScheduleView({ className }: { className?: string }) {
         </div>
       </div>
 
-      {view === "calendar" ? (
-        <ScheduleCalendar scheduleData={scheduleData} />
-      ) : (
+      <div className="hidden md:block">
+        {view === "calendar" ? (
+          <ScheduleCalendar scheduleData={scheduleData} />
+        ) : (
+          <ScheduleList scheduleData={scheduleData} />
+        )}
+      </div>
+
+      <div className="md:hidden">
         <ScheduleList scheduleData={scheduleData} />
-      )}
+      </div>
     </Card>
   );
 }

@@ -20,7 +20,7 @@ type HeaderProps = {
 
 export default function Header({ breadcrumbs }: HeaderProps) {
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 md:hidden">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1 md:hidden" />
         {breadcrumbs && (
