@@ -1,8 +1,8 @@
 import { TextAnimate } from "@/components/magicui/text-animate";
-import { Code2, Github, Info, Server } from "lucide-react";
+import { Button } from "@/components/ui";
+import { Info } from "lucide-react";
 import HeroAnimation from "./_components/HeroAnimation";
 import { LoginForm } from "./_components/login-form";
-import { Button } from "@/components/ui";
 
 export default function LoginPage() {
   return (
