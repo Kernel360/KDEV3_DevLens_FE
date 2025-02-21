@@ -4,6 +4,7 @@ import { loginAction } from "@/lib/actions/loginAction";
 import { cn } from "@/lib/utils";
 import { signInSchema } from "@/schemas/signIn";
 import { useAuthStore } from "@/store/useAuthStore";
+import { APIError } from "@/types/common";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Card,
@@ -19,17 +20,17 @@ import {
   FormMessage,
   Input,
 } from "@ui";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as z from "zod";
 import LoginSubmitButton from "./login-submit-button";
-import { toast } from "sonner";
-// import { AuthApi } from "@/lib/apis/main/authApi";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter();
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -40,17 +41,23 @@ export function LoginForm({
   const setUser = useAuthStore((state) => state.setUser);
 
   async function onSubmit(values: z.infer<typeof signInSchema>) {
-    // const res = await AuthApi.login(values);
-    const res = await loginAction(values);
-    if (res.success && res.user) {
-      setUser({ ...res.user });
-
-      toast.info(`반갑습니다, ${res.user.name}님`);
-      const searchParams = new URLSearchParams(window.location.search);
-      const redirectTo = searchParams.get("redirect_to") || "/dashboard";
-      redirect(redirectTo);
-    } else {
-      toast.error(res.message);
+    try {
+      const res = await loginAction(values);
+      if (res.success && res.user) {
+        setUser({ ...res.user });
+        toast.success(`반갑습니다, ${res.user.name}님`);
+        const searchParams = new URLSearchParams(window.location.search);
+        const redirectTo = searchParams.get("redirect_to") || "/dashboard";
+        router.push(redirectTo);
+      } else {
+        toast.error(res.message);
+      }
+    } catch (error) {
+      toast.error(
+        error instanceof APIError
+          ? error.message
+          : "로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      );
     }
   }
 

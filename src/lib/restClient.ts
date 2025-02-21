@@ -31,7 +31,10 @@ async function handleResponse<T>(response: Response): Promise<T> {
     const data: APIResponse<T> = await response.json();
 
     if (!response.ok || data.code >= 400) {
-      throw new APIError(data.code, data.message);
+      throw new APIError(
+        data.code,
+        data.message || "서버에서 오류가 발생했습니다.",
+      );
     }
 
     return data.data;
@@ -39,13 +42,14 @@ async function handleResponse<T>(response: Response): Promise<T> {
     if (error instanceof APIError) throw error;
 
     // 세션 만료 체크
-    if (response.status === 1000) {
-      throw new APIError(1000, "세션이 만료되었습니다.");
+    if (response.status === 401) {
+      throw new APIError(401, "세션이 만료되었습니다.");
     }
 
+    const errorData = await response.json().catch(() => ({}));
     throw new APIError(
       response.status,
-      "서버 응답을 처리하는 중 오류가 발생했습니다.",
+      errorData.message || "서버 응답을 처리하는 중 오류가 발생했습니다.",
     );
   }
 }
