@@ -1,6 +1,6 @@
 import SectionTitle from "@/components/composites/section-title";
 import { Card, CardHeader, CardTitle } from "@ui";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Navigation, Pagination, Mousewheel } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import ProjectCard from "./project-card";
@@ -10,10 +10,11 @@ import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
 import { GetMyProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
+import { useScheduleStore } from "@/store/useScheduleStore";
 
 interface ProjectListProps {
   projects: GetMyProjectListGetMyProjectResponseInfo[];
-  title: "내 프로젝트" | "회사 프로젝트";
+  title: "내 프로젝트" | "진행 중 프로젝트";
 }
 
 export default function ProjectList({ projects, title }: ProjectListProps) {
@@ -30,6 +31,15 @@ export default function ProjectList({ projects, title }: ProjectListProps) {
       [],
     );
   }, [projects]);
+
+  const setProjectSchedules = useScheduleStore(
+    (state) => state.setProjectSchedules,
+  );
+
+  // projects가 변경될 때마다 스케줄 업데이트
+  useEffect(() => {
+    setProjectSchedules(projects);
+  }, [projects, setProjectSchedules]);
 
   if (!projects?.length) {
     return (
@@ -60,29 +70,35 @@ export default function ProjectList({ projects, title }: ProjectListProps) {
             el: ".project-pagination",
             clickable: true,
           }}
-          mousewheel={true}
+          mousewheel={{
+            forceToAxis: true,
+            sensitivity: 1,
+            releaseOnEdges: true,
+          }}
           spaceBetween={16}
           className="project-swiper !pb-8"
         >
           {projectPages.map((pageProjects, pageIndex) => (
             <SwiperSlide key={pageIndex}>
-              <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+              <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
                 {pageProjects.map((project) => (
                   <ProjectCard key={project.id} {...project} />
                 ))}
-                {[...Array(6 - pageProjects.length)].map((_, i) => (
-                  <div
-                    key={`empty-${i}`}
-                    className="invisible"
-                    aria-hidden="true"
-                  >
-                    <Card className="opacity-0">
-                      <CardHeader>
-                        <CardTitle>빈 카드</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </div>
-                ))}
+                <div className="hidden lg:contents">
+                  {[...Array(6 - pageProjects.length)].map((_, i) => (
+                    <div
+                      key={`empty-${i}`}
+                      className="invisible"
+                      aria-hidden="true"
+                    >
+                      <Card className="opacity-0">
+                        <CardHeader>
+                          <CardTitle>빈 카드</CardTitle>
+                        </CardHeader>
+                      </Card>
+                    </div>
+                  ))}
+                </div>
               </div>
             </SwiperSlide>
           ))}

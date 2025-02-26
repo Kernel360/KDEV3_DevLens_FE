@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils";
 import {
   Button,
-  Calendar,
-  FormControl,
+  CalendarCustom,  FormControl,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -50,7 +49,7 @@ export default function DatePickerInput({
         </FormControl>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
+        <CalendarCustom
           mode="single"
           selected={value}
           onSelect={onChange}

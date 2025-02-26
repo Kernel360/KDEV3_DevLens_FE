@@ -1,25 +1,50 @@
 "use client";
 
 import { ProjectListSkeleton } from "@/components/skeleton/project-list-skeleton";
-import { useGetMyProject } from "@/lib/api/generated/main/services/project-dashboard-api/project-dashboard-api";
 import ProjectList from "./project-list";
+import { useAuthStore } from "@/store/useAuthStore";
+import { useGetMyProject } from "@/lib/api/generated/main/services/project-dashboard-api/project-dashboard-api";
+import { useGetAdminMain } from "@/lib/api/generated/admin/services/administrator-project-management-api/administrator-project-management-api";
+import { GetMyProjectListGetMyProjectResponseInfo } from "@/lib/api/generated/main/models";
 
 export default function ProjectSection() {
-  const { data, isLoading } = useGetMyProject();
+  const { user } = useAuthStore();
 
-  if (isLoading) {
+  const isAdmin = user?.role === "ADMIN";
+
+  const { data: userData, isLoading: userLoading } = useGetMyProject(
+    undefined,
+    {
+      query: {
+        enabled: !isAdmin && !!user,
+      },
+    },
+  );
+
+  const { data: adminData, isLoading: adminLoading } = useGetAdminMain({
+    query: {
+      enabled: isAdmin && !!user,
+    },
+  });
+
+  const isLoading = userLoading || adminLoading;
+  if (isLoading || !user) {
     return <ProjectListSkeleton />;
   }
+  const projects = (
+    user?.role === "ADMIN" ? adminData : userData?.myProjects
+  ) as GetMyProjectListGetMyProjectResponseInfo[];
 
-  if (!data?.myProjects) {
+  if (!projects) {
     throw new Error("프로젝트 목록을 불러오는데 실패했습니다.");
   }
 
   return (
     <div className="space-y-6">
-      <ProjectList projects={data?.myProjects} title="내 프로젝트" />
-      {/* <Separator /> */}
-      {/* <ProjectList projects={companyProjects} title="회사 프로젝트" /> */}
+      <ProjectList
+        projects={projects}
+        title={user?.role === "ADMIN" ? "진행 중 프로젝트" : "내 프로젝트"}
+      />
     </div>
   );
 }

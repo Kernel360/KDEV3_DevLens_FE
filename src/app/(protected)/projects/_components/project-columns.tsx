@@ -31,7 +31,7 @@ export const projectColumns: ColumnDef<Project>[] = [
   },
   {
     id: "projectStatusCode",
-    header: "상태",
+    header: "계약 상태",
     cell: ({ row }) => (
       <Badge variant={getStatusVariant(row.original.projectStatusCode)}>
         {getStatusLabel(row.original.projectStatusCode)}

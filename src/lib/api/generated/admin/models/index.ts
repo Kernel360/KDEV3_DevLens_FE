@@ -8,6 +8,7 @@
 
 export * from './aPIResponse';
 export * from './aPIResponseData';
+export * from './aPIResponseListGetAdminDashboardResponse';
 export * from './aPIResponseLoginResponse';
 export * from './aPIResponseString';
 export * from './aPIResponseSuccessCode';
@@ -19,6 +20,8 @@ export * from './company';
 export * from './companyBusinessType';
 export * from './companyIsActive';
 export * from './deleteMember200';
+export * from './getAdminDashboardResponse';
+export * from './getAdminDashboardResponseProjectStatus';
 export * from './getCompanyDetailResponse';
 export * from './getCompanyDetailResponseBusinessType';
 export * from './getCompanyMemberCompanyMember';

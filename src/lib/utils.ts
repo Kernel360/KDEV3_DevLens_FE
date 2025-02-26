@@ -1,20 +1,12 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { format, parseISO } from "date-fns";
+import { format, getYear, parseISO } from "date-fns";
 import { ko } from "date-fns/locale";
 import { ALLOWED_FILE_TYPES } from "./constants/etc";
 import { ALLOWED_IMAGE_TYPES } from "./constants/etc";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function formatDate(date: Date): string {
-  return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
 }
 
 export function formatDateToRelative(dateStr: string): string {
@@ -218,5 +210,46 @@ export function getChecklistStatusVariant(status: string) {
         variant: "secondary" as const,
         label: "상태 없음",
       };
+  }
+}
+
+export const formatDate = (date: Date | string) => {
+  const today = new Date();
+  const isSameYear = getYear(date) === getYear(today);
+
+  return isSameYear ? format(date, "M.d") : `${format(date, "yyyy.M.d")}`;
+};
+
+export function getProjectStatusVariant(status: string) {
+  switch (status) {
+    case "PREPARED":
+      return "warning" as const;
+    case "IN_PROGRESS":
+      return "default" as const;
+    case "COMPLETED":
+      return "success" as const;
+    case "CLOSED":
+      return "secondary" as const;
+    case "CANCELLED":
+      return "destructive" as const;
+    case "DELETED":
+      return "outline" as const;
+    default:
+      return "outline" as const;
+  }
+}
+
+export function getScheduleTypeVariant(type: string) {
+  switch (type) {
+    case "시작":
+      return "success" as const;
+    case "마감":
+      return "default" as const;
+    case "기타":
+      return "secondary" as const;
+    case "공휴일":
+      return "destructiveOutline" as const;
+    default:
+      return "outline" as const;
   }
 }

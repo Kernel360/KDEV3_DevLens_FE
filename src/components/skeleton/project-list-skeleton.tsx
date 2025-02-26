@@ -19,24 +19,13 @@ export function ProjectCardSkeleton() {
 
 export function ProjectListSkeleton() {
   return (
-    <div className="space-y-8">
-      <section>
-        <Skeleton className="mb-4 h-8 w-32" />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <ProjectCardSkeleton key={i} />
-          ))}
-        </div>
-      </section>
-
-      <section>
-        <Skeleton className="mb-4 h-8 w-32" />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <ProjectCardSkeleton key={i} />
-          ))}
-        </div>
-      </section>
-    </div>
+    <section>
+      <Skeleton className="mb-4 h-8 w-32" />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <ProjectCardSkeleton key={i} />
+        ))}
+      </div>
+    </section>
   );
 }
